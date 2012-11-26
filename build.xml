@@ -1,0 +1,56 @@
+<project name="QwStoretEtl" default="default">
+	<target name="default" depends="buildPackage, scpScript, dos2unix, scpScriptB, qwNwisEtl"/>
+
+	<target name="dev" depends="buildPackage, runPackage"/>
+
+	<target name="buildPackage">
+		<echo>Rebuiling the etl database pacakge and body</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
+			<arg value="@${basedir}/create_nad_objects.sql"/>
+			</exec>
+		</target>
+		
+	<target name="runPackage">
+		<echo>Running the main ETL Package</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
+			<arg value="@${basedir}/runPackage.sql"/>
+			<arg value="${success_notify}"/>
+			<arg value="${failure_notify}"/>
+		</exec>
+	</target>
+			
+	<target name="scpScript">
+		<echo>Copy the script to ${nwis_host}</echo>
+		<scp file="spool_out_all.sh" todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true"/>
+	</target>
+
+	<target name="dos2unix">
+		<echo>Fix cr/lf</echo>
+		<sshexec host="${nwis_host}"
+			trust="true"
+			username="nwis_user"
+			password="${nwis_user_password}"
+			command="dos2unix spool_out_all.sh "/>
+	</target>
+	
+	<target name="scpScriptB">
+		<echo>Copy the script to ${nwis_host}</echo>
+		<scp todir="nwis_user:${nwis_user_password}@${nwis_host}:/var/lib/mysql/copy_sitefile" trust="true">
+			<fileset dir="copy_sitefile"/>
+		</scp>
+	</target>
+
+	<target name="qwNwisEtl">
+		<echo>Run the script</echo>
+		<sshexec host="${nwis_host}"
+			trust="true"
+			failonerror="true"
+			username="nwis_user"
+			password="${nwis_user_password}"
+			command="bash -e spool_out_all.sh "
+		/>
+	</target>
+	
+</project>
