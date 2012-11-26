@@ -812,19 +812,22 @@ create or replace package body create_nad_objects
       select /*+ full(a) parallel(a, 4) */
          pk_isn,
          station_id,
+         station_name,
          geom,
          country_cd,
          state_cd,
          county_cd,
          substr(station_type_name , 1, instr(station_type_name || '':'', '':'') - 1) station_type_name,
          organization_id,
+         organization_name,
          hydrologic_unit_code,
+         well_depth_ft_blw_land_sfc_va,
+         nvl2(well_depth_ft_blw_land_sfc_va, ''ft'', null) well_depth_ft_blw_land_sfc_un,
          cast(nvl(b.result_count, 0) as number(8)) result_count
       from
-         fa_station' || suffix || ' a ,
-         (select fk_station, count(*) result_count from fa_regular_result' || suffix || ' group by fk_station) b
-      where
-         a.pk_isn = b.fk_station(+)
+         fa_station' || suffix || ' a
+         left join (select fk_station, count(*) result_count from fa_regular_result' || suffix || ' group by fk_station) b
+           on a.pk_isn = b.fk_station 
       order by
          country_cd,
          state_cd,
@@ -1026,6 +1029,30 @@ create or replace package body create_nad_objects
 
       cleanup(6) := 'drop table NWIS_RESULT_NR_SUM' || suffix;
 
+      append_email_text('creating nwis_lctn_loc...');
+
+      execute immediate
+     'create table nwis_lctn_loc' || suffix || ' compress pctfree 0 nologging parallel 1 as
+      select /*+ parallel(4) */ distinct
+             country_cd,
+             state_cd state_fips,
+             organization_id,
+             organization_name
+        from fa_station' || suffix;
+
+      cleanup(7) := 'drop table nwis_lctn_loc' || suffix;
+      
+      append_email_text('creating nwis_di_org...');
+
+      execute immediate
+     'create table nwis_di_org' || suffix || ' compress pctfree 0 nologging parallel 1 as
+      select distinct
+             cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
+             ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name
+        from nwis_ws_stg.nwis_district_cds_by_host@wistg';
+
+      cleanup(8) := 'drop table nwis_di_org' || suffix;
+
    exception
       when others then
          message := 'FAIL to create summaries: ' || SQLERRM;
@@ -1062,7 +1089,7 @@ create or replace package body create_nad_objects
          c.site_id = s.pk_isn and
          c.parm_cd = p.parm_cd';
 
-      cleanup(7) := 'drop table SERIES_CATALOG' || suffix;
+      cleanup(9) := 'drop table SERIES_CATALOG' || suffix;
 
    exception
       when others then
@@ -1390,6 +1417,8 @@ create or replace package body create_nad_objects
       execute immediate 'grant select on nwis_result_sum'     || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on nwis_result_ct_sum'  || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on nwis_result_nr_sum'  || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on nwis_lctn_loc'       || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on nwis_di_org'         || suffix || ' to nwis_ws_user';
 
       append_email_text('analyze fa_station...');  /* takes about 1.5 minutes*/
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_STATION'        || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
@@ -1407,6 +1436,10 @@ create or replace package body create_nad_objects
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_CT_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
       append_email_text('analyze nwis_result_nr_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_NR_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze nwis_lctn_loc...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_LCTN_LOC'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze nwis_di_org...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_DI_ORG'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
    exception
       when others then
@@ -1540,6 +1573,7 @@ create or replace package body create_nad_objects
 
    procedure install
    is
+   	  suffix_less_one varchar2(10) := '_' || to_char(to_number(substr(suffix, 2) - 1), 'fm00000');
    begin
 
       append_email_text('installing...');
@@ -1552,6 +1586,12 @@ create or replace package body create_nad_objects
       execute immediate 'create or replace synonym nwis_result_sum for nwis_result_sum'        || suffix;
       execute immediate 'create or replace synonym nwis_result_ct_sum for nwis_result_ct_sum'  || suffix;
       execute immediate 'create or replace synonym nwis_result_nr_sum for nwis_result_nr_sum'  || suffix;
+
+      execute immediate 'create or replace synonym nwis_lctn_loc_new for nwis_lctn_loc'        || suffix;
+      execute immediate 'create or replace synonym nwis_lctn_loc_old for nwis_lctn_loc'        || suffix_less_one;
+
+      execute immediate 'create or replace synonym nwis_di_org_new for nwis_di_org'            || suffix;
+      execute immediate 'create or replace synonym nwis_di_org_old for nwis_di_org'            || suffix_less_one;
 
    exception
       when others then
@@ -1570,7 +1610,8 @@ create or replace package body create_nad_objects
          where
             translate(table_name, '0123456789', '0000000000') in
               ('FA_REGULAR_RESULT_00000', 'FA_STATION_00000', 'SERIES_CATALOG_00000', 'QWPORTAL_SUMMARY_00000',
-                'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000') and
+                'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000',
+                'NWIS_LCTN_LOC_00000', 'NWIS_DI_ORG_00000') and
             substr(table_name, -5) <= to_char(to_number(substr(current_suffix, 2) - 2), 'fm00000')
          order by
             case when table_name like 'FA_STATION%' then 2 else 1 end, table_name;
@@ -1583,7 +1624,8 @@ create or replace package body create_nad_objects
          where
             translate(table_name, '0123456789', '0000000000') in
               ('FA_REGULAR_RESULT_00000', 'FA_STATION_00000', 'SERIES_CATALOG_00000', 'QWPORTAL_SUMMARY_00000',
-                'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000') and
+                'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000',
+                'NWIS_LCTN_LOC_00000') and
             substr(table_name, -5) <= to_char(to_number(substr(current_suffix, 2) - 1), 'fm00000')
          order by
             case when table_name like 'FA_STATION%' then 2 else 1 end, table_name;
@@ -1664,7 +1706,7 @@ create or replace package body create_nad_objects
          end loop;
       end if;
 
-      utl_mail.send@witrans(sender => 'bheck@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
+      utl_mail.send@witrans(sender => 'drsteini@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
       mesg := message;
 
    end main;
