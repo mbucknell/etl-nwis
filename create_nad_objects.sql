@@ -818,8 +818,11 @@ create or replace package body create_nad_objects
          state_cd,
          county_cd,
          substr(station_type_name , 1, instr(station_type_name || '':'', '':'') - 1) station_type_name,
+         description_text,
          organization_id,
          organization_name,
+         nat_aqfr_name,
+         aqfr_type_name,
          hydrologic_unit_code,
          well_depth_ft_blw_land_sfc_va,
          nvl2(well_depth_ft_blw_land_sfc_va, ''ft'', null) well_depth_ft_blw_land_sfc_un,
@@ -1706,7 +1709,7 @@ create or replace package body create_nad_objects
          end loop;
       end if;
 
-      utl_mail.send@witrans(sender => 'drsteini@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
+      utl_mail.send@witrans(sender => 'bheck@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
       mesg := message;
 
    end main;
