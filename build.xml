@@ -53,4 +53,10 @@
 		/>
 	</target>
 	
+	
+	<target name="env">
+		<exec executable="env | sort" failonerror="true">
+		</exec>
+	</target>
+
 </project>
