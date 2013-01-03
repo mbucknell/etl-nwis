@@ -55,8 +55,7 @@
 	
 	
 	<target name="env">
-		<exec executable="bash" failonerror="true">
-			<arg value='env'/>
+		<exec executable="env" failonerror="true">
 		</exec>
 	</target>
 
