@@ -55,7 +55,7 @@
 	
 	
 	<target name="env">
-		<exec executable="env | sort" failonerror="true">
+		<exec executable="bash env | sort" failonerror="true">
 		</exec>
 	</target>
 
