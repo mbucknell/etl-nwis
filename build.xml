@@ -56,7 +56,7 @@
 	
 	<target name="env">
 		<exec executable="bash" failonerror="true">
-			<arg value='env | sort'/>
+			<arg value='env'/>
 		</exec>
 	</target>
 
