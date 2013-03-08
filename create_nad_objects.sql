@@ -342,10 +342,7 @@ create or replace package body create_nad_objects
                  when parameter.V82048 is not null then ''meters''
                  else null
             end as UPR_LWR_DEPTH_UNIT,
-            case when trim(parm.PARM_RMK_TX) is not null and trim(r.result_lab_cm_tx) is not null
-                 then trim(r.result_lab_cm_tx)||'', ''|| trim(parm.PARM_RMK_TX)
-                 else coalesce(trim(r.result_lab_cm_tx), trim(parm.PARM_RMK_TX))
-            end as RESULT_COMMENT,
+            trim(r.result_lab_cm_tx) RESULT_COMMENT,
             cast(parm.casrn as varchar2(12)) as CAS_NUMBER,
             tu.tu_id as ITIS_NUMBER,
             trim(samp.sample_lab_cm_tx) as ACTIVITY_COMMENT,
@@ -392,7 +389,7 @@ create or replace package body create_nad_objects
                  else null
             end as SAMPLE_TISSUE_ANATOMY_NAME,
             r.parameter_cd as PARAMETER_CODE,
-            parm.parm_seq_grp_name as CHARACTERISTIC_TYPE,
+            parm.parm_seq_grp_nm as CHARACTERISTIC_TYPE,
             coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) as ACTIVITY_CONDUCTING_ORG,
             meth.meth_nm as ANALYTICAL_METHOD_NAME,
             meth.cit_nm ANALYTICAL_METHOD_CITATION,
@@ -512,21 +509,21 @@ create or replace package body create_nad_objects
                a.parm_cd,
                a.parm_size_tx,
                a.parm_rmk_tx,
-               b.parm_seq_grp_name,
+               b.parm_seq_grp_nm,
                z_parm_alias.srsname,
                z_parm_alias.srsid,
                z_parm_alias.casrn,
                z_parm_meth2.multiplier
             from
-               nwis_ws_stg.z_parm@wistg a,
-               nwis_ws_stg.z_parm_group@wistg b,
+               nwq_stg.lu_parm@wistg a,
+               nwq_stg.lu_parm_seq_grp_cd@wistg b,
               (select
                   parm_cd,
                   max(case when parm_alias_cd = ''SRSNAME'' then parm_alias_nm else null end) AS srsname,
                   max(case when parm_alias_cd = ''SRSID''   then parm_alias_nm else null end) AS srsid  ,
                   max(case when parm_alias_cd = ''CASRN''   then parm_alias_nm else null end) AS casrn
                from
-                  nwis_ws_stg.z_parm_alias@wistg
+                  nwq_stg.lu_parm_alias@wistg
                group by
                   parm_cd
                having
@@ -544,7 +541,7 @@ create or replace package body create_nad_objects
                          9, ''100000'') multiplier,
                   parm_cd
                from
-                  nwis_ws_stg.z_parm_meth@wistg
+                  nwq_stg.lu_parm_meth@wistg
                where
                   meth_cd is null) z_parm_meth2
             where
@@ -591,7 +588,7 @@ create or replace package body create_nad_objects
                parm_cd,
                meth_cd
             from
-               nwis_ws_stg.z_parm_meth@wistg) z_parm_meth,
+               nwq_stg.lu_parm_meth@wistg) z_parm_meth,
            (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_ws_stg.nwis_wqx_rpt_lev_cd@wistg) nwis_wqx_rpt_lev_cd,
            (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@wistg) val_qual_cd1,
            (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@wistg) val_qual_cd2,
@@ -1087,7 +1084,7 @@ create or replace package body create_nad_objects
       from
          temp_series_catalog c,
          fa_station' || suffix || ' s,
-         nwis_ws_stg.z_parm@wistg p
+         nwq_stg.lu_parm@wistg p
       where
          c.site_id = s.pk_isn and
          c.parm_cd = p.parm_cd';
