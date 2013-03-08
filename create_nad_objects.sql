@@ -508,7 +508,6 @@ create or replace package body create_nad_objects
                a.parm_tm_tx,
                a.parm_cd,
                a.parm_size_tx,
-               a.parm_rmk_tx,
                b.parm_seq_grp_nm,
                z_parm_alias.srsname,
                z_parm_alias.srsid,
