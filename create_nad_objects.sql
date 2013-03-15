@@ -210,8 +210,16 @@ create or replace package body create_nad_objects
          y.ANALYTICAL_METHOD_CITATION,
          y.ACTIVITY_START_DATE_TX,
          y.ACTIVITY_START_TIME_TX,
+         y.ACT_START_TIME_ZONE_LOCAL,
+         y.ACTIVITY_START_DATE_TX_UTC,
+         y.ACTIVITY_START_TIME_TX_UTC,
+         y.ACT_START_TIME_ZONE_UTC,
          y.ACTIVITY_STOP_DATE_TX,
          y.ACTIVITY_STOP_TIME_TX,
+         y.ACT_STOP_TIME_ZONE_LOCAL,
+         y.ACTIVITY_STOP_DATE_TX_UTC,
+         y.ACTIVITY_STOP_TIME_TX_UTC,
+         y.ACT_STOP_TIME_ZONE_UTC,
          y.SAMPLE_COLLECT_EQUIP_NAME,
          y.SAMPLE_COLLECT_METHOD_NAME,
          y.SAMPLE_COLLECT_METHOD_ID,
@@ -401,12 +409,38 @@ create or replace package body create_nad_objects
             case when samp.sample_start_sg in (''m'', ''h'') then to_char(samp.sample_start_dt, ''HH24:MI:SS'')
                  else null
             end as ACTIVITY_START_TIME_TX,
+            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then lu_tz.tz_utc_offset_tm
+                 else null
+            end as ACT_START_TIME_ZONE_LOCAL,/*here dave*/
+            case when samp.sample_start_sg in (''m'', ''h'', ''D'') then to_char(samp.sample_utc_start_dt, ''YYYY-MM-DD'')
+                 when samp.sample_start_sg = ''M'' then to_char(samp.sample_utc_start_dt, ''YYYY-MM'')
+                 when samp.sample_start_sg = ''Y'' then to_char(samp.sample_utc_start_dt, ''YYYY'')
+                 else null
+            end as ACTIVITY_START_DATE_TX_UTC,
+            case when samp.sample_start_sg in (''m'', ''h'') then to_char(samp.sample_utc_start_dt, ''HH24:MI:SS'')
+                 else null
+            end as ACTIVITY_START_TIME_TX_UTC,
+            case when samp.SAMPLE_UTC_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then ''+00.00''
+                 else null
+            end as ACT_START_TIME_ZONE_UTC,
             case when samp.sample_end_sg in (''m'', ''h'', ''D'') then substr(samp.sample_end_dt, 1, 10)
                  when samp.sample_end_sg = ''M'' then substr(samp.sample_end_dt, 1, 7)
                  when samp.sample_end_sg = ''Y'' then substr(samp.sample_end_dt, 1, 4)
                  else null
             end as ACTIVITY_STOP_DATE_TX,
             case when samp.sample_end_sg in (''m'', ''h'') then substr(samp.sample_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX,
+           case when samp.sample_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then lu_tz.tz_utc_offset_tm
+                 else null
+            end ACT_STOP_TIME_ZONE_LOCAL,/*here dave*/
+            case when samp.sample_end_sg in (''m'', ''h'', ''D'') then substr(samp.sample_utc_end_dt, 1, 10)
+                 when samp.sample_end_sg = ''M'' then substr(samp.sample_utc_end_dt, 1, 7)
+                 when samp.sample_end_sg = ''Y'' then substr(samp.sample_utc_end_dt, 1, 4)
+                 else null
+            end as ACTIVITY_STOP_DATE_TX_UTC,
+            case when samp.sample_end_sg in (''m'', ''h'') then substr(samp.sample_utc_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX_UTC,
+            case when samp.sample_utc_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then ''+00:00''
+                 else null
+            end ACT_STOP_TIME_ZONE_UTC,
             case when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
                  then parameter.v84164_fxd_tx
                  else null
@@ -427,6 +461,13 @@ create or replace package body create_nad_objects
          from
             nwis_ws_star.qw_result  r,
             nwis_ws_star.qw_sample  samp,
+            (select tz_cd, tz_utc_offset_tm
+               from nwq_stg.lu_tz
+              where tz_cd is not null
+             union 
+             select tz_dst_cd, tz_dst_utc_offset_tm tz_utc_offset_tm
+               from nwq_stg.lu_tz
+              where tz_dst_cd is not null) lu_tz,
             nwis_ws_star.sitefile   site,
            (select /*+ full(p2) parallel(p2, 4) full(fxd_71999) parallel(fxd_71999, 4) full(fxd_82398) parallel(fxd_82398, 4)
                        full(fxd_84164) parallel(fxd_84164, 4)
@@ -633,7 +674,8 @@ create or replace package body create_nad_objects
             site.site_tp_cd not in (''FA-WTP'', ''FA-WWTP'', ''FA-TEP'', ''FA-HP'')  and
             site.nwis_host  not in (''fltlhsr001'', ''fltpasr001'', ''flalssr003'') and
             site.district_cd   = dist.district_cd              and
-            site.nwis_host     = dist.host_name
+            site.nwis_host     = dist.host_name and
+            samp.SAMPLE_START_TIME_DATUM_CD = lu_tz.tz_cd(+)
          ) y,
          (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from nwis_ws_stg.aqfr@wistg) aqfr
       where
