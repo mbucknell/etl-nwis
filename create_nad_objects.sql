@@ -420,7 +420,7 @@ create or replace package body create_nad_objects
             case when samp.sample_start_sg in (''m'', ''h'') then to_char(samp.sample_utc_start_dt, ''HH24:MI:SS'')
                  else null
             end as ACTIVITY_START_TIME_TX_UTC,
-            case when samp.SAMPLE_UTC_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then ''+00.00''
+            case when samp.SAMPLE_UTC_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then ''+00:00''
                  else null
             end as ACT_START_TIME_ZONE_UTC,
             case when samp.sample_end_sg in (''m'', ''h'', ''D'') then substr(samp.sample_end_dt, 1, 10)
