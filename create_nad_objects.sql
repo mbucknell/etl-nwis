@@ -78,7 +78,8 @@ create or replace package body create_nad_objects
                            'NWIS_RESULT_SUM'    || current_suffix,
                            'NWIS_RESULT_CT_SUM' || current_suffix,
                            'NWIS_RESULT_NR_SUM' || current_suffix,
-                           'NWIS_STATION_SUM'   || current_suffix)
+                           'NWIS_STATION_SUM'   || current_suffix,
+                           'PUBLIC_SRSNAMES'    || current_suffix)
          order by
             case when table_name like 'FA_STATION%' then 2 else 1 end,
             table_name;
@@ -1138,6 +1139,48 @@ create or replace package body create_nad_objects
          append_email_text(message);
    end create_series_catalog;
 
+   procedure create_public_srsnames
+   is
+   begin
+
+      append_email_text('creating public_srsnames...');
+
+      execute immediate
+     'create table public_srsnames' || suffix || ' compress pctfree 0 nologging as
+      select lu_parm.parm_cd,
+             lu_parm.parm_ds description,
+             lu_parm_alias.parm_alias_nm characteristicname,
+             lu_parm.parm_unt_tx measureunitcode,
+             lu_parm.parm_frac_tx resultsamplefraction,
+             lu_parm.parm_temp_tx resulttempuraturebasis,
+             lu_parm.parm_stat_tx resultstatisticalbasis,
+             lu_parm.parm_tm_tx resulttimebasis,
+             lu_parm.parm_wt_tx resultweightbasis,
+             lu_parm.parm_size_tx resultparticlesizebasis,
+             case
+               when lu_parm.parm_rev_dt > lu_parm_alias.parm_alias_rev_dt
+                 then lu_parm.parm_rev_dt
+               else lu_parm_alias.parm_alias_rev_dt
+             end last_rev_dt,
+             max(case
+                   when lu_parm.parm_rev_dt > lu_parm_alias.parm_alias_rev_dt
+                     then lu_parm.parm_rev_dt
+                   else lu_parm_alias.parm_alias_rev_dt
+                 end) over () max_last_rev_dt
+        from nwq_stg.lu_parm@wistg
+             join nwq_stg.lu_parm_alias@wistg
+               on lu_parm.parm_cd = lu_parm_alias.parm_cd and
+                  ''SRSNAME'' = lu_parm_alias.parm_alias_cd
+       where parm_public_fg = ''Y''
+         order by 1';
+
+      cleanup(9) := 'drop table public_srsnames' || suffix;
+
+   exception
+      when others then
+         message := 'FAIL to create public_srsnames: ' || SQLERRM;
+         append_email_text(message);
+   end create_series_catalog;
 
    procedure create_index
    is
@@ -1460,6 +1503,7 @@ create or replace package body create_nad_objects
       execute immediate 'grant select on nwis_result_nr_sum'  || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on nwis_lctn_loc'       || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on nwis_di_org'         || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on public_srsnames'     || suffix || ' to nwis_ws_user';
 
       append_email_text('analyze fa_station...');  /* takes about 1.5 minutes*/
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_STATION'        || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
@@ -1481,6 +1525,8 @@ create or replace package body create_nad_objects
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_LCTN_LOC'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
       append_email_text('analyze nwis_di_org...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_DI_ORG'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze public_srsnames...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'PUBLIC_SRSNAMES'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
    exception
       when others then
@@ -1627,6 +1673,7 @@ create or replace package body create_nad_objects
       execute immediate 'create or replace synonym nwis_result_sum for nwis_result_sum'        || suffix;
       execute immediate 'create or replace synonym nwis_result_ct_sum for nwis_result_ct_sum'  || suffix;
       execute immediate 'create or replace synonym nwis_result_nr_sum for nwis_result_nr_sum'  || suffix;
+      execute immediate 'create or replace synonym public_srsnames for public_srsnames'        || suffix;
 
       execute immediate 'create or replace synonym nwis_lctn_loc_new for nwis_lctn_loc'        || suffix;
       execute immediate 'create or replace synonym nwis_lctn_loc_old for nwis_lctn_loc'        || suffix_less_one;
@@ -1652,7 +1699,7 @@ create or replace package body create_nad_objects
             translate(table_name, '0123456789', '0000000000') in
               ('FA_REGULAR_RESULT_00000', 'FA_STATION_00000', 'SERIES_CATALOG_00000', 'QWPORTAL_SUMMARY_00000',
                 'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000',
-                'NWIS_LCTN_LOC_00000', 'NWIS_DI_ORG_00000') and
+                'NWIS_LCTN_LOC_00000', 'NWIS_DI_ORG_00000', 'PUBLIC_SRSNAMES_00000') and
             substr(table_name, -5) <= to_char(to_number(substr(current_suffix, 2) - 2), 'fm00000')
          order by
             case when table_name like 'FA_STATION%' then 2 else 1 end, table_name;
@@ -1666,7 +1713,7 @@ create or replace package body create_nad_objects
             translate(table_name, '0123456789', '0000000000') in
               ('FA_REGULAR_RESULT_00000', 'FA_STATION_00000', 'SERIES_CATALOG_00000', 'QWPORTAL_SUMMARY_00000',
                 'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000',
-                'NWIS_LCTN_LOC_00000') and
+                'NWIS_LCTN_LOC_00000', 'PUBLIC_SRSNAMES_00000') and
             substr(table_name, -5) <= to_char(to_number(substr(current_suffix, 2) - 1), 'fm00000')
          order by
             case when table_name like 'FA_STATION%' then 2 else 1 end, table_name;
