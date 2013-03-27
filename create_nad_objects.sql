@@ -1180,7 +1180,7 @@ create or replace package body create_nad_objects
       when others then
          message := 'FAIL to create public_srsnames: ' || SQLERRM;
          append_email_text(message);
-   end create_series_catalog;
+   end create_public_srsnames;
 
    procedure create_index
    is
@@ -1769,6 +1769,7 @@ create or replace package body create_nad_objects
       if message is null then create_station;        end if;
       if message is null then create_series_catalog; end if;
       if message is null then create_summaries;      end if;
+      if message is null then create_public_srsnames end if;
       if message is null then create_index;          end if;
       if message is null then validate;              end if;
       if message is null then install;               end if;
