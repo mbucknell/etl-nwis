@@ -1765,15 +1765,15 @@ create or replace package body create_nad_objects
 
       append_email_text('started nad table transformation.');
       determine_suffix;
-      if message is null then create_regular_result; end if;
-      if message is null then create_station;        end if;
-      if message is null then create_series_catalog; end if;
-      if message is null then create_summaries;      end if;
-      if message is null then create_public_srsnames end if;
-      if message is null then create_index;          end if;
-      if message is null then validate;              end if;
-      if message is null then install;               end if;
-      if message is null then drop_old_stuff;        end if;
+      if message is null then create_regular_result;  end if;
+      if message is null then create_station;         end if;
+      if message is null then create_series_catalog;  end if;
+      if message is null then create_summaries;       end if;
+      if message is null then create_public_srsnames; end if;
+      if message is null then create_index;           end if;
+      if message is null then validate;               end if;
+      if message is null then install;                end if;
+      if message is null then drop_old_stuff;         end if;
 
       if message is null then
          append_email_text('completed. (success)');
