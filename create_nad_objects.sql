@@ -1152,7 +1152,7 @@ create or replace package body create_nad_objects
              lu_parm_alias.parm_alias_nm characteristicname,
              lu_parm.parm_unt_tx measureunitcode,
              lu_parm.parm_frac_tx resultsamplefraction,
-             lu_parm.parm_temp_tx resulttempuraturebasis,
+             lu_parm.parm_temp_tx resulttemperaturebasis,
              lu_parm.parm_stat_tx resultstatisticalbasis,
              lu_parm.parm_tm_tx resulttimebasis,
              lu_parm.parm_wt_tx resultweightbasis,
