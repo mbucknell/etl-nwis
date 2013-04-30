@@ -3,13 +3,23 @@
 
 	<target name="dev" depends="buildPackage, runPackage"/>
 
+	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage"/>
+
 	<target name="buildPackage">
 		<echo>Rebuiling the etl database pacakge and body</echo>
 		<exec executable="sqlplus" failonerror="true">
 			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
 			<arg value="@${basedir}/create_nad_objects.sql"/>
-			</exec>
-		</target>
+		</exec>
+	</target>
+		
+	<target name="compilePackageEmptyCiDB">
+		<echo>Rebuiling the etl database pacakge and body with the empty_db flag set</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
+			<arg value="@${basedir}/emptyCiDB.sql"/>
+		</exec>
+	</target>
 		
 	<target name="runPackage">
 		<echo>Running the main ETL Package</echo>

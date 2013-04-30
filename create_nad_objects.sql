@@ -79,7 +79,9 @@ create or replace package body create_nad_objects
                            'NWIS_RESULT_CT_SUM' || current_suffix,
                            'NWIS_RESULT_NR_SUM' || current_suffix,
                            'NWIS_STATION_SUM'   || current_suffix,
-                           'PUBLIC_SRSNAMES'    || current_suffix)
+                           'PUBLIC_SRSNAMES'    || current_suffix,
+                           'NWIS_LCTN_LOC'		|| current_suffix,
+                           'NWIS_DI_ORG'		|| current_suffix)
          order by
             case when table_name like 'FA_STATION%' then 2 else 1 end,
             table_name;
@@ -99,7 +101,7 @@ create or replace package body create_nad_objects
       loop
          fetch drop_remnants into drop_name;
          exit when drop_remnants%NOTFOUND;
-         stmt := 'drop table ' || drop_name;
+         stmt := 'drop table ' || drop_name || ' cascade constraints purge';
          append_email_text('CLEANUP remnants: ' || stmt);
          execute immediate stmt;
       end loop;
@@ -463,11 +465,11 @@ create or replace package body create_nad_objects
             nwis_ws_star.qw_result  r,
             nwis_ws_star.qw_sample  samp,
             (select tz_cd, tz_utc_offset_tm
-               from nwq_stg.lu_tz
+               from nwq_stg.lu_tz@wistg
               where tz_cd is not null
              union 
              select tz_dst_cd, tz_dst_utc_offset_tm tz_utc_offset_tm
-               from nwq_stg.lu_tz
+               from nwq_stg.lu_tz@wistg
               where tz_dst_cd is not null) lu_tz,
             nwis_ws_star.sitefile   site,
            (select /*+ full(p2) parallel(p2, 4) full(fxd_71999) parallel(fxd_71999, 4) full(fxd_82398) parallel(fxd_82398, 4)
@@ -683,7 +685,7 @@ create or replace package body create_nad_objects
          y.aqfr_cd  = aqfr.aqfr_cd (+) and
          y.state_cd = aqfr.state_cd(+)' ;
 
-        cleanup(1) := 'drop table FA_REGULAR_RESULT' || suffix;
+        cleanup(1) := 'drop table FA_REGULAR_RESULT' || suffix || ' cascade constraints purge';
      exception
       when others then
          message := 'FAIL to create FA_REGULAR_RESULT: ' || SQLERRM;
@@ -832,7 +834,7 @@ create or replace package body create_nad_objects
        sitefile.state_cd     = aqfr.state_cd(+) and
        sitefile.state_cd     = fips.state_cd(+)';
 
-      cleanup(2) := 'drop table FA_STATION' || suffix;
+      cleanup(2) := 'drop table FA_STATION' || suffix || ' cascade constraints purge';
    exception
       when others then
          message := 'FAIL to create FA_STATION: ' || SQLERRM;
@@ -876,7 +878,7 @@ create or replace package body create_nad_objects
          county_cd,
          station_type_name ';
 
-      cleanup(3) := 'drop table NWIS_STATION_SUM' || suffix;
+      cleanup(3) := 'drop table NWIS_STATION_SUM' || suffix || ' cascade constraints purge';
 
       append_email_text('creating nwis_result_sum...');
 
@@ -947,7 +949,7 @@ create or replace package body create_nad_objects
             characteristic_name,
             parameter_code ';
 
-      cleanup(4) := 'drop table NWIS_RESULT_SUM' || suffix;
+      cleanup(4) := 'drop table NWIS_RESULT_SUM' || suffix || ' cascade constraints purge';
 
       append_email_text('creating nwis_result_ct_sum...');
 
@@ -1010,7 +1012,7 @@ create or replace package body create_nad_objects
          characteristic_name,
          parameter_code ';
 
-      cleanup(5) := 'drop table NWIS_RESULT_CT_SUM' || suffix;
+      cleanup(5) := 'drop table NWIS_RESULT_CT_SUM' || suffix || ' cascade constraints purge';
 
       append_email_text('creating nwis_result_nr_sum...');
 
@@ -1069,7 +1071,7 @@ create or replace package body create_nad_objects
          parameter_code,
          activity_start_date_time ';
 
-      cleanup(6) := 'drop table NWIS_RESULT_NR_SUM' || suffix;
+      cleanup(6) := 'drop table NWIS_RESULT_NR_SUM' || suffix || ' cascade constraints purge';
 
       append_email_text('creating nwis_lctn_loc...');
 
@@ -1082,7 +1084,7 @@ create or replace package body create_nad_objects
              organization_name
         from fa_station' || suffix;
 
-      cleanup(7) := 'drop table nwis_lctn_loc' || suffix;
+      cleanup(7) := 'drop table nwis_lctn_loc' || suffix || ' cascade constraints purge';
       
       append_email_text('creating nwis_di_org...');
 
@@ -1093,7 +1095,7 @@ create or replace package body create_nad_objects
              ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name
         from nwis_ws_stg.nwis_district_cds_by_host@wistg';
 
-      cleanup(8) := 'drop table nwis_di_org' || suffix;
+      cleanup(8) := 'drop table nwis_di_org' || suffix || ' cascade constraints purge';
 
    exception
       when others then
@@ -1131,7 +1133,7 @@ create or replace package body create_nad_objects
          c.site_id = s.pk_isn and
          c.parm_cd = p.parm_cd';
 
-      cleanup(9) := 'drop table SERIES_CATALOG' || suffix;
+      cleanup(9) := 'drop table SERIES_CATALOG' || suffix || ' cascade constraints purge';
 
    exception
       when others then
@@ -1174,7 +1176,7 @@ create or replace package body create_nad_objects
        where parm_public_fg = ''Y''
          order by 1';
 
-      cleanup(9) := 'drop table public_srsnames' || suffix;
+      cleanup(9) := 'drop table public_srsnames' || suffix || ' cascade constraints purge';
 
    exception
       when others then
@@ -1249,7 +1251,7 @@ create or replace package body create_nad_objects
                from
                   storetmodern.storet_sum@widw';
 
-      append_email_text(stmt);
+      append_email_text('creating qwportal_summary...');
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' cache noparallel';
@@ -1543,7 +1545,7 @@ create or replace package body create_nad_objects
       type cursor_type is ref cursor;
       c            cursor_type;
       query        varchar2(4000);
-      pass_fail    varchar2(10);
+      pass_fail    varchar2(15);
       situation    varchar2(200);
    begin
 
@@ -1559,6 +1561,9 @@ create or replace package body create_nad_objects
          pass_fail := 'PASS';
       else
          pass_fail := 'FAIL';
+      	 $IF $$empty_db $THEN
+      	    pass_fail := 'PASS empty_db';
+      	 $END
       end if;
       situation := pass_fail || ': table comparison for fa_regular_result: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
       append_email_text(situation);
@@ -1576,6 +1581,9 @@ create or replace package body create_nad_objects
          pass_fail := 'PASS';
       else
          pass_fail := 'FAIL';
+      	 $IF $$empty_db $THEN
+      	    pass_fail := 'PASS empty_db';
+      	 $END
       end if;
       situation := pass_fail || ': table comparison for fa_station: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
       append_email_text(situation);
@@ -1593,6 +1601,9 @@ create or replace package body create_nad_objects
          pass_fail := 'PASS';
       else
          pass_fail := 'FAIL';
+      	 $IF $$empty_db $THEN
+      	    pass_fail := 'PASS empty_db';
+      	 $END
       end if;
       situation := pass_fail || ': table comparison for series_catalog: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
       append_email_text(situation);
@@ -1610,6 +1621,9 @@ create or replace package body create_nad_objects
          pass_fail := 'PASS';
       else
          pass_fail := 'FAIL';
+      	 $IF $$empty_db $THEN
+      	    pass_fail := 'PASS empty_db';
+      	 $END
       end if;
       situation := pass_fail || ': table comparison for qwportal_summary: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
       append_email_text(situation);
@@ -1623,7 +1637,7 @@ create or replace package body create_nad_objects
       fetch c into index_count;
       close c;
 
-      if index_count < 13 then  /* there are exactly 13 as of 08/01/2011 */
+      if index_count < 14 then  /* there are exactly 14 as of 29APR2013 */
          pass_fail := 'FAIL';
       else
          pass_fail := 'PASS';
@@ -1794,8 +1808,13 @@ create or replace package body create_nad_objects
             end if;
          end loop;
       end if;
-
-      utl_mail.send@witrans(sender => 'bheck@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
+      
+      $IF $$ci_db $THEN
+         dbms_output.put_line('Not emailing from ci database.');
+         dbms_output.put_line(email_text);
+	  $ELSE
+         utl_mail.send@witrans(sender => 'bheck@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
+      $END
       mesg := message;
 
    end main;
