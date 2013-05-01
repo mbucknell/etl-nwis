@@ -43,6 +43,15 @@ create or replace package body create_nad_objects
    cleanup cleanuptable;
 
    email_text varchar2(32000);
+   
+   table_list varchar2(4000 char) := 'translate(table_name, ''0123456789'', ''0000000000'') in ' ||
+                                     '(''FA_REGULAR_RESULT_00000'',''FA_STATION_00000'',''SERIES_CATALOG_00000'',''QWPORTAL_SUMMARY_00000'',' ||
+                                      '''NWIS_STATION_SUM_00000'',''NWIS_RESULT_SUM_00000'',''NWIS_RESULT_CT_SUM_00000'',''NWIS_RESULT_NR_SUM_00000'',' ||
+                                      '''NWIS_LCTN_LOC_00000'',''PUBLIC_SRSNAMES_00000'',''NWIS_DI_ORG_00000'',''CHARACTERISTICNAME_00000'',' ||
+                                      '''CHARACTERISTICTYPE_00000'',''COUNTRY_00000'',''COUNTY_00000'',''ORGANIZATION_00000'',''SAMPLEMEDIA_00000'',' ||
+                                      '''SITETYPE_00000'',''STATE_00000'')';
+                                      
+   type cursor_type is ref cursor;
 
    procedure append_email_text(addition in varchar2)
    is
@@ -64,27 +73,9 @@ create or replace package body create_nad_objects
 
    procedure determine_suffix
    is
-
-      cursor drop_remnants(current_suffix in varchar2) is
-         select
-            table_name
-         from
-            user_tables
-         where
-            table_name in ('FA_REGULAR_RESULT'  || current_suffix,
-                           'FA_STATION'         || current_suffix,
-                           'SERIES_CATALOG'     || current_suffix,
-                           'QWPORTAL_SUMMARY'   || current_suffix,
-                           'NWIS_RESULT_SUM'    || current_suffix,
-                           'NWIS_RESULT_CT_SUM' || current_suffix,
-                           'NWIS_RESULT_NR_SUM' || current_suffix,
-                           'NWIS_STATION_SUM'   || current_suffix,
-                           'PUBLIC_SRSNAMES'    || current_suffix,
-                           'NWIS_LCTN_LOC'		|| current_suffix,
-                           'NWIS_DI_ORG'		|| current_suffix)
-         order by
-            case when table_name like 'FA_STATION%' then 2 else 1 end,
-            table_name;
+      drop_remnants cursor_type;
+      query         varchar2(4000) := 'select table_name from user_tables where ' || table_list ||
+                                      ' and substr(table_name, -5) = substr(:current_suffix, 2) order by case when table_name like ''FA_STATION%'' then 2 else 1 end, table_name';
 
       drop_name varchar2(30);
       stmt      varchar2(80);
@@ -97,7 +88,7 @@ create or replace package body create_nad_objects
 
       append_email_text('using ''' || suffix || ''' for suffix.');
 
-      open drop_remnants(suffix);
+      open drop_remnants for query using suffix;
       loop
          fetch drop_remnants into drop_name;
          exit when drop_remnants%NOTFOUND;
@@ -1176,7 +1167,7 @@ create or replace package body create_nad_objects
        where parm_public_fg = ''Y''
          order by 1';
 
-      cleanup(9) := 'drop table public_srsnames' || suffix || ' cascade constraints purge';
+      cleanup(10) := 'drop table public_srsnames' || suffix || ' cascade constraints purge';
 
    exception
       when others then
@@ -1184,6 +1175,120 @@ create or replace package body create_nad_objects
          append_email_text(message);
    end create_public_srsnames;
 
+   procedure create_code_tables
+   is
+   begin
+
+      append_email_text('creating characteristicname...');
+      execute immediate
+      'create table characteristicname' || suffix || ' compress pctfree 0 nologging as
+      select code_value,
+             cast(null as varchar2(4000 char)) descr,
+             rownum sort_order
+        from (select distinct characteristic_name code_value
+                from fa_regular_result' || suffix || '
+                  order by 1)';
+      cleanup(11) := 'drop table characteristicname' || suffix || ' cascade constraints purge';
+
+      append_email_text('creating characteristictype...');
+      execute immediate
+      'create table characteristictype' || suffix || ' compress pctfree 0 nologging as
+      select code_value,
+             cast(null as varchar2(4000 char)) descr,
+             rownum sort_order
+        from (select distinct characteristic_type code_value
+                from fa_regular_result' || suffix || '
+                  order by 1)';
+      cleanup(12) := 'drop table characteristictype' || suffix || ' cascade constraints purge';
+
+      append_email_text('creating country...');
+      execute immediate
+      'create table country' || suffix || ' compress pctfree 0 nologging as
+      select code_value,
+             description,
+             rownum sort_order
+        from (select distinct country_cd code_value,
+                     country_name description
+                from fa_station' || suffix || '
+                  order by country_name desc)';
+      cleanup(13) := 'drop table country' || suffix || ' cascade constraints purge';
+
+      append_email_text('creating county...');
+      execute immediate
+      'create table county' || suffix || ' compress pctfree 0 nologging as
+      select code_value,
+             description,
+             country_cd,
+             state_cd,
+             rownum sort_order
+        from (select distinct country_cd||'':''||state_cd|| '':''||county_cd code_value,
+                     country_cd||'', ''||state_name||'', ''||county_name description,
+                     country_cd,
+                     state_cd,
+                     county_cd
+                from fa_station' || suffix || '
+                  order by country_cd desc,
+                           state_cd,
+                           county_cd)';
+     cleanup(14) := 'drop table county' || suffix || ' cascade constraints purge';
+
+      append_email_text('creating organization...');
+      execute immediate
+      'create table organization' || suffix || ' compress pctfree 0 nologging as
+      select code_value,
+             cast(null as varchar2(4000 char)) descr,
+             rownum sort_order
+        from (select distinct organization_id code_value
+                from fa_station' || suffix || '
+                  order by 1)';
+      cleanup(15) := 'drop table organization' || suffix || ' cascade constraints purge';
+
+      append_email_text('creating samplemedia...');
+      execute immediate
+      'create table samplemedia' || suffix || ' compress pctfree 0 nologging as
+       select code_value,
+              cast(null as varchar2(4000 char)) descr,
+              rownum sort_order
+         from (select distinct activity_media_name code_value
+                 from fa_regular_result' || suffix || '
+                   order by 1)';
+      cleanup(16) := 'drop table samplemedia' || suffix || ' cascade constraints purge';
+
+      append_email_text('creating sitetype...');
+      execute immediate
+      'create table sitetype' || suffix || ' compress pctfree 0 nologging as
+       select code_value,
+              cast(null as varchar2(4000 char)) descr,
+              rownum sort_order
+         from (select distinct substr(station_type_name||'':'',1,instr(station_type_name||'':'','':'')-1) code_value
+                 from fa_station' || suffix || '
+                    order by 1)';
+      cleanup(17) := 'drop table sitetype' || suffix || ' cascade constraints purge';
+
+      append_email_text('creating state...');
+      execute immediate
+      'create table state' || suffix || ' compress pctfree 0 nologging as
+      select code_value,
+             description_with_country,
+             description_with_out_country,
+             country_cd,
+             rownum sort_order
+        from (select distinct country_cd||'':''||state_cd code_value,
+                     country_cd||'', ''||state_name description_with_country,
+                     state_name description_with_out_country,
+                     country_cd,
+                     state_cd
+                from fa_station' || suffix || '
+                  order by country_cd desc,
+                           state_cd)';
+      cleanup(18) := 'drop table state' || suffix || ' cascade constraints purge';
+
+      exception
+      when others then
+         message := 'FAIL to create code_tables: ' || SQLERRM;
+         append_email_text(message);
+   end create_code_tables;
+   
    procedure create_index
    is
       stmt            varchar2(32000);
@@ -1250,6 +1355,8 @@ create or replace package body create_nad_objects
                   results_all_time
                from
                   storetmodern.storet_sum@widw';
+
+      cleanup(19) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
 
       append_email_text('creating qwportal_summary...');
       execute immediate stmt;
@@ -1506,6 +1613,14 @@ create or replace package body create_nad_objects
       execute immediate 'grant select on nwis_lctn_loc'       || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on nwis_di_org'         || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on public_srsnames'     || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on characteristicname'  || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on characteristictype'  || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on country'             || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on county'              || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on organization'        || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on samplemedia'         || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on sitetype'            || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on state'               || suffix || ' to nwis_ws_user';
 
       append_email_text('analyze fa_station...');  /* takes about 1.5 minutes*/
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_STATION'        || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
@@ -1529,6 +1644,23 @@ create or replace package body create_nad_objects
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_DI_ORG'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
       append_email_text('analyze public_srsnames...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'PUBLIC_SRSNAMES'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+
+      append_email_text('analyze characteristicname...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'CHARACTERISTICNAME'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze characteristictype...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'CHARACTERISTICTYPE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze country...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'COUNTRY'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze county...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'COUNTY'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze organization...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'ORGANIZATION'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze samplemedia...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SAMPLEMEDIA'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze sitetype...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SITETYPE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+      append_email_text('analyze state...');  /* takes about ?? minutes */
+      dbms_stats.gather_table_stats('NWIS_WS_STAR', 'STATE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
    exception
       when others then
@@ -1631,9 +1763,8 @@ create or replace package body create_nad_objects
          message := situation;
       end if;
 
-      query := 'select count(*) from user_indexes where table_name in (''FA_STATION' || suffix || ''', ''FA_REGULAR_RESULT' ||
-                suffix || ''', ''SERIES_CATALOG' || suffix || ''', ''QWPORTAL_SUMMARY' || suffix || ''')';
-      open  c for query;
+      query := 'select count(*) from user_indexes where ' || table_list || ' and substr(table_name, -5) = substr(:current_suffix, 2)';
+      open  c for query using suffix;
       fetch c into index_count;
       close c;
 
@@ -1648,13 +1779,13 @@ create or replace package body create_nad_objects
          message := situation;
       end if;
 
-      query := 'select count(*) from user_tab_privs where grantee = ''NWIS_WS_USER'' and table_name in (''FA_STATION' ||
-                suffix || ''', ''FA_REGULAR_RESULT' || suffix || ''', ''SERIES_CATALOG' || suffix || ''', ''QWPORTAL_SUMMARY' || suffix || ''')';
-      open  c for query;
+      query := 'select count(*) from user_tab_privs where grantee = ''NWIS_WS_USER'' and ' || table_list ||
+               ' and substr(table_name, -5) = substr(:current_suffix, 2)';
+      open  c for query using suffix;
       fetch c into grant_count;
       close c;
 
-      if grant_count < 4 then
+      if grant_count < 19 then
          pass_fail := 'FAIL';
       else
          pass_fail := 'PASS';
@@ -1704,33 +1835,15 @@ create or replace package body create_nad_objects
 
    procedure drop_old_stuff
    is
-      cursor to_drop(current_suffix in varchar2) is
-         select
-            table_name
-         from
-            user_tables
-         where
-            translate(table_name, '0123456789', '0000000000') in
-              ('FA_REGULAR_RESULT_00000', 'FA_STATION_00000', 'SERIES_CATALOG_00000', 'QWPORTAL_SUMMARY_00000',
-                'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000',
-                'NWIS_LCTN_LOC_00000', 'NWIS_DI_ORG_00000', 'PUBLIC_SRSNAMES_00000') and
-            substr(table_name, -5) <= to_char(to_number(substr(current_suffix, 2) - 2), 'fm00000')
-         order by
-            case when table_name like 'FA_STATION%' then 2 else 1 end, table_name;
+      to_drop cursor_type;
+      drop_query varchar2(4000) := 'select table_name from user_tables where ' || table_list ||
+            ' and substr(table_name, -5) <= to_char(to_number(substr(:current_suffix, 2) - 2), ''fm00000'')' ||
+               ' order by case when table_name like ''FA_STATION%'' then 2 else 1 end, table_name';
 
-      cursor to_nocache(current_suffix in varchar2) is
-         select
-            table_name
-         from
-            user_tables
-         where
-            translate(table_name, '0123456789', '0000000000') in
-              ('FA_REGULAR_RESULT_00000', 'FA_STATION_00000', 'SERIES_CATALOG_00000', 'QWPORTAL_SUMMARY_00000',
-                'NWIS_STATION_SUM_00000', 'NWIS_RESULT_SUM_00000', 'NWIS_RESULT_CT_SUM_00000', 'NWIS_RESULT_NR_SUM_00000',
-                'NWIS_LCTN_LOC_00000', 'PUBLIC_SRSNAMES_00000') and
-            substr(table_name, -5) <= to_char(to_number(substr(current_suffix, 2) - 1), 'fm00000')
-         order by
-            case when table_name like 'FA_STATION%' then 2 else 1 end, table_name;
+      to_nocache cursor_type;
+      nocache_query varchar2(4000) := 'select table_name from user_tables where ' || table_list ||
+            ' and substr(table_name, -5) <= to_char(to_number(substr(:current_suffix, 2) - 1), ''fm00000'')' ||
+               ' order by case when table_name like ''FA_STATION%'' then 2 else 1 end, table_name';
 
       drop_name varchar2(30);
       nocache_name varchar2(30);
@@ -1739,7 +1852,7 @@ create or replace package body create_nad_objects
 
       append_email_text('drop_old_stuff...');
 
-      open to_drop(suffix);
+      open to_drop for drop_query using suffix;
       loop
          fetch to_drop into drop_name;
          exit when to_drop%NOTFOUND;
@@ -1749,7 +1862,7 @@ create or replace package body create_nad_objects
       end loop;
       close to_drop;
 
-      open to_nocache(suffix);
+      open to_nocache for nocache_query using suffix;
       loop
          fetch to_nocache into nocache_name;
          exit when to_nocache%NOTFOUND;
@@ -1761,7 +1874,8 @@ create or replace package body create_nad_objects
 
    exception
       when others then
-         append_email_text('tried to drop ' || drop_name || ' : ' || SQLERRM);
+         message := 'tried to drop ' || drop_name || ' : ' || SQLERRM;
+         append_email_text(message);
 
    end drop_old_stuff;
 
@@ -1784,29 +1898,40 @@ create or replace package body create_nad_objects
       if message is null then create_series_catalog;  end if;
       if message is null then create_summaries;       end if;
       if message is null then create_public_srsnames; end if;
+      if message is null then create_code_tables;     end if;
       if message is null then create_index;           end if;
       if message is null then validate;               end if;
-      if message is null then install;                end if;
-      if message is null then drop_old_stuff;         end if;
-
       if message is null then
-         append_email_text('completed. (success)');
-         message := 'OK';
-         email_subject := 'nad load successful';
-         email_text := email_subject || lf || lf || email_text || lf || 'have a nice day!' || lf || '-barry''s program';
-         email_notify := success_notify;
+         install;
       else
          append_email_text('completed. (failed)');
          dbms_output.put_line('errors occurred.');
          email_subject := 'nad load FAILED';
          email_text := email_subject || lf || lf || email_text;
          email_notify := failure_notify;
-        for k in 1 .. 20 loop
+         for k in 1 .. 20 loop
             if cleanup(k) is not null then
                append_email_text('CLEANUP: ' || cleanup(k));
                execute immediate cleanup(k);
             end if;
          end loop;
+      end if;
+
+      if message is null then
+         drop_old_stuff;
+         if message is null then
+            append_email_text('completed. (success)');
+            message := 'OK';
+            email_subject := 'nad load successful';
+            email_text := email_subject || lf || lf || email_text || lf || 'have a nice day!' || lf || '-barry''s program';
+            email_notify := success_notify;
+         else
+            append_email_text('completed. (failed)');
+            dbms_output.put_line('errors occurred.');
+            email_subject := 'nad load FAILED in drop_old_stuff';
+            email_text := email_subject || lf || lf || email_text;
+            email_notify := failure_notify;
+         end if;
       end if;
       
       $IF $$ci_db $THEN
