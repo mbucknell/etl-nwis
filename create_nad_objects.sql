@@ -1183,7 +1183,7 @@ create or replace package body create_nad_objects
       execute immediate
       'create table characteristicname' || suffix || ' compress pctfree 0 nologging as
       select code_value,
-             cast(null as varchar2(4000 char)) descr,
+             cast(null as varchar2(4000 char)) description,
              rownum sort_order
         from (select distinct characteristic_name code_value
                 from fa_regular_result' || suffix || '
@@ -1194,7 +1194,7 @@ create or replace package body create_nad_objects
       execute immediate
       'create table characteristictype' || suffix || ' compress pctfree 0 nologging as
       select code_value,
-             cast(null as varchar2(4000 char)) descr,
+             cast(null as varchar2(4000 char)) description,
              rownum sort_order
         from (select distinct characteristic_type code_value
                 from fa_regular_result' || suffix || '
@@ -1236,7 +1236,7 @@ create or replace package body create_nad_objects
       execute immediate
       'create table organization' || suffix || ' compress pctfree 0 nologging as
       select code_value,
-             cast(null as varchar2(4000 char)) descr,
+             cast(null as varchar2(4000 char)) description,
              rownum sort_order
         from (select distinct organization_id code_value
                 from fa_station' || suffix || '
@@ -1247,7 +1247,7 @@ create or replace package body create_nad_objects
       execute immediate
       'create table samplemedia' || suffix || ' compress pctfree 0 nologging as
        select code_value,
-              cast(null as varchar2(4000 char)) descr,
+              cast(null as varchar2(4000 char)) description,
               rownum sort_order
          from (select distinct activity_media_name code_value
                  from fa_regular_result' || suffix || '
@@ -1258,7 +1258,7 @@ create or replace package body create_nad_objects
       execute immediate
       'create table sitetype' || suffix || ' compress pctfree 0 nologging as
        select code_value,
-              cast(null as varchar2(4000 char)) descr,
+              cast(null as varchar2(4000 char)) description,
               rownum sort_order
          from (select distinct substr(station_type_name||'':'',1,instr(station_type_name||'':'','':'')-1) code_value
                  from fa_station' || suffix || '
@@ -1819,6 +1819,14 @@ create or replace package body create_nad_objects
       execute immediate 'create or replace synonym nwis_result_ct_sum for nwis_result_ct_sum'  || suffix;
       execute immediate 'create or replace synonym nwis_result_nr_sum for nwis_result_nr_sum'  || suffix;
       execute immediate 'create or replace synonym public_srsnames for public_srsnames'        || suffix;
+      execute immediate 'create or replace synonym characteristicname for characteristicname'  || suffix;
+      execute immediate 'create or replace synonym characteristictype for characteristictype'  || suffix;
+      execute immediate 'create or replace synonym country for country'                        || suffix;
+      execute immediate 'create or replace synonym county for county'                          || suffix;
+      execute immediate 'create or replace synonym organization for organization'              || suffix;
+      execute immediate 'create or replace synonym samplemedia for samplemedia'                || suffix;
+      execute immediate 'create or replace synonym sitetype for sitetype'                      || suffix;
+      execute immediate 'create or replace synonym state for state'                            || suffix;
 
       execute immediate 'create or replace synonym nwis_lctn_loc_new for nwis_lctn_loc'        || suffix;
       execute immediate 'create or replace synonym nwis_lctn_loc_old for nwis_lctn_loc'        || suffix_less_one;
