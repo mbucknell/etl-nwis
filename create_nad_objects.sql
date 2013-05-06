@@ -1117,7 +1117,7 @@ create or replace package body create_nad_objects
          c.count_nu,
          c.series_catalog_md
       from
-         temp_series_catalog@wiws.er.usgs.gov c,
+         temp_series_catalog c,
          fa_station' || suffix || ' s,
          nwq_stg.lu_parm@wistg p
       where

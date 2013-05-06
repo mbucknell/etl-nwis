@@ -1,18 +1,10 @@
 <project name="QwStoretEtl" default="default">
 	<target name="default" depends="buildPackage, scpScript, dos2unix, scpScriptB, qwNwisEtl"/>
 
-	<target name="dev" depends="copyfromWs, buildPackage, runPackage"/>
+	<target name="dev" depends="buildPackage, runPackage"/>
 
-	<target name="ci" depends="copyfromWs, buildPackage, compilePackageEmptyCiDB, runPackage"/>
+	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage"/>
 
-	<target name="copyfromWs">
-		<echo>Rebuiling the etl database pacakge and body</echo>
-		<exec executable="sqlplus" failonerror="true">
-			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
-			<arg value="@${basedir}/copy_from_ws.sql"/>
-		</exec>
-	</target>
-		
 	<target name="buildPackage">
 		<echo>Rebuiling the etl database pacakge and body</echo>
 		<exec executable="sqlplus" failonerror="true">
@@ -69,6 +61,12 @@
 			password="${nwis_user_password}"
 			command="bash -e spool_out_all.sh "
 		/>
+	</target>
+	
+	
+	<target name="env">
+		<exec executable="env" failonerror="true">
+		</exec>
 	</target>
 
 </project>
