@@ -62,11 +62,5 @@
 			command="bash -e spool_out_all.sh "
 		/>
 	</target>
-	
-	
-	<target name="env">
-		<exec executable="env" failonerror="true">
-		</exec>
-	</target>
 
 </project>
