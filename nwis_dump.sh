@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # cd /var/lib/mysql/copy_sitefile
-cd /opt/tomcat/wqp/nwis
+cd copy_sitefile
 
 export date_suffix=`date +%Y%m%d_%H%M`
 
