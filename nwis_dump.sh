@@ -12,12 +12,12 @@ export DIR=/opt/tomcat/wqp/nwis
 tries=0
 while [ $tries -lt 10 ] ; do
 
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < capture_counts.sql | grep -v "count(" > capture1.txt
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < QW_RESULT.sql      | sed 's/\\\\/\//' > $DIR/QW_RESULT.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < QW_SAMPLE.sql      | sed 's/\\\\/\//' > $DIR/QW_SAMPLE.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < SITEFILE.sql       | sed 's/\\\\/\//' | sed  's/'`echo -e "\\0342\\0200\\0231"`'/'`echo -e "\\047"`'/g' > $DIR/SITEFILE.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < SERIES_CATALOG.sql | sed 's/\\\\/\//' > $DIR/SERIES_CATALOG.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < capture_counts.sql | grep -v "count(" > capture2.txt
+   time mysql --host=cida-eros-mysql.er.usgs.gov --quick nwisweb --user=nwis_user --password=***REMOVED*** < capture_counts.sql | grep -v "count(" > capture1.txt
+   time mysql --host=cida-eros-mysql.er.usgs.gov --quick nwisweb --user=nwis_user --password=***REMOVED*** < QW_RESULT.sql      | sed 's/\\\\/\//' > $DIR/QW_RESULT.out
+   time mysql --host=cida-eros-mysql.er.usgs.gov --quick nwisweb --user=nwis_user --password=***REMOVED*** < QW_SAMPLE.sql      | sed 's/\\\\/\//' > $DIR/QW_SAMPLE.out
+   time mysql --host=cida-eros-mysql.er.usgs.gov --quick nwisweb --user=nwis_user --password=***REMOVED*** < SITEFILE.sql       | sed 's/\\\\/\//' | sed  's/'`echo -e "\\0342\\0200\\0231"`'/'`echo -e "\\047"`'/g' > $DIR/SITEFILE.out
+   time mysql --host=cida-eros-mysql.er.usgs.gov --quick nwisweb --user=nwis_user --password=***REMOVED*** < SERIES_CATALOG.sql | sed 's/\\\\/\//' > $DIR/SERIES_CATALOG.out
+   time mysql --host=cida-eros-mysql.er.usgs.gov --quick nwisweb --user=nwis_user --password=***REMOVED*** < capture_counts.sql | grep -v "count(" > capture2.txt
    
    diffs=`diff capture1.txt capture2.txt | wc -l`
 
