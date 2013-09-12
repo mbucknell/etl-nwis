@@ -38,7 +38,7 @@
 
 	<target name="scpScriptEros">
 		<echo>Copy the script to ${nwis_host}</echo>
-		<scp todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user">
+		<scp todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true">
 		    <fileset dir=".">
 		      <include name="copy_sitefile/*.sql"/>
 		      <include name="spool_out_all.sh"/>
