@@ -41,7 +41,7 @@
 		<scp todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true">
 		    <fileset dir=".">
 		      <include name="copy_sitefile/*.sql"/>
-		      <include name="spool_out_all.sh"/>
+		      <include name="spool_out_all_eros.sh"/>
 		    </fileset>
 		  </scp>
 	</target>
@@ -53,6 +53,15 @@
 			username="nwis_user"
 			password="${nwis_user_password}"
 			command="dos2unix spool_out_all.sh "/>
+	</target>
+	
+	<target name="dos2unixEros">
+		<echo>Fix cr/lf</echo>
+		<sshexec host="${nwis_host}"
+			trust="true"
+			username="nwis_user"
+			password="${nwis_user_password}"
+			command="dos2unix spool_out_all_eros.sh "/>
 	</target>
 	
 	<target name="scpScriptB">
@@ -70,6 +79,17 @@
 			username="nwis_user"
 			password="${nwis_user_password}"
 			command="bash -e spool_out_all.sh "
+		/>
+	</target>
+
+	<target name="qwNwisEtlEros">
+		<echo>Run the script</echo>
+		<sshexec host="${nwis_host}"
+			trust="true"
+			failonerror="true"
+			username="nwis_user"
+			password="${nwis_user_password}"
+			command="bash -e spool_out_all_eros.sh "
 		/>
 	</target>
 
