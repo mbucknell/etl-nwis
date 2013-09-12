@@ -36,6 +36,16 @@
 		<scp file="spool_out_all.sh" todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true"/>
 	</target>
 
+	<target name="scpScriptEros">
+		<echo>Copy the script to ${nwis_host}</echo>
+		<scp todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user">
+		    <fileset dir=".">
+		      <include name="copy_sitefile/*.sql"/>
+		      <include name="spool_out_all.sh"/>
+		    </fileset>
+		  </scp>
+	</target>
+
 	<target name="dos2unix">
 		<echo>Fix cr/lf</echo>
 		<sshexec host="${nwis_host}"
