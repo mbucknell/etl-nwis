@@ -1,6 +1,8 @@
 <project name="QwStoretEtl" default="default">
 	<target name="default" depends="buildPackage, scpScript, dos2unix, scpScriptB, qwNwisEtl"/>
 
+	<target name="defaultEros" depends="buildPackage, scpScriptEros, dos2unixEros, qwNwisEtlEros"/>
+
 	<target name="dev" depends="buildPackage, runPackage"/>
 
 	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage"/>
