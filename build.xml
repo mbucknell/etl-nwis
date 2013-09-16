@@ -8,7 +8,7 @@
 	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage"/>
 
 	<target name="buildPackage">
-		<echo>Rebuiling the etl database pacakge and body</echo>
+		<echo>Rebuiling the etl database package and body</echo>
 		<exec executable="sqlplus" failonerror="true">
 			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
 			<arg value="@${basedir}/create_nad_objects.sql"/>

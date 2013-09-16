@@ -1,3 +1,6 @@
+show user;
+select * from global_name;
+
 create or replace package create_nad_objects
    authid definer
    as
