@@ -70,7 +70,7 @@ done
 
 export nwis_ws_star_pass=`cat .sp`
 
-rm *.bad
+rm -f *.bad
 
 time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=QW_RESULT.ctl data=$DIR/QW_RESULT.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
