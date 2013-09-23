@@ -1,8 +1,6 @@
 <project name="QwStoretEtl" default="default">
 	<target name="default" depends="buildPackage, scpScript, dos2unix, scpScriptB, qwNwisEtl"/>
 
-	<target name="defaultEros" depends="buildPackage, scpScriptEros, dos2unixEros, qwNwisEtlEros"/>
-
 	<target name="dev" depends="buildPackage, runPackage"/>
 
 	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage"/>
@@ -38,16 +36,6 @@
 		<scp file="spool_out_all.sh" todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true"/>
 	</target>
 
-	<target name="scpScriptEros">
-		<echo>Copy the script to ${nwis_host}</echo>
-		<scp todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true">
-		    <fileset dir=".">
-		      <include name="copy_sitefile/*.sql"/>
-		      <include name="spool_out_all_eros.sh"/>
-		    </fileset>
-		  </scp>
-	</target>
-
 	<target name="dos2unix">
 		<echo>Fix cr/lf</echo>
 		<sshexec host="${nwis_host}"
@@ -55,15 +43,6 @@
 			username="nwis_user"
 			password="${nwis_user_password}"
 			command="dos2unix spool_out_all.sh "/>
-	</target>
-	
-	<target name="dos2unixEros">
-		<echo>Fix cr/lf</echo>
-		<sshexec host="${nwis_host}"
-			trust="true"
-			username="nwis_user"
-			password="${nwis_user_password}"
-			command="dos2unix spool_out_all_eros.sh "/>
 	</target>
 	
 	<target name="scpScriptB">
@@ -84,6 +63,35 @@
 		/>
 	</target>
 
+	<target name="defaultEros" depends="buildPackageEros, scpScriptEros, dos2unixEros, qwNwisEtlEros"/>
+
+	<target name="buildPackageEros">
+		<echo>Rebuiling the etl database package and body</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
+			<arg value="@${basedir}/create_nad_objects_eros.sql"/>
+		</exec>
+	</target>
+		
+	<target name="scpScriptEros">
+		<echo>Copy the script to ${nwis_host}</echo>
+		<scp todir="${nwis_user}:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true">
+		    <fileset dir=".">
+		      <include name="copy_sitefile/*.sql"/>
+		      <include name="spool_out_all_eros.sh"/>
+		    </fileset>
+		  </scp>
+	</target>
+
+	<target name="dos2unixEros">
+		<echo>Fix cr/lf</echo>
+		<sshexec host="${nwis_host}"
+			trust="true"
+			username="${nwis_user}"
+			password="${nwis_user_password}"
+			command="dos2unix spool_out_all_eros.sh "/>
+	</target>
+	
 	<target name="qwNwisEtlEros">
 		<echo>Run the script</echo>
 		<sshexec host="${nwis_host}"
