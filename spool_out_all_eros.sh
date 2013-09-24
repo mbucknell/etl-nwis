@@ -106,8 +106,8 @@ fi
 
 cd /home/nwis_user/copy_sitefile
 export nwis_ws_star_pass=`cat .sp`
-export success_notify="bheck@usgs.gov,barry_heck@yahoo.com"
-export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com"
+export success_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
+export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
 
 sqlplus /nolog << EOT
 connect NWIS_WS_STAR/$nwis_ws_star_pass@dbdw.er.usgs.gov
