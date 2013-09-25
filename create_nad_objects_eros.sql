@@ -113,7 +113,7 @@ create or replace package body create_nad_objects
       append_email_text('creating regular_result...');
 
       execute immediate '
-      create table fa_regular_result' || suffix || ' parallel 4 compress pctfree 0 nologging
+      create table fa_regular_result' || suffix || ' noparallel compress pctfree 0 nologging
       partition by range(activity_start_date_time)
       (
          partition fa_regular_result_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
@@ -842,8 +842,8 @@ create or replace package body create_nad_objects
 
       append_email_text('creating nwis_station_sum...');
 
-      execute immediate     /* have seen problems with parallel 4, so make it parallel 1 */
-     'create table NWIS_STATION_SUM' || suffix || ' compress pctfree 0 nologging parallel 1 as
+      execute immediate
+     'create table NWIS_STATION_SUM' || suffix || ' compress pctfree 0 nologging noparallel as
       select /*+ full(a) parallel(a, 4) */
          pk_isn,
          station_id,
@@ -877,7 +877,7 @@ create or replace package body create_nad_objects
       append_email_text('creating nwis_result_sum...');
 
       execute immediate
-     'create table NWIS_RESULT_SUM' || suffix || ' compress pctfree 0 nologging  parallel 4
+     'create table NWIS_RESULT_SUM' || suffix || ' compress pctfree 0 nologging noparallel
       partition by range(activity_start_date_time)
          (
             partition nwis_result_sum_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
@@ -948,7 +948,7 @@ create or replace package body create_nad_objects
       append_email_text('creating nwis_result_ct_sum...');
 
       execute immediate
-     'create table NWIS_RESULT_CT_SUM' || suffix || ' pctfree 0 compress nologging parallel 4
+     'create table NWIS_RESULT_CT_SUM' || suffix || ' pctfree 0 compress nologging noparallel
       partition by list(characteristic_type)
       (
          partition nwis_result_ct_sum_sediment    values (''Sediment''),
@@ -1011,7 +1011,7 @@ create or replace package body create_nad_objects
       append_email_text('creating nwis_result_nr_sum...');
 
       execute immediate
-     'create table NWIS_RESULT_NR_SUM' || suffix || ' pctfree 0 compress nologging parallel 4
+     'create table NWIS_RESULT_NR_SUM' || suffix || ' pctfree 0 compress nologging noparallel
       partition by range(activity_start_date_time)
       (
          partition nwis_result_nr_sum_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
@@ -1070,7 +1070,7 @@ create or replace package body create_nad_objects
       append_email_text('creating nwis_lctn_loc...');
 
       execute immediate
-     'create table nwis_lctn_loc' || suffix || ' compress pctfree 0 nologging parallel 1 as
+     'create table nwis_lctn_loc' || suffix || ' compress pctfree 0 nologging noparallel as
       select /*+ parallel(4) */ distinct
              country_cd,
              state_cd state_fips,
@@ -1083,7 +1083,7 @@ create or replace package body create_nad_objects
       append_email_text('creating nwis_di_org...');
 
       execute immediate
-     'create table nwis_di_org' || suffix || ' compress pctfree 0 nologging parallel 1 as
+     'create table nwis_di_org' || suffix || ' compress pctfree 0 nologging noparallel as
       select distinct
              cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
              ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name
