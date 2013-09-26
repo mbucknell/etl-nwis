@@ -65,6 +65,9 @@ diff capture1.txt capture2.txt
       mail -s "nad load failed in extract" $failure_notify
       exit 1
    fi
+echo $tries
+   tries=$((expr $tries + 1))
+echo $tries
    tries=`expr $tries + 1`
    sleep 300
 echo $tries
