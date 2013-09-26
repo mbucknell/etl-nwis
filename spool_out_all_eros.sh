@@ -24,23 +24,23 @@ while [ $tries -lt 10 ] ; do
    
 echo here   
    
-   diffs=`diff capture1.txt capture2.txt | wc -l`
+#   diffs=`diff capture1.txt capture2.txt | wc -l`
 
-   res1=`wc -l $DIR/QW_RESULT.out | awk '{print $1}'`
-   res1a=`expr $res1 - 1`
-   res1b=`head -1 capture1.txt`
+#   res1=`wc -l $DIR/QW_RESULT.out | awk '{print $1}'`
+#   res1a=`expr $res1 - 1`
+#   res1b=`head -1 capture1.txt`
 
-   res2=`wc -l $DIR/QW_SAMPLE.out | awk '{print $1}'`
-   res2a=`expr $res2 - 1`
-   res2b=`head -2 capture1.txt | tail -1`
+#   res2=`wc -l $DIR/QW_SAMPLE.out | awk '{print $1}'`
+#   res2a=`expr $res2 - 1`
+#   res2b=`head -2 capture1.txt | tail -1`
 
-   res3=`wc -l $DIR/SITEFILE.out | awk '{print $1}'`
-   res3a=`expr $res3 - 1`
-   res3b=`head -3 capture1.txt | tail -1`
+#   res3=`wc -l $DIR/SITEFILE.out | awk '{print $1}'`
+#   res3a=`expr $res3 - 1`
+#   res3b=`head -3 capture1.txt | tail -1`
 
-   res4=`wc -l $DIR/SERIES_CATALOG.out | awk '{print $1}'`
-   res4a=`expr $res4 - 1`
-   res4b=`tail -1 capture1.txt`
+#   res4=`wc -l $DIR/SERIES_CATALOG.out | awk '{print $1}'`
+#   res4a=`expr $res4 - 1`
+#   res4b=`tail -1 capture1.txt`
 
 echo here2
 diff capture1.txt capture2.txt
@@ -68,13 +68,21 @@ diff capture1.txt capture2.txt
  #     mail -s "nad load failed in extract" $failure_notify
  #     exit 1
  #  fi
+echo here 3
 echo $tries
+echo here 4
    tries=$((expr $tries + 1))
+echo here 5
 echo $tries
+echo here 6
    tries=`expr $tries + 1`
+echo here 7
    sleep 300
+echo here 8
 echo $tries
+echo here 9
 done
+echo here 10 
 
 export nwis_ws_star_pass=`cat .sp`
 
