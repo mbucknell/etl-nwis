@@ -12,7 +12,7 @@ export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com"
 
 (
 tries=0
-while [ $tries -lt 10 ] ; do
+while [ $tries -lt 6 ] ; do
 
    time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < capture_counts.sql | grep -v "count(" > capture1.txt
    time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < QW_RESULT.sql      | sed 's/\\\\/\//' > $DIR/QW_RESULT.out
@@ -43,7 +43,7 @@ while [ $tries -lt 10 ] ; do
       break;
    else
       echo diffs found `date`
-      diff capture1.txt capture2.txt
+      diff capture1.txt capture2.txt || [ $? -le 2 ]
       echo $res1a $res1b $res2a $res2b $res3a $res3b $res4a $res4b
    fi
 
@@ -103,8 +103,8 @@ fi
 
 cd /var/lib/mysql/copy_sitefile
 export nwis_ws_star_pass=`cat .sp`
-export success_notify="bheck@usgs.gov,barry_heck@yahoo.com"
-export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com"
+export success_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
+export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
 
 sqlplus /nolog << EOT
 connect NWIS_WS_STAR/$nwis_ws_star_pass@wiws.er.usgs.gov
