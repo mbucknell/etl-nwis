@@ -63,7 +63,8 @@ while [ $tries -lt 10 ] ; do
       mail -s "nad load failed in extract" $failure_notify
       exit 1
    fi
-   tries=`expr $tries + 1`
+   echo $tries
+   let tries=tries+1
    sleep 300
 
 done
