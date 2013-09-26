@@ -40,6 +40,8 @@ while [ $tries -lt 10 ] ; do
    res4a=`expr $res4 - 1`
    res4b=`tail -1 capture1.txt`
 
+diff capture1.txt capture2.txt
+
    if [ $diffs -eq 0 -a $res1a -eq $res1b -a $res2a -eq $res2b -a $res3a -eq $res3b -a $res4a -eq $res4b ] ; then
       break;
    else
@@ -63,10 +65,9 @@ while [ $tries -lt 10 ] ; do
       mail -s "nad load failed in extract" $failure_notify
       exit 1
    fi
-   echo $tries
-   let tries=tries+1
+   tries=`expr $tries + 1`
    sleep 300
-
+echo $tries
 done
 
 export nwis_ws_star_pass=`cat .sp`
