@@ -43,7 +43,6 @@ echo here
 #   res4b=`tail -1 capture1.txt`
 
 echo here2
-diff capture1.txt capture2.txt
 
 #   if [ $diffs -eq 0 -a $res1a -eq $res1b -a $res2a -eq $res2b -a $res3a -eq $res3b -a $res4a -eq $res4b ] ; then
 #      break;
