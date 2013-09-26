@@ -48,7 +48,7 @@ echo here2
 #      break;
 #   else
 #      echo diffs found `date`
-#      diff capture1.txt capture2.txt
+      diff capture1.txt capture2.txt || [ $? -le 2 ]
 #      echo $res1a $res1b $res2a $res2b $res3a $res3b $res4a $res4b
 #   fi
 
@@ -75,7 +75,7 @@ echo $tries
 echo here 6
    tries=`expr $tries + 1`
 echo here 7
-   sleep 300
+#   sleep 300
 echo here 8
 echo $tries
 echo here 9
