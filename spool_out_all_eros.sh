@@ -70,7 +70,6 @@ echo here2
 echo here 3
 echo $tries
 echo here 4
-   tries=$((expr $tries + 1))
 echo here 5
 echo $tries
 echo here 6
