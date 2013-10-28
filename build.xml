@@ -14,7 +14,7 @@
 	</target>
 		
 	<target name="compilePackageEmptyCiDB">
-		<echo>Rebuiling the etl database pacakge and body with the empty_db flag set</echo>
+		<echo>Rebuiling the etl database package and body with the empty_db flag set</echo>
 		<exec executable="sqlplus" failonerror="true">
 			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
 			<arg value="@${basedir}/emptyCiDB.sql"/>
