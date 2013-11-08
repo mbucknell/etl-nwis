@@ -1382,7 +1382,7 @@ create or replace package body create_nad_objects
       when others then
          message := 'FAIL to create public_srsnames: ' || SQLERRM;
          append_email_text(message);
-   end create_public_srsnames;
+   end create_xml_tables;
 
    procedure create_index
    is
