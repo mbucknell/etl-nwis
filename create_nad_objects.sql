@@ -1185,65 +1185,70 @@ create or replace package body create_nad_objects
       append_email_text('creating characteristicname...');
       execute immediate
       'create table characteristicname' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             cast(null as varchar2(4000 char)) description,
-             rownum sort_order
-        from (select distinct characteristic_name code_value
-                from fa_regular_result' || suffix || '
-                  order by 1)';
+       select code_value,
+              cast(null as varchar2(4000 char)) description,
+              rownum sort_order
+         from (select distinct characteristic_name code_value
+                 from fa_regular_result' || suffix || '
+                   order by 1)';
       cleanup(11) := 'drop table characteristicname' || suffix || ' cascade constraints purge';
 
       append_email_text('creating characteristictype...');
       execute immediate
       'create table characteristictype' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             cast(null as varchar2(4000 char)) description,
-             rownum sort_order
-        from (select distinct characteristic_type code_value
-                from fa_regular_result' || suffix || '
-                  order by 1)';
+       select code_value,
+              cast(null as varchar2(4000 char)) description,
+              rownum sort_order
+         from (select distinct characteristic_type code_value
+                 from fa_regular_result' || suffix || '
+                   order by 1)';
       cleanup(12) := 'drop table characteristictype' || suffix || ' cascade constraints purge';
 
       append_email_text('creating country...');
       execute immediate
       'create table country' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             description,
-             rownum sort_order
-        from (select distinct country_cd code_value,
-                     country_name description
-                from fa_station' || suffix || '
-                  order by country_name desc)';
+       select code_value,
+              description,
+              rownum sort_order
+         from (select distinct country_cd code_value,
+                      country_name description
+                 from fa_station' || suffix || '
+                   order by country_name desc)';
       cleanup(13) := 'drop table country' || suffix || ' cascade constraints purge';
 
       append_email_text('creating county...');
       execute immediate
       'create table county' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             description,
-             country_cd,
-             state_cd,
-             rownum sort_order
-        from (select distinct country_cd||'':''||state_cd|| '':''||county_cd code_value,
-                     country_cd||'', ''||state_name||'', ''||county_name description,
-                     country_cd,
-                     state_cd,
-                     county_cd
-                from fa_station' || suffix || '
-                  order by country_cd desc,
-                           state_cd,
-                           county_cd)';
+       select code_value,
+              description,
+              country_cd,
+              state_cd,
+              rownum sort_order
+         from (select distinct country_cd||'':''||state_cd|| '':''||county_cd code_value,
+                      country_cd||'', ''||state_name||'', ''||county_name description,
+                      country_cd,
+                      state_cd,
+                      county_cd
+                 from fa_station' || suffix || '
+                   order by country_cd desc,
+                            state_cd,
+                            county_cd)';
      cleanup(14) := 'drop table county' || suffix || ' cascade constraints purge';
 
       append_email_text('creating organization...');
       execute immediate
       'create table organization' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             cast(null as varchar2(4000 char)) description,
-             rownum sort_order
-        from (select distinct organization_id code_value
-                from fa_station' || suffix || '
-                  order by 1)';
+       select code_value,
+              cast(null as varchar2(4000 char)) description,
+              xmlelement("OrganizationDescription", 
+                         xmlelement("OrganizationIdentifier", code_value),
+                         xmlelement("OrganizationFormalName", description)
+                        ) organization_details,
+              rownum sort_order
+         from (select distinct organization_id code_value,
+                               organization_name description
+                 from fa_station' || suffix || '
+                   order by 1)';
       cleanup(15) := 'drop table organization' || suffix || ' cascade constraints purge';
 
       append_email_text('creating samplemedia...');
@@ -1292,6 +1297,93 @@ create or replace package body create_nad_objects
          append_email_text(message);
    end create_code_tables;
    
+   procedure create_xml_tables
+   is
+   begin
+
+      append_email_text('creating station...');
+
+      execute immediate
+     'create table station' || suffix || q'! compress pctfree 0 nologging as
+      select pk_isn,
+             station_id,
+             xmlelement("MonitoringLocation", 
+                        xmlelement("MonitoringLocationIdentity",
+                                   xmlelement("MonitoringLocationIdentifier", station_id),
+                                   xmlelement("MonitoringLocationName", station_name),
+                                   xmlelement("MonitoringLocationTypeName", station_type_name),
+                                   xmlelement("MonitoringLocationDescriptionText", description_text),
+                                   xmlelement("HUCEightDigitCode", hydrologic_unit_code),
+                                   xmlelement("DrainageAreaMeasure",
+                                              xmlelement("MeasureValue", drain_area_mi2_va),
+                                              xmlelement("MeasureUnitCode", nvl2(drain_area_mi2_va,'sq mi',null))
+                                             ),
+                                   xmlelement("ContributingDrainageAreaMeasure",
+                                              xmlelement("MeasureValue", contrib_drain_mi2_area_va),
+                                              xmlelement("MeasureUnitCode", nvl2(contrib_drain_mi2_area_va,'sq mi',null))
+                                             )
+                                  ),
+                        xmlelement("MonitoringLocationGeospatial",
+                                   xmlelement("LatitudeMeasure", latitude),
+                                   xmlelement("LongitudeMeasure", longitude),
+                                   xmlelement("SourceMapScaleNumeric", map_scale),
+                                   xmlelement("HorizontalAccuracyMeasure",
+                                             xmlelement("MeasureValue", geopositioning_accuracy_value),
+                                             xmlelement("MeasureUnitCode", geopositioning_accuracy_units)
+                                             ),
+                                   xmlelement("HorizontalCollectionMethodName", nvl(geopositioning_method, 'Unknown')),
+                                   xmlelement("HorizontalCoordinateReferenceSystemDatumName", nvl(horiz_datum_name, 'Unknown')),
+                                   xmlelement("VerticalMeasure",
+                                             xmlelement("MeasureValue", elevation),
+                                             xmlelement("MeasureUnitCode", elev_units)
+                                             ),
+                                   xmlelement("VerticalAccuracyMeasure",
+                                             xmlelement("MeasureValue", vertical_accuracy_value),
+                                             xmlelement("MeasureUnitCode", ltrim(vertical_accuracy_units))
+                                             ),
+                                   xmlelement("VerticalCollectionMethodName", vertical_method_name),
+                                   xmlelement("VerticalCoordinateReferenceSystemDatumName", vertical_datum_name),
+                                   xmlelement("CountryCode", country_cd),
+                                   xmlelement("StateCode", state_cd),
+                                   xmlelement("CountyCode", county_cd)
+                                  ),
+                        xmlelement("WellInformation",
+                                   xmlelement("AquiferName", nat_aqfr_name),
+                                   xmlelement("FormationTypeText", aqfr_name),
+                                   xmlelement("AquiferTypeName", aqfr_type_name),
+                                   xmlelement("ConstructionDateText", construction_date_tx),
+                                   xmlelement("WellDepthMeasure",
+                                             xmlelement("MeasureValue", well_depth_ft_blw_land_sfc_va),
+                                             xmlelement("MeasureUnitCode", nvl2(well_depth_ft_blw_land_sfc_va, 'ft', null))
+                                             ),
+                                   xmlelement("WellHoleDepthMeasure",
+                                             xmlelement("MeasureValue", hole_depth_ft_blw_land_sfc_va),
+                                             xmlelement("MeasureUnitCode", nvl2(hole_depth_ft_blw_land_sfc_va, 'ft', null))
+                                             )
+                                  )
+                       ) station_details,           
+             country_cd,
+             to_char(county_cd, 'fm009') county_cd,
+             mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(latitude, longitude, null), null, null) geom,
+             hydrologic_unit_code,
+             organization_id,
+             to_char(state_cd, 'fm09') state_cd,
+             station_type_name,
+             (select count(*) 
+                from fa_regular_result!' || suffix || '
+               where pk_isn = fk_station) result_count
+        from fa_station
+          order by organization_id,
+                    station_id';
+
+      cleanup(19) := 'drop table station' || suffix || ' cascade constraints purge';
+
+   exception
+      when others then
+         message := 'FAIL to create public_srsnames: ' || SQLERRM;
+         append_email_text(message);
+   end create_public_srsnames;
+
    procedure create_index
    is
       stmt            varchar2(32000);
@@ -1359,7 +1451,7 @@ create or replace package body create_nad_objects
                from
                   storetmodern.storet_sum@widw';
 
-      cleanup(19) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
+      cleanup(20) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
 
       append_email_text('creating qwportal_summary...');
       execute immediate stmt;
@@ -1910,6 +2002,7 @@ create or replace package body create_nad_objects
       if message is null then create_summaries;       end if;
       if message is null then create_public_srsnames; end if;
       if message is null then create_code_tables;     end if;
+      if message is null then create_xml_tables;      end if;
       if message is null then create_index;           end if;
       if message is null then validate;               end if;
       if message is null then
