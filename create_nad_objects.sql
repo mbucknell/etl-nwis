@@ -52,7 +52,7 @@ create or replace package body create_nad_objects
                                       '''NWIS_STATION_SUM_00000'',''NWIS_RESULT_SUM_00000'',''NWIS_RESULT_CT_SUM_00000'',''NWIS_RESULT_NR_SUM_00000'',' ||
                                       '''NWIS_LCTN_LOC_00000'',''PUBLIC_SRSNAMES_00000'',''NWIS_DI_ORG_00000'',''CHARACTERISTICNAME_00000'',' ||
                                       '''CHARACTERISTICTYPE_00000'',''COUNTRY_00000'',''COUNTY_00000'',''ORGANIZATION_00000'',''SAMPLEMEDIA_00000'',' ||
-                                      '''SITETYPE_00000'',''STATE_00000'')';
+                                      '''SITETYPE_00000'',''STATE_00000'',''STATION_00000'')';
                                       
    type cursor_type is ref cursor;
 
@@ -459,11 +459,11 @@ create or replace package body create_nad_objects
             nwis_ws_star.qw_result  r,
             nwis_ws_star.qw_sample  samp,
             (select tz_cd, tz_utc_offset_tm
-               from nwq_stg.lu_tz@wistg
+               from lu_tz
               where tz_cd is not null
              union 
              select tz_dst_cd, tz_dst_utc_offset_tm tz_utc_offset_tm
-               from nwq_stg.lu_tz@wistg
+               from lu_tz
               where tz_dst_cd is not null) lu_tz,
             nwis_ws_star.sitefile   site,
            (select /*+ full(p2) parallel(p2, 4) full(fxd_71999) parallel(fxd_71999, 4) full(fxd_82398) parallel(fxd_82398, 4)
@@ -507,9 +507,9 @@ create or replace package body create_nad_objects
                   parameter_cd in (''71999'', ''50280'', ''72015'', ''82047'', ''72016'', ''82048'', ''00003'', ''00098'', ''78890'', ''78891'', ''82398'', ''84164'')
                group by
                   sample_id) p2,
-              (select fxd_nm v71999_fxd_nm, fxd_va from nwis_ws_stg.fxd@wistg where parm_cd = ''71999'') fxd_71999,
-              (select fxd_tx v82398_fxd_tx, fxd_va from nwis_ws_stg.fxd@wistg where parm_cd = ''82398'') fxd_82398,
-              (select fxd_tx v84164_fxd_tx, fxd_va from nwis_ws_stg.fxd@wistg where parm_cd = ''84164'') fxd_84164
+              (select fxd_nm v71999_fxd_nm, fxd_va from fxd where parm_cd = ''71999'') fxd_71999,
+              (select fxd_tx v82398_fxd_tx, fxd_va from fxd where parm_cd = ''82398'') fxd_82398,
+              (select fxd_tx v84164_fxd_tx, fxd_va from fxd where parm_cd = ''84164'') fxd_84164
             where
                p2.v71999 = fxd_71999.fxd_va(+) and
                p2.v82398 = fxd_82398.fxd_va(+) and
@@ -524,18 +524,18 @@ create or replace package body create_nad_objects
                case when trim(tu_4_cd) is not null then '' '' || trim(tu_4_cd) end ||
                case when trim(tu_4_nm) is not null then '' '' || trim(tu_4_nm) end AS composite_tu_name
             from
-               nwis_ws_stg.tu@wistg) tu,
+               tu) tu,
            (select
                trim(WQX_ACT_MED_NM)  AS wqx_act_med_nm ,
                trim(wqx_act_med_sub) AS wqx_act_med_sub,
                trim(nwis_medium_cd) medium_cd
             from
-               nwis_ws_stg.nwis_wqx_medium_cd@wistg) wqx_medium_cd,
+               nwis_wqx_medium_cd) wqx_medium_cd,
            (select
                trim(body_part_nm) body_part_nm,
                trim(body_part_id) body_part_id
             from
-               nwis_ws_stg.body_part@wistg) body_part,
+               body_part) body_part,
            (select /*+ full(a) full(b) full(z_parm_meth2) use_hash(a) use_hash(b) use_hash(z_parm_meth2) */
                a.parm_unt_tx,
                a.parm_frac_tx,
@@ -552,15 +552,15 @@ create or replace package body create_nad_objects
                z_parm_alias.casrn,
                z_parm_meth2.multiplier
             from
-               nwq_stg.lu_parm@wistg a,
-               nwq_stg.lu_parm_seq_grp_cd@wistg b,
+               lu_parm a,
+               lu_parm_seq_grp_cd b,
               (select
                   parm_cd,
                   max(case when parm_alias_cd = ''SRSNAME'' then parm_alias_nm else null end) AS srsname,
                   max(case when parm_alias_cd = ''SRSID''   then parm_alias_nm else null end) AS srsid  ,
                   max(case when parm_alias_cd = ''CASRN''   then parm_alias_nm else null end) AS casrn
                from
-                  nwq_stg.lu_parm_alias@wistg
+                  lu_parm_alias
                group by
                   parm_cd
                having
@@ -578,7 +578,7 @@ create or replace package body create_nad_objects
                          9, ''100000'') multiplier,
                   parm_cd
                from
-                  nwq_stg.lu_parm_meth@wistg
+                  lu_parm_meth
                where
                   meth_cd is null) z_parm_meth2
             where
@@ -591,24 +591,24 @@ create or replace package body create_nad_objects
                parm_cd,
                fxd_va
             from
-               nwis_ws_stg.fxd@wistg) fxd,
+               fxd) fxd,
            (select
                proto_org_nm,
                proto_org_cd
             from
-               nwis_ws_stg.PROTO_ORG@wistg) proto_org,
+               proto_org) proto_org,
            (select
                proto_org_nm,
                proto_org_cd
             from
-               nwis_ws_stg.PROTO_ORG@wistg) proto_org2,
+               proto_org) proto_org2,
            (select /*+ full(meth1) full(z_cit_meth) use_hash(meth1) use_hash(z_cit_meth) */
                meth1.meth_cd,
                meth1.meth_nm,
                z_cit_meth.cit_nm
             from
-               nwis_ws_stg.METH@wistg meth1,
-              (select meth_cd, min(cit_nm) cit_nm from nwis_ws_stg.z_cit_meth@wistg group by meth_cd) z_cit_meth
+               meth meth1,
+              (select meth_cd, min(cit_nm) cit_nm from z_cit_meth group by meth_cd) z_cit_meth
             where
                meth1.meth_cd = z_cit_meth.meth_cd(+)) meth,
            (select
@@ -625,16 +625,16 @@ create or replace package body create_nad_objects
                parm_cd,
                meth_cd
             from
-               nwq_stg.lu_parm_meth@wistg) z_parm_meth,
-           (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_ws_stg.nwis_wqx_rpt_lev_cd@wistg) nwis_wqx_rpt_lev_cd,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@wistg) val_qual_cd1,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@wistg) val_qual_cd2,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@wistg) val_qual_cd3,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@wistg) val_qual_cd4,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@wistg) val_qual_cd5,
-           (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from nwis_ws_stg.HYD_EVENT_CD@wistg) hyd_event_cd,
-           (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from nwis_ws_stg.hyd_cond_cd@wistg) hyd_cond_cd,
-           (select district_cd, host_name from nwis_ws_stg.nwis_district_cds_by_host@wistg) dist
+               lu_parm_meth) z_parm_meth,
+           (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_wqx_rpt_lev_cd) nwis_wqx_rpt_lev_cd,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd1,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd2,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd3,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd4,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd5,
+           (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from hyd_event_cd) hyd_event_cd,
+           (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from hyd_cond_cd) hyd_cond_cd,
+           (select district_cd, host_name from nwis_district_cds_by_host) dist
          where
             r.result_web_cd    = ''Y''                         and
            (r.RESULT_VA        is not null  OR
@@ -674,7 +674,7 @@ create or replace package body create_nad_objects
             site.nwis_host     = dist.host_name and
             samp.SAMPLE_START_TIME_DATUM_CD = lu_tz.tz_cd(+)
          ) y,
-         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from nwis_ws_stg.aqfr@wistg) aqfr
+         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from aqfr) aqfr
       where
          y.aqfr_cd  = aqfr.aqfr_cd (+) and
          y.state_cd = aqfr.state_cd(+)' ;
@@ -776,31 +776,31 @@ create or replace package body create_nad_objects
           nwis_ws_star.sitefile sitefile,
          (select cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
            ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name, host_name, district_cd
-          from nwis_ws_stg.nwis_district_cds_by_host@wistg) ndcbh,
-         (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from nwis_ws_stg.country@wistg) country,
-         (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from nwis_ws_stg.state@wistg) state,
-         (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from nwis_ws_stg.county@wistg) county,
-         (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from nwis_ws_stg.state@wistg) postal,
+          from nwis_district_cds_by_host) ndcbh,
+         (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from stage_country) country,
+         (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from stage_state) state,
+         (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from stage_county) county,
+         (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from stage_state) postal,
          (select
              a.site_tp_cd,
              case when a.site_tp_prim_fg = ''Y'' then a.site_tp_ln
                   else b.site_tp_ln || '': '' || a.site_tp_ln
              end as station_type_name
           from
-             nwis_ws_stg.site_tp@wistg a,
-             nwis_ws_stg.site_tp@wistg b
+             site_tp a,
+             site_tp b
           where
              substr(a.site_tp_cd, 1, 2) = b.site_tp_cd and
              b.site_tp_prim_fg = ''Y'') site_tp,
-         (select nwis_name as vertical_method_name , nwis_code from nwis_ws_stg.nwis_misc_lookups@wistg where category = ''Altitude Method'') vert,
-         (select nwis_name as geopositioning_method, nwis_code from nwis_ws_stg.nwis_misc_lookups@wistg where category = ''Lat/Long Method'') geo_meth,
+         (select nwis_name as vertical_method_name , nwis_code from nwis_misc_lookups where category = ''Altitude Method'') vert,
+         (select nwis_name as geopositioning_method, nwis_code from nwis_misc_lookups where category = ''Lat/Long Method'') geo_meth,
          (select inferred_value as geopositioning_accuracy_value,
                  inferred_units as geopositioning_accuracy_units,
-                 nwis_code from nwis_ws_stg.nwis_misc_lookups@wistg where category = ''Lat-Long Coordinate Accuracy'') geo_accuracy,
-         (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nwis_ws_stg.NAT_AQFR@wistg group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr,
-         (select nwis_name as aqfr_type_name, nwis_code from nwis_ws_stg.NWIS_MISC_LOOKUPS@wistg where CATEGORY=''Aquifer Type Code'') aqfr_type,
-         (select aqfr_nm as aqfr_name, state_cd, aqfr_cd from nwis_ws_stg.AQFR@wistg) aqfr,
-         (select state_fips, state_cd from nwis_ws_stg.STATE_FIPS@wistg) fips
+                 nwis_code from nwis_misc_lookups where category = ''Lat-Long Coordinate Accuracy'') geo_accuracy,
+         (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nat_aqfr group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr,
+         (select nwis_name as aqfr_type_name, nwis_code from nwis_misc_lookups where CATEGORY=''Aquifer Type Code'') aqfr_type,
+         (select aqfr_nm as aqfr_name, state_cd, aqfr_cd from aqfr) aqfr,
+         (select state_fips, state_cd from state_fips) fips
      where
        sitefile.DEC_LAT_VA   <> 0   and
        sitefile.DEC_LONG_VA  <> 0   and
@@ -1087,7 +1087,7 @@ create or replace package body create_nad_objects
       select distinct
              cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
              ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name
-        from nwis_ws_stg.nwis_district_cds_by_host@wistg';
+        from nwis_district_cds_by_host';
 
       cleanup(8) := 'drop table nwis_di_org' || suffix || ' cascade constraints purge';
 
@@ -1122,7 +1122,7 @@ create or replace package body create_nad_objects
       from
          temp_series_catalog c,
          fa_station' || suffix || ' s,
-         nwq_stg.lu_parm@wistg p
+         lu_parm p
       where
          c.site_id = s.pk_isn and
          c.parm_cd = p.parm_cd';
@@ -1163,8 +1163,8 @@ create or replace package body create_nad_objects
                      then lu_parm.parm_rev_dt
                    else lu_parm_alias.parm_alias_rev_dt
                  end) over () max_last_rev_dt
-        from nwq_stg.lu_parm@wistg
-             join nwq_stg.lu_parm_alias@wistg
+        from lu_parm
+             join lu_parm_alias
                on lu_parm.parm_cd = lu_parm_alias.parm_cd and
                   ''SRSNAME'' = lu_parm_alias.parm_alias_cd
        where parm_public_fg = ''Y''
@@ -1299,17 +1299,25 @@ create or replace package body create_nad_objects
    
    procedure create_xml_tables
    is
+      partition_list varchar2(32000);
    begin
 
       append_email_text('creating station...');
-
+      
+      select listagg(partition_desc, ', ') within group (order by sort_order)
+        into partition_list
+        from (select 'partition station_' || sort_order || q'! values ('!' || code_value || q'!')!' partition_desc, sort_order
+          from organization);
+          
       execute immediate
-     'create table station' || suffix || q'! compress pctfree 0 nologging as
-      select pk_isn,
-             station_id,
+     'create table station' || suffix || ' compress pctfree 0 nologging
+      partition by list (organization_id) (' || partition_list || q'!) as
+      select /*+ no_parallel */
+             pk_isn,
+             'USGS-' || station_id station_id,
              xmlelement("MonitoringLocation", 
                         xmlelement("MonitoringLocationIdentity",
-                                   xmlelement("MonitoringLocationIdentifier", station_id),
+                                   xmlelement("MonitoringLocationIdentifier", 'USGS-' || station_id),
                                    xmlelement("MonitoringLocationName", station_name),
                                    xmlelement("MonitoringLocationTypeName", station_type_name),
                                    xmlelement("MonitoringLocationDescriptionText", description_text),
@@ -1364,18 +1372,22 @@ create or replace package body create_nad_objects
                        ) station_details,           
              country_cd,
              to_char(county_cd, 'fm009') county_cd,
-             mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(latitude, longitude, null), null, null) geom,
+             mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(longitude, latitude, null), null, null) geom,
              hydrologic_unit_code,
              organization_id,
              to_char(state_cd, 'fm09') state_cd,
              station_type_name,
-             (select count(*) 
-                from fa_regular_result!' || suffix || '
-               where pk_isn = fk_station) result_count
-        from fa_station
-          order by organization_id,
-                    station_id';
+             0 result_count
+        from fa_station!';
 
+      execute immediate 'merge into station' || suffix || ' a
+                         using (select pk_isn, result_count
+                                  from nwis_station_sum' || suffix || ') b
+                            on (a.pk_isn = b.pk_isn)
+                           when matched then update set a.result_count = b.result_count';
+                           
+      commit;
+      
       cleanup(19) := 'drop table station' || suffix || ' cascade constraints purge';
 
    exception
@@ -1449,7 +1461,7 @@ create or replace package body create_nad_objects
                   results_past_60_months,
                   results_all_time
                from
-                  storetmodern.storet_sum@widw';
+                  storet_sum';
 
       cleanup(20) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
 
