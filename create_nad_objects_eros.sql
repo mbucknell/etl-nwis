@@ -45,8 +45,6 @@ create or replace package body create_nad_objects
    type cleanuptable is table of varchar2(80) index by binary_integer;
    cleanup cleanuptable;
 
-   email_text varchar2(32000);
-   
    table_list varchar2(4000 char) := 'translate(table_name, ''0123456789'', ''0000000000'') in ' ||
                                      '(''FA_REGULAR_RESULT_00000'',''FA_STATION_00000'',''SERIES_CATALOG_00000'',''QWPORTAL_SUMMARY_00000'',' ||
                                       '''NWIS_STATION_SUM_00000'',''NWIS_RESULT_SUM_00000'',''NWIS_RESULT_CT_SUM_00000'',''NWIS_RESULT_NR_SUM_00000'',' ||
@@ -55,24 +53,6 @@ create or replace package body create_nad_objects
                                       '''SITETYPE_00000'',''STATE_00000'')';
                                       
    type cursor_type is ref cursor;
-
-   procedure append_email_text(addition in varchar2)
-   is
-      addition_with_time varchar2(4000);
-   begin
-
-      addition_with_time := to_char(sysdate, 'YYYY.MM.DD HH24:MI:SS ') || addition;
-      dbms_output.put_line(addition_with_time);
-      if nvl(length(email_text), 0) + nvl(length(addition_with_time), 0) + nvl(length(lf), 0) < 32000 then
-         email_text := email_text || addition_with_time || lf;
-      end if;
-
-   exception
-      when others then
-         if message is null then
-            message := 'failed to append to email message';
-         end if;
-   end append_email_text;
 
    procedure determine_suffix
    is
@@ -89,31 +69,31 @@ create or replace package body create_nad_objects
         into suffix from user_tables
         where translate(table_name, '0123456789', '0000000000') = 'FA_REGULAR_RESULT_00000';
 
-      append_email_text('using ''' || suffix || ''' for suffix.');
+      dbms_output.put_line('using ''' || suffix || ''' for suffix.');
 
       open drop_remnants for query using suffix;
       loop
          fetch drop_remnants into drop_name;
          exit when drop_remnants%NOTFOUND;
          stmt := 'drop table ' || drop_name || ' cascade constraints purge';
-         append_email_text('CLEANUP remnants: ' || stmt);
+         dbms_output.put_line('CLEANUP remnants: ' || stmt);
          execute immediate stmt;
       end loop;
 
    exception
       when others then
          message := 'FAIL to determine suffix: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end determine_suffix;
 
    procedure create_regular_result
    is
    begin
 
-      append_email_text('creating regular_result...');
+      dbms_output.put_line('creating regular_result...');
 
       execute immediate '
-      create table fa_regular_result' || suffix || ' noparallel compress pctfree 0 nologging
+      create table fa_regular_result' || suffix || ' parallel 4 compress pctfree 0 nologging
       partition by range(activity_start_date_time)
       (
          partition fa_regular_result_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
@@ -459,11 +439,11 @@ create or replace package body create_nad_objects
             nwis_ws_star.qw_result  r,
             nwis_ws_star.qw_sample  samp,
             (select tz_cd, tz_utc_offset_tm
-               from nwq_stg.lu_tz@dbstage
+               from lu_tz
               where tz_cd is not null
              union 
              select tz_dst_cd, tz_dst_utc_offset_tm tz_utc_offset_tm
-               from nwq_stg.lu_tz@dbstage
+               from lu_tz
               where tz_dst_cd is not null) lu_tz,
             nwis_ws_star.sitefile   site,
            (select /*+ full(p2) parallel(p2, 4) full(fxd_71999) parallel(fxd_71999, 4) full(fxd_82398) parallel(fxd_82398, 4)
@@ -507,9 +487,9 @@ create or replace package body create_nad_objects
                   parameter_cd in (''71999'', ''50280'', ''72015'', ''82047'', ''72016'', ''82048'', ''00003'', ''00098'', ''78890'', ''78891'', ''82398'', ''84164'')
                group by
                   sample_id) p2,
-              (select fxd_nm v71999_fxd_nm, fxd_va from nwis_ws_stg.fxd@dbstage where parm_cd = ''71999'') fxd_71999,
-              (select fxd_tx v82398_fxd_tx, fxd_va from nwis_ws_stg.fxd@dbstage where parm_cd = ''82398'') fxd_82398,
-              (select fxd_tx v84164_fxd_tx, fxd_va from nwis_ws_stg.fxd@dbstage where parm_cd = ''84164'') fxd_84164
+              (select fxd_nm v71999_fxd_nm, fxd_va from fxd where parm_cd = ''71999'') fxd_71999,
+              (select fxd_tx v82398_fxd_tx, fxd_va from fxd where parm_cd = ''82398'') fxd_82398,
+              (select fxd_tx v84164_fxd_tx, fxd_va from fxd where parm_cd = ''84164'') fxd_84164
             where
                p2.v71999 = fxd_71999.fxd_va(+) and
                p2.v82398 = fxd_82398.fxd_va(+) and
@@ -524,18 +504,18 @@ create or replace package body create_nad_objects
                case when trim(tu_4_cd) is not null then '' '' || trim(tu_4_cd) end ||
                case when trim(tu_4_nm) is not null then '' '' || trim(tu_4_nm) end AS composite_tu_name
             from
-               nwis_ws_stg.tu@dbstage) tu,
+               tu) tu,
            (select
                trim(WQX_ACT_MED_NM)  AS wqx_act_med_nm ,
                trim(wqx_act_med_sub) AS wqx_act_med_sub,
                trim(nwis_medium_cd) medium_cd
             from
-               nwis_ws_stg.nwis_wqx_medium_cd@dbstage) wqx_medium_cd,
+               nwis_wqx_medium_cd) wqx_medium_cd,
            (select
                trim(body_part_nm) body_part_nm,
                trim(body_part_id) body_part_id
             from
-               nwis_ws_stg.body_part@dbstage) body_part,
+               body_part) body_part,
            (select /*+ full(a) full(b) full(z_parm_meth2) use_hash(a) use_hash(b) use_hash(z_parm_meth2) */
                a.parm_unt_tx,
                a.parm_frac_tx,
@@ -552,15 +532,15 @@ create or replace package body create_nad_objects
                z_parm_alias.casrn,
                z_parm_meth2.multiplier
             from
-               nwq_stg.lu_parm@dbstage a,
-               nwq_stg.lu_parm_seq_grp_cd@dbstage b,
+               lu_parm a,
+               lu_parm_seq_grp_cd b,
               (select
                   parm_cd,
                   max(case when parm_alias_cd = ''SRSNAME'' then parm_alias_nm else null end) AS srsname,
                   max(case when parm_alias_cd = ''SRSID''   then parm_alias_nm else null end) AS srsid  ,
                   max(case when parm_alias_cd = ''CASRN''   then parm_alias_nm else null end) AS casrn
                from
-                  nwq_stg.lu_parm_alias@dbstage
+                  lu_parm_alias
                group by
                   parm_cd
                having
@@ -578,7 +558,7 @@ create or replace package body create_nad_objects
                          9, ''100000'') multiplier,
                   parm_cd
                from
-                  nwq_stg.lu_parm_meth@dbstage
+                  lu_parm_meth
                where
                   meth_cd is null) z_parm_meth2
             where
@@ -591,24 +571,24 @@ create or replace package body create_nad_objects
                parm_cd,
                fxd_va
             from
-               nwis_ws_stg.fxd@dbstage) fxd,
+               fxd) fxd,
            (select
                proto_org_nm,
                proto_org_cd
             from
-               nwis_ws_stg.PROTO_ORG@dbstage) proto_org,
+               proto_org) proto_org,
            (select
                proto_org_nm,
                proto_org_cd
             from
-               nwis_ws_stg.PROTO_ORG@dbstage) proto_org2,
+               proto_org) proto_org2,
            (select /*+ full(meth1) full(z_cit_meth) use_hash(meth1) use_hash(z_cit_meth) */
                meth1.meth_cd,
                meth1.meth_nm,
                z_cit_meth.cit_nm
             from
-               nwis_ws_stg.METH@dbstage meth1,
-              (select meth_cd, min(cit_nm) cit_nm from nwis_ws_stg.z_cit_meth@dbstage group by meth_cd) z_cit_meth
+               meth meth1,
+              (select meth_cd, min(cit_nm) cit_nm from z_cit_meth group by meth_cd) z_cit_meth
             where
                meth1.meth_cd = z_cit_meth.meth_cd(+)) meth,
            (select
@@ -625,16 +605,16 @@ create or replace package body create_nad_objects
                parm_cd,
                meth_cd
             from
-               nwq_stg.lu_parm_meth@dbstage) z_parm_meth,
-           (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_ws_stg.nwis_wqx_rpt_lev_cd@dbstage) nwis_wqx_rpt_lev_cd,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@dbstage) val_qual_cd1,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@dbstage) val_qual_cd2,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@dbstage) val_qual_cd3,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@dbstage) val_qual_cd4,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from nwis_ws_stg.val_qual_cd@dbstage) val_qual_cd5,
-           (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from nwis_ws_stg.HYD_EVENT_CD@dbstage) hyd_event_cd,
-           (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from nwis_ws_stg.hyd_cond_cd@dbstage) hyd_cond_cd,
-           (select district_cd, host_name from nwis_ws_stg.nwis_district_cds_by_host@dbstage) dist
+               lu_parm_meth) z_parm_meth,
+           (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_wqx_rpt_lev_cd) nwis_wqx_rpt_lev_cd,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd1,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd2,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd3,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd4,
+           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd5,
+           (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from hyd_event_cd) hyd_event_cd,
+           (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from hyd_cond_cd) hyd_cond_cd,
+           (select district_cd, host_name from nwis_district_cds_by_host) dist
          where
             r.result_web_cd    = ''Y''                         and
            (r.RESULT_VA        is not null  OR
@@ -674,7 +654,7 @@ create or replace package body create_nad_objects
             site.nwis_host     = dist.host_name and
             samp.SAMPLE_START_TIME_DATUM_CD = lu_tz.tz_cd(+)
          ) y,
-         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from nwis_ws_stg.aqfr@dbstage) aqfr
+         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from aqfr) aqfr
       where
          y.aqfr_cd  = aqfr.aqfr_cd (+) and
          y.state_cd = aqfr.state_cd(+)' ;
@@ -683,14 +663,14 @@ create or replace package body create_nad_objects
      exception
       when others then
          message := 'FAIL to create FA_REGULAR_RESULT: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_regular_result;
 
    procedure create_station
    is
    begin
 
-      append_email_text('creating station...');
+      dbms_output.put_line('creating station...');
 
       execute immediate
      'create table fa_station' || suffix || ' compress pctfree 0 nologging as
@@ -776,31 +756,31 @@ create or replace package body create_nad_objects
           nwis_ws_star.sitefile sitefile,
          (select cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
            ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name, host_name, district_cd
-          from nwis_ws_stg.nwis_district_cds_by_host@dbstage) ndcbh,
-         (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from nwis_ws_stg.country@dbstage) country,
-         (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from nwis_ws_stg.state@dbstage) state,
-         (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from nwis_ws_stg.county@dbstage) county,
-         (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from nwis_ws_stg.state@dbstage) postal,
+          from nwis_district_cds_by_host) ndcbh,
+         (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from stage_country) country,
+         (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from stage_state) state,
+         (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from stage_county) county,
+         (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from stage_state) postal,
          (select
              a.site_tp_cd,
              case when a.site_tp_prim_fg = ''Y'' then a.site_tp_ln
                   else b.site_tp_ln || '': '' || a.site_tp_ln
              end as station_type_name
           from
-             nwis_ws_stg.site_tp@dbstage a,
-             nwis_ws_stg.site_tp@dbstage b
+             site_tp a,
+             site_tp b
           where
              substr(a.site_tp_cd, 1, 2) = b.site_tp_cd and
              b.site_tp_prim_fg = ''Y'') site_tp,
-         (select nwis_name as vertical_method_name , nwis_code from nwis_ws_stg.nwis_misc_lookups@dbstage where category = ''Altitude Method'') vert,
-         (select nwis_name as geopositioning_method, nwis_code from nwis_ws_stg.nwis_misc_lookups@dbstage where category = ''Lat/Long Method'') geo_meth,
+         (select nwis_name as vertical_method_name , nwis_code from nwis_misc_lookups where category = ''Altitude Method'') vert,
+         (select nwis_name as geopositioning_method, nwis_code from nwis_misc_lookups where category = ''Lat/Long Method'') geo_meth,
          (select inferred_value as geopositioning_accuracy_value,
                  inferred_units as geopositioning_accuracy_units,
-                 nwis_code from nwis_ws_stg.nwis_misc_lookups@dbstage where category = ''Lat-Long Coordinate Accuracy'') geo_accuracy,
-         (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nwis_ws_stg.NAT_AQFR@dbstage group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr,
-         (select nwis_name as aqfr_type_name, nwis_code from nwis_ws_stg.NWIS_MISC_LOOKUPS@dbstage where CATEGORY=''Aquifer Type Code'') aqfr_type,
-         (select aqfr_nm as aqfr_name, state_cd, aqfr_cd from nwis_ws_stg.AQFR@dbstage) aqfr,
-         (select state_fips, state_cd from nwis_ws_stg.STATE_FIPS@dbstage) fips
+                 nwis_code from nwis_misc_lookups where category = ''Lat-Long Coordinate Accuracy'') geo_accuracy,
+         (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nat_aqfr group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr,
+         (select nwis_name as aqfr_type_name, nwis_code from nwis_misc_lookups where CATEGORY=''Aquifer Type Code'') aqfr_type,
+         (select aqfr_nm as aqfr_name, state_cd, aqfr_cd from aqfr) aqfr,
+         (select state_fips, state_cd from state_fips) fips
      where
        sitefile.DEC_LAT_VA   <> 0   and
        sitefile.DEC_LONG_VA  <> 0   and
@@ -832,7 +812,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL to create FA_STATION: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_station;
 
 
@@ -840,10 +820,10 @@ create or replace package body create_nad_objects
    is
    begin
 
-      append_email_text('creating nwis_station_sum...');
+      dbms_output.put_line('creating nwis_station_sum...');
 
-      execute immediate
-     'create table NWIS_STATION_SUM' || suffix || ' compress pctfree 0 nologging noparallel as
+      execute immediate     /* have seen problems with parallel 4, so make it parallel 1 */
+     'create table NWIS_STATION_SUM' || suffix || ' compress pctfree 0 nologging parallel 1 as
       select /*+ full(a) parallel(a, 4) */
          pk_isn,
          station_id,
@@ -874,7 +854,7 @@ create or replace package body create_nad_objects
 
       cleanup(3) := 'drop table NWIS_STATION_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_result_sum...');
+      dbms_output.put_line('creating nwis_result_sum...');
 
       execute immediate
      'create table NWIS_RESULT_SUM' || suffix || ' compress pctfree 0 nologging noparallel
@@ -945,7 +925,7 @@ create or replace package body create_nad_objects
 
       cleanup(4) := 'drop table NWIS_RESULT_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_result_ct_sum...');
+      dbms_output.put_line('creating nwis_result_ct_sum...');
 
       execute immediate
      'create table NWIS_RESULT_CT_SUM' || suffix || ' pctfree 0 compress nologging noparallel
@@ -1008,7 +988,7 @@ create or replace package body create_nad_objects
 
       cleanup(5) := 'drop table NWIS_RESULT_CT_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_result_nr_sum...');
+      dbms_output.put_line('creating nwis_result_nr_sum...');
 
       execute immediate
      'create table NWIS_RESULT_NR_SUM' || suffix || ' pctfree 0 compress nologging noparallel
@@ -1067,7 +1047,7 @@ create or replace package body create_nad_objects
 
       cleanup(6) := 'drop table NWIS_RESULT_NR_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_lctn_loc...');
+      dbms_output.put_line('creating nwis_lctn_loc...');
 
       execute immediate
      'create table nwis_lctn_loc' || suffix || ' compress pctfree 0 nologging noparallel as
@@ -1080,28 +1060,28 @@ create or replace package body create_nad_objects
 
       cleanup(7) := 'drop table nwis_lctn_loc' || suffix || ' cascade constraints purge';
       
-      append_email_text('creating nwis_di_org...');
+      dbms_output.put_line('creating nwis_di_org...');
 
       execute immediate
      'create table nwis_di_org' || suffix || ' compress pctfree 0 nologging noparallel as
       select distinct
              cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
              ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name
-        from nwis_ws_stg.nwis_district_cds_by_host@dbstage';
+        from nwis_district_cds_by_host';
 
       cleanup(8) := 'drop table nwis_di_org' || suffix || ' cascade constraints purge';
 
    exception
       when others then
          message := 'FAIL to create summaries: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_summaries;
 
    procedure create_series_catalog
    is
    begin
 
-      append_email_text('creating series catalog...');
+      dbms_output.put_line('creating series catalog...');
 
       execute immediate
      'create table SERIES_CATALOG' || suffix || ' compress pctfree 0 nologging as
@@ -1122,7 +1102,7 @@ create or replace package body create_nad_objects
       from
          temp_series_catalog c,
          fa_station' || suffix || ' s,
-         nwq_stg.lu_parm@dbstage p
+         lu_parm p
       where
          c.site_id = s.pk_isn and
          c.parm_cd = p.parm_cd';
@@ -1132,14 +1112,14 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL to create SERIES_CATALOG: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_series_catalog;
 
    procedure create_public_srsnames
    is
    begin
 
-      append_email_text('creating public_srsnames...');
+      dbms_output.put_line('creating public_srsnames...');
 
       execute immediate
      'create table public_srsnames' || suffix || ' compress pctfree 0 nologging as
@@ -1163,8 +1143,8 @@ create or replace package body create_nad_objects
                      then lu_parm.parm_rev_dt
                    else lu_parm_alias.parm_alias_rev_dt
                  end) over () max_last_rev_dt
-        from nwq_stg.lu_parm@dbstage
-             join nwq_stg.lu_parm_alias@dbstage
+        from lu_parm
+             join lu_parm_alias
                on lu_parm.parm_cd = lu_parm_alias.parm_cd and
                   ''SRSNAME'' = lu_parm_alias.parm_alias_cd
        where parm_public_fg = ''Y''
@@ -1175,14 +1155,14 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL to create public_srsnames: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_public_srsnames;
 
    procedure create_code_tables
    is
    begin
 
-      append_email_text('creating characteristicname...');
+      dbms_output.put_line('creating characteristicname...');
       execute immediate
       'create table characteristicname' || suffix || ' compress pctfree 0 nologging as
       select code_value,
@@ -1193,7 +1173,7 @@ create or replace package body create_nad_objects
                   order by 1)';
       cleanup(11) := 'drop table characteristicname' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating characteristictype...');
+      dbms_output.put_line('creating characteristictype...');
       execute immediate
       'create table characteristictype' || suffix || ' compress pctfree 0 nologging as
       select code_value,
@@ -1204,7 +1184,7 @@ create or replace package body create_nad_objects
                   order by 1)';
       cleanup(12) := 'drop table characteristictype' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating country...');
+      dbms_output.put_line('creating country...');
       execute immediate
       'create table country' || suffix || ' compress pctfree 0 nologging as
       select code_value,
@@ -1216,7 +1196,7 @@ create or replace package body create_nad_objects
                   order by country_name desc)';
       cleanup(13) := 'drop table country' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating county...');
+      dbms_output.put_line('creating county...');
       execute immediate
       'create table county' || suffix || ' compress pctfree 0 nologging as
       select code_value,
@@ -1235,7 +1215,7 @@ create or replace package body create_nad_objects
                            county_cd)';
      cleanup(14) := 'drop table county' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating organization...');
+      dbms_output.put_line('creating organization...');
       execute immediate
       'create table organization' || suffix || ' compress pctfree 0 nologging as
       select code_value,
@@ -1246,7 +1226,7 @@ create or replace package body create_nad_objects
                   order by 1)';
       cleanup(15) := 'drop table organization' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating samplemedia...');
+      dbms_output.put_line('creating samplemedia...');
       execute immediate
       'create table samplemedia' || suffix || ' compress pctfree 0 nologging as
        select code_value,
@@ -1257,7 +1237,7 @@ create or replace package body create_nad_objects
                    order by 1)';
       cleanup(16) := 'drop table samplemedia' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating sitetype...');
+      dbms_output.put_line('creating sitetype...');
       execute immediate
       'create table sitetype' || suffix || ' compress pctfree 0 nologging as
        select code_value,
@@ -1268,7 +1248,7 @@ create or replace package body create_nad_objects
                     order by 1)';
       cleanup(17) := 'drop table sitetype' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating state...');
+      dbms_output.put_line('creating state...');
       execute immediate
       'create table state' || suffix || ' compress pctfree 0 nologging as
       select code_value,
@@ -1289,7 +1269,7 @@ create or replace package body create_nad_objects
       exception
       when others then
          message := 'FAIL to create code_tables: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_code_tables;
    
    procedure create_index
@@ -1298,7 +1278,7 @@ create or replace package body create_nad_objects
       table_name      varchar2(   80);
    begin
 
-      append_email_text('creating indexes...');
+      dbms_output.put_line('creating indexes...');
 
       table_name := 'FA_STATION' || suffix;
 
@@ -1361,30 +1341,30 @@ create or replace package body create_nad_objects
 
       cleanup(19) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating qwportal_summary...');
+      dbms_output.put_line('creating qwportal_summary...');
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' cache noparallel';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' add constraint pk_' || table_name || ' primary key (pk_isn) using index nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index station_tp_nm_abbr' || suffix || ' on ' ||
                table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'')-1)) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index fa_station_co_st_co' || suffix || ' on ' ||
                table_name || ' (country_cd, state_cd, county_cd) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create index station_id' || suffix || ' on ' ||
                table_name || ' (station_id) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'FA_REGULAR_RESULT' || suffix;
@@ -1398,22 +1378,22 @@ create or replace package body create_nad_objects
             parameter_code
       ---------------------------------*/
       stmt := 'alter table ' || table_name || ' cache ';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index fk_station_i' || suffix || ' on ' ||
                table_name || ' (FK_STATION) local nologging ';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index activity_id_i' || suffix || ' on ' ||
                table_name || ' (ACTIVITY_ID) local nologging ';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' add (constraint fk_station_fk' || suffix ||
               ' foreign key (fk_station) references ' || 'fa_station' || suffix || ' (pk_isn))';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index media_nm_bm_i' || suffix || ' on ' ||
@@ -1422,17 +1402,17 @@ create or replace package body create_nad_objects
 
       stmt := 'create bitmap index char_nm_bm_i' || suffix || ' on ' ||
                table_name || ' (characteristic_name) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index parm_i' || suffix || ' on ' ||
                table_name || ' (parameter_code) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index char_type_bm_i' || suffix || ' on ' ||
                table_name || ' (characteristic_type) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       /* note: this view seems to use the invoker rather than the definer.
@@ -1446,19 +1426,19 @@ create or replace package body create_nad_objects
 
       stmt := 'create index fa_station_geom_sp_idx' || suffix || ' on ' ||
               'FA_STATION' || suffix || ' (GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARAMETERS (''SDO_INDX_DIMS=2 LAYER_GTYPE="POINT"'')';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'SERIES_CATALOG' || suffix;
 
       stmt := 'create index fk_station2_i' || suffix || ' on ' ||
                table_name || ' (FK_STATION) nologging compress';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' add (constraint fk_station2_fk' || suffix ||
               ' foreign key (fk_station) references ' || 'fa_station' || suffix || ' (pk_isn))';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'NWIS_STATION_SUM' || suffix;
@@ -1472,139 +1452,139 @@ create or replace package body create_nad_objects
 
       stmt := 'create        index nwis_station_sum_2' || suffix || ' on ' ||
                table_name || ' (geom) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARAMETERS (''SDO_INDX_DIMS=2 LAYER_GTYPE="POINT"'')';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_3' || suffix || ' on ' ||
                table_name || ' (state_cd, county_cd ) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_4' || suffix || ' on ' ||
                table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_5' || suffix || ' on ' ||
                table_name || ' (organization_id     ) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_6' || suffix || ' on ' ||
                table_name || ' (hydrologic_unit_code) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'NWIS_RESULT_SUM' || suffix;
 
       stmt := 'create bitmap index nwis_result_sum_1' || suffix || ' on ' ||
                table_name || ' (fk_station          ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_2' || suffix || ' on ' ||
                table_name || ' (state_cd, county_cd ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_3' || suffix || ' on ' ||
                table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_4' || suffix || ' on ' ||
                table_name || ' (organization_id     ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_5' || suffix || ' on ' ||
                table_name || ' (hydrologic_unit_code) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_6' || suffix || ' on ' ||
                table_name || ' (activity_media_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_7' || suffix || ' on ' ||
                table_name || ' (characteristic_type ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_8' || suffix || ' on ' ||
                table_name || ' (characteristic_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_9' || suffix || ' on ' ||
                table_name || ' (parameter_code      ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'NWIS_RESULT_CT_SUM' || suffix;
       stmt := 'create bitmap index nwis_result_ct_sum_1' || suffix || ' on ' ||
                table_name || ' (fk_station          ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_2' || suffix || ' on ' ||
                table_name || ' (state_cd, county_cd ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_3' || suffix || ' on ' ||
                table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_4' || suffix || ' on ' ||
                table_name || ' (organization_id     ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_5' || suffix || ' on ' ||
                table_name || ' (hydrologic_unit_code) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_6' || suffix || ' on ' ||
                table_name || ' (activity_media_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_7' || suffix || ' on ' ||
                table_name || ' (characteristic_type ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_8' || suffix || ' on ' ||
                table_name || ' (characteristic_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'NWIS_RESULT_NR_SUM' || suffix;
       stmt := 'create bitmap index nwis_result_nr_sum_1' || suffix || ' on ' ||
                table_name || ' (fk_station          ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_nr_sum_2' || suffix || ' on ' ||
                table_name || ' (activity_media_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_nr_sum_3' || suffix || ' on ' ||
                table_name || ' (characteristic_type ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_nr_sum_4' || suffix || ' on ' ||
                table_name || ' (characteristic_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
-      append_email_text('grants...');
+      dbms_output.put_line('grants...');
       execute immediate 'grant select on fa_station'          || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on fa_regular_result'   || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on series_catalog'      || suffix || ' to nwis_ws_user';
@@ -1625,50 +1605,50 @@ create or replace package body create_nad_objects
       execute immediate 'grant select on sitetype'            || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on state'               || suffix || ' to nwis_ws_user';
 
-      append_email_text('analyze fa_station...');  /* takes about 1.5 minutes*/
+      dbms_output.put_line('analyze fa_station...');  /* takes about 1.5 minutes*/
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_STATION'        || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze fa_regular_result...');  /* takes about 20 minutes */
+      dbms_output.put_line('analyze fa_regular_result...');  /* takes about 20 minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_REGULAR_RESULT' || suffix, null,  10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze series_catalog...');  /* takes about 3 minutes */
+      dbms_output.put_line('analyze series_catalog...');  /* takes about 3 minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SERIES_CATALOG'    || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze qwportal_summary...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze qwportal_summary...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'QWPORTAL_SUMMARY'  || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_station_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_station_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_STATION_SUM'  || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_result_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_result_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_result_ct_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_result_ct_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_CT_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_result_nr_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_result_nr_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_NR_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_lctn_loc...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_lctn_loc...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_LCTN_LOC'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_di_org...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_di_org...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_DI_ORG'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze public_srsnames...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze public_srsnames...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'PUBLIC_SRSNAMES'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
-      append_email_text('analyze characteristicname...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze characteristicname...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'CHARACTERISTICNAME'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze characteristictype...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze characteristictype...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'CHARACTERISTICTYPE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze country...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze country...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'COUNTRY'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze county...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze county...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'COUNTY'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze organization...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze organization...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'ORGANIZATION'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze samplemedia...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze samplemedia...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SAMPLEMEDIA'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze sitetype...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze sitetype...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SITETYPE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze state...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze state...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'STATE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
    exception
       when others then
          message := 'FAIL with index: ' || stmt || '  --> ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_index;
 
    procedure validate
@@ -1684,7 +1664,7 @@ create or replace package body create_nad_objects
       situation    varchar2(200);
    begin
 
-      append_email_text('validating...');
+      dbms_output.put_line('validating...');
 
       select count(*) into old_rows from fa_regular_result;
       query := 'select count(*) from fa_regular_result' || suffix;
@@ -1701,7 +1681,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for fa_regular_result: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -1721,7 +1701,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for fa_station: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -1741,7 +1721,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for series_catalog: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -1761,7 +1741,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for qwportal_summary: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -1777,7 +1757,7 @@ create or replace package body create_nad_objects
          pass_fail := 'PASS';
       end if;
       situation := pass_fail || ': found ' || to_char(index_count) || ' indexes.';
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -1794,7 +1774,7 @@ create or replace package body create_nad_objects
          pass_fail := 'PASS';
       end if;
       situation := pass_fail || ': found ' || to_char(grant_count) || ' grants.';
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -1802,7 +1782,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL validation with query problem: ' || query || ' ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
 
    end validate;
 
@@ -1811,7 +1791,7 @@ create or replace package body create_nad_objects
    	  suffix_less_one varchar2(10) := '_' || to_char(to_number(substr(suffix, 2) - 1), 'fm00000');
    begin
 
-      append_email_text('installing...');
+      dbms_output.put_line('installing...');
 
       execute immediate 'create or replace synonym fa_station for fa_station'                  || suffix;
       execute immediate 'create or replace synonym fa_regular_result for fa_regular_result'    || suffix;
@@ -1840,7 +1820,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL with synonyms: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
 
    end install;
 
@@ -1861,14 +1841,14 @@ create or replace package body create_nad_objects
       stmt      varchar2(80);
    begin
 
-      append_email_text('drop_old_stuff...');
+      dbms_output.put_line('drop_old_stuff...');
 
       open to_drop for drop_query using suffix;
       loop
          fetch to_drop into drop_name;
          exit when to_drop%NOTFOUND;
          stmt := 'drop table ' || drop_name;
-         append_email_text('CLEANUP old stuff: ' || stmt);
+         dbms_output.put_line('CLEANUP old stuff: ' || stmt);
          execute immediate stmt;
       end loop;
       close to_drop;
@@ -1878,7 +1858,7 @@ create or replace package body create_nad_objects
          fetch to_nocache into nocache_name;
          exit when to_nocache%NOTFOUND;
          stmt := 'alter table ' || nocache_name || ' nocache';
-         append_email_text('CLEANUP old stuff: ' || stmt);
+         dbms_output.put_line('CLEANUP old stuff: ' || stmt);
          execute immediate stmt;
       end loop;
       close to_nocache;
@@ -1886,7 +1866,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'tried to drop ' || drop_name || ' : ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
 
    end drop_old_stuff;
 
@@ -1902,7 +1882,7 @@ create or replace package body create_nad_objects
          cleanup(k) := NULL;
       end loop;
 
-      append_email_text('started nad table transformation.');
+      dbms_output.put_line('started nad table transformation.');
       determine_suffix;
       if message is null then create_regular_result;  end if;
       if message is null then create_station;         end if;
@@ -1915,14 +1895,13 @@ create or replace package body create_nad_objects
       if message is null then
          install;
       else
-         append_email_text('completed. (failed)');
+         dbms_output.put_line('completed. (failed)');
          dbms_output.put_line('errors occurred.');
-         email_subject := 'nad load FAILED';
-         email_text := email_subject || lf || lf || email_text;
+         dbms_output.put_line('nad load FAILED');
          email_notify := failure_notify;
          for k in 1 .. 20 loop
             if cleanup(k) is not null then
-               append_email_text('CLEANUP: ' || cleanup(k));
+               dbms_output.put_line('CLEANUP: ' || cleanup(k));
                execute immediate cleanup(k);
             end if;
          end loop;
@@ -1931,26 +1910,13 @@ create or replace package body create_nad_objects
       if message is null then
          drop_old_stuff;
          if message is null then
-            append_email_text('completed. (success)');
-            message := 'OK';
-            email_subject := 'nad load successful';
-            email_text := email_subject || lf || lf || email_text || lf || 'have a nice day!' || lf || '-barry''s program';
-            email_notify := success_notify;
+            dbms_output.put_line('completed. (success)');
          else
-            append_email_text('completed. (failed)');
+            dbms_output.put_line('completed. (failed)');
             dbms_output.put_line('errors occurred.');
-            email_subject := 'nad load FAILED in drop_old_stuff';
-            email_text := email_subject || lf || lf || email_text;
-            email_notify := failure_notify;
          end if;
       end if;
       
-      $IF $$ci_db $THEN
-         dbms_output.put_line('Not emailing from ci database.');
-         dbms_output.put_line(email_text);
-	  $ELSE
-         utl_mail.send@dbtrans(sender => 'bheck@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
-      $END
       mesg := message;
 
    end main;
