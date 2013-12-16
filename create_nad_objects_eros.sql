@@ -1324,7 +1324,6 @@ create or replace package body create_nad_objects
                   fips_county_code,
                   fips_state_code || fips_county_code fips_state_and_county,
                   cast(''E'' as varchar2(1)) nwis_or_epa,
-                  /* took out characteristic_group, */
                   site_type,
                   huc8,
                   huc12,
@@ -1829,6 +1828,7 @@ create or replace package body create_nad_objects
       to_drop cursor_type;
       drop_query varchar2(4000) := 'select table_name from user_tables where ' || table_list ||
             ' and substr(table_name, -5) <= to_char(to_number(substr(:current_suffix, 2) - 2), ''fm00000'')' ||
+            ' and substr(table_name, -5) <> ''00000''' ||
                ' order by case when table_name like ''FA_STATION%'' then 2 else 1 end, table_name';
 
       to_nocache cursor_type;
