@@ -1597,12 +1597,12 @@ create or replace package body create_nad_objects
       execute immediate 'grant select on public_srsnames'     || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on characteristicname'  || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on characteristictype'  || suffix || ' to nwis_ws_user';
-      execute immediate 'grant select on country'             || suffix || ' to nwis_ws_user';
-      execute immediate 'grant select on county'              || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on country'             || suffix || ' to nwis_ws_user, ars_stewards';
+      execute immediate 'grant select on county'              || suffix || ' to nwis_ws_user, ars_stewards';
       execute immediate 'grant select on organization'        || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on samplemedia'         || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on sitetype'            || suffix || ' to nwis_ws_user';
-      execute immediate 'grant select on state'               || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on state'               || suffix || ' to nwis_ws_user, ars_stewards';
 
       dbms_output.put_line('analyze fa_station...');  /* takes about 1.5 minutes*/
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_STATION'        || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
