@@ -1710,7 +1710,7 @@ create or replace package body create_nad_objects
 
       append_email_text('grants...');
       execute immediate 'grant select on fa_station'          || suffix || ' to nwis_ws_user';
-      execute immediate 'grant select on fa_regular_result'   || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on fa_regular_result'   || suffix || ' to nwis_ws_user, wqp_user';
       execute immediate 'grant select on series_catalog'      || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on qwportal_summary'    || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on nwis_station_sum'    || suffix || ' to nwis_ws_user';
