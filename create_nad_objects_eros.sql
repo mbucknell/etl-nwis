@@ -751,7 +751,8 @@ create or replace package body create_nad_objects
                else null
           end */ cast(NULL as varchar2(32)) as WQX_STATION_TYPE,
           mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(round(dec_long_va, 7),round(dec_lat_va, 7), null), null, null) as GEOM,
-          fips.state_fips
+          fips.state_fips,
+          substr(station_type_name||':',1,instr(station_type_name||':',':')-1) site_type
       from
           nwis_ws_star.sitefile sitefile,
          (select cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
