@@ -1322,6 +1322,7 @@ create or replace package body create_nad_objects
                                    xmlelement("MonitoringLocationTypeName", station_type_name),
                                    xmlelement("MonitoringLocationDescriptionText", description_text),
                                    xmlelement("HUCEightDigitCode", hydrologic_unit_code),
+                                   xmlelement("HUCTwelveDigitCode", null),
                                    xmlelement("DrainageAreaMeasure",
                                               xmlelement("MeasureValue", drain_area_mi2_va),
                                               xmlelement("MeasureUnitCode", nvl2(drain_area_mi2_va,'sq mi',null))
@@ -1378,7 +1379,7 @@ create or replace package body create_nad_objects
              to_char(state_cd, 'fm09') state_cd,
              station_type_name,
              0 result_count
-        from fa_station!';
+        from fa_station!' || suffix;
 
       execute immediate 'merge into station' || suffix || ' a
                          using (select pk_isn, result_count
@@ -1390,9 +1391,171 @@ create or replace package body create_nad_objects
       
       cleanup(19) := 'drop table station' || suffix || ' cascade constraints purge';
 
+      append_email_text('creating activity & result...');
+      
+      execute immediate 'truncate table result_temp';
+      execute immediate 'delete from activity_temp';
+      commit;
+      
+      execute immediate q'!insert all /*+ append nologging parallel 4*/
+                           when myrank = 1 then
+                             into activity_temp
+                               values (sequence1.nextval, activity_details, station_pk, organization_id, station_id, activity_start, activity_id) 
+                           when 1=1 then
+                           into result_temp
+                             values (result_id, result_details, sequence1.currval, station_pk, station_id, activity_start, characteristic_name, country_cd, county_cd, huc_8, organization_id, sample_media, state_cd, site_type) 
+                               select /*+ no_parallel */
+                                      --pk_isn,
+                                      xmlelement("Activity",
+                                                 xmlelement("ActivityDescription",
+                                                            xmlelement("ActivityIdentifier", r.activity_id),
+                                                            xmlelement("ActivityTypeCode", r.activity_type),
+                                                            xmlelement("ActivityMediaName", r.activity_media_name),
+                                                            xmlelement("ActivityMediaSubdivisionName", r.activity_media_subdiv_name),
+                                                            xmlelement("ActivityStartDate", r.activity_start_date_tx),
+                                                            xmlelement("ActivityStartTime",
+                                                                       xmlelement("Time", r.activity_start_time_tx),
+                                                                       xmlelement("TimeZoneCode", r.act_start_time_zone)
+                                                                      ),
+                                                            xmlelement("ActivityEndDate", r.activity_stop_date_tx),
+                                                            xmlelement("ActivityEndTime",
+                                                                       xmlelement("Time", r.activity_stop_time_tx),
+                                                                       xmlelement("TimeZoneCode", r.act_stop_time_zone)
+                                                                      ),
+                                                            xmlelement("ActivityDepthHeightMeasure",
+                                                                       xmlelement("MeasureValue", r.activity_depth),
+                                                                       xmlelement("MeasureUnitCode", r.activity_depth_unit)
+                                                                      ),
+                                                            xmlelement("ActivityDepthAltitudeReferencePointText", r.activity_depth_ref_point),
+                                                            xmlelement("ActivityTopDepthHeightMeasure",
+                                                                       xmlelement("MeasureValue", r.activity_upper_depth),
+                                                                       xmlelement("MeasureUnitCode", NVL2(r.ACTIVITY_UPPER_DEPTH, r.UPR_LWR_DEPTH_UNIT, NULL) /*r.activity_upper_depth_unit*/)
+                                                                      ),
+                                                            xmlelement("ActivityBottomDepthHeightMeasure",
+                                                                       xmlelement("MeasureValue", r.activity_lower_depth),
+                                                                       xmlelement("MeasureUnitCode", NVL2(r.ACTIVITY_LOWER_DEPTH, r.UPR_LWR_DEPTH_UNIT, NULL) /*r.activity_lower_depth_unit*/)
+                                                                      ),
+                                                            xmlelement("ActivityDepthAltitudeReferencePointText", r.activity_uprlwr_depth_ref_pt),
+                                                            xmlelement("ProjectIdentifier", r.project_id),
+                                                            xmlelement("ActivityConductingOrganizationText", r.activity_conducting_org),
+                                                            xmlelement("MonitoringLocationIdentifier", s.station_id),
+                                                            xmlelement("ActivityCommentText", r.activity_comment),
+                                                            xmlelement("SampleAquifer", r.sample_aqfr_name),
+                                                            xmlelement("HydrologicCondition", r.hydrologic_condition_name),
+                                                            xmlelement("HydrologicEvent", r.hydrologic_event_name)
+                                                           ),
+                                                 xmlelement("SampleDescription",
+                                                            xmlelement("SampleCollectionMethod",
+                                                                       xmlelement("MethodIdentifier", r.sample_collect_method_id),
+                                                                       xmlelement("MethodIdentifierContext", r.sample_collect_method_ctx),
+                                                                       xmlelement("MethodName", r.sample_collect_method_name)
+                                                                      ),
+                                                            xmlelement("SampleCollectionEquipmentName", r.sample_collect_equip_name)
+                                                           )
+                                                ) activity_details,
+                                      xmlelement("Result", 
+                                                 xmlelement("ResultDescription",
+                                                            xmlelement("ResultDetectionConditionText", r.result_detection_condition_tx),
+                                                            xmlelement("CharacteristicName", r.characteristic_name),
+                                                            xmlelement("ResultSampleFractionText", r.sample_fraction_type),
+                                                            xmlelement("ResultMeasure",
+                                                                       xmlelement("ResultMeasureValue", r.result_value_text),
+                                                                       xmlelement("MeasureUnitCode", r.result_unit),
+                                                                       xmlelement("MeasureQualifierCode", null)
+                                                                      ),
+                                                            xmlelement("ResultStatusIdentifier", r.result_value_status),
+                                                            xmlelement("StatisticalBaseCode", r.statistic_type),
+                                                            xmlelement("ResultValueTypeName", r.result_value_type),
+                                                            xmlelement("ResultWeightBasisText", r.weight_basis_type),
+                                                            xmlelement("ResultTimeBasisText", r.duration_basis),
+                                                            xmlelement("ResultTemperatureBasisText", r.temperature_basis_level),
+                                                            xmlelement("ResultParticleSizeBasisText", r.particle_size),
+                                                            xmlelement("DataQuality",
+                                                                       xmlelement("PrecisionValue", r.precision)
+                                                                      ),
+                                                            xmlelement("ResultCommentText", r.result_comment),
+                                                            xmlelement("USGSPCode", r.parameter_code),
+                                                            xmlelement("ResultDepthHeightMeasure",
+                                                                       xmlelement("MeasureValue", null),
+                                                                       xmlelement("MeasureUnitCode", null)
+                                                                      ),
+                                                           xmlelement("ResultDepthAltitudeReferencePointText", null)
+                                                           ),
+                                                 xmlelement("BiologicalResultDescription",
+                                                            xmlelement("SubjectTaxonomicName", r.sample_tissue_taxonomic_name),
+                                                            xmlelement("SampleTissueAnatomyName", r.sample_tissue_anatomy_name)
+                                                           ),
+                                                 xmlelement("ResultAnalyticalMethod",
+                                                            xmlelement("MethodIdentifier", r.analytical_procedure_id),
+                                                            xmlelement("MethodIdentifierContext", r.analytical_method_name),
+                                                            xmlelement("MethodDescriptionText", r.analytical_method_citation)
+                                                           ),
+                                                 xmlelement("ResultLabInformation",
+                                                            xmlelement("LaboratoryName", r.lab_name),
+                                                            xmlelement("AnalysisStartDate", r.analysis_date_time),
+                                                            xmlelement("ResultLaboratoryCommentText", r.lab_remark),
+                                                            xmlelement("ResultDetectionQuantitationLimit",
+                                                                       xmlelement("DetectionQuantitationLimitTypeName", NVL2(r.DETECTION_LIMIT, r.DETECTION_LIMIT_DESCRIPTION, NULL) /*myqldesc*/),
+                                                                       xmlelement("DetectionQuantitationLimitMeasure",
+                                                                                  xmlelement("MeasureValue", r.DETECTION_LIMIT /*myql*/),
+                                                                                  xmlelement("MeasureUnitCode", NVL2(r.DETECTION_LIMIT, r.RESULT_UNIT, NULL) /*myqlunits*/)
+                                                                                 )
+                                                                      )
+                                                           ),
+                                                 xmlelement("LabSamplePreparation",
+                                                            xmlelement("PreparationStartDate", r.analysis_prep_date_tx)
+                                                           )
+                                                ) result_details,
+                                      activity_id,
+                                      r.fk_station station_pk,
+                                      s.station_id,
+                                      r.activity_start_date_time activity_start,
+                                      r.characteristic_name,       
+                                      s.country_cd,
+                                      to_char(s.county_cd, 'fm009') county_cd,
+                                      s.hydrologic_unit_code huc_8,
+                                      s.organization_id,
+                                      r.activity_media_name sample_media,
+                                      to_char(s.state_cd, 'fm09') state_cd,
+                                      s.station_type_name site_type,
+                                      rownum result_id,
+                                      dense_rank() over (partition by r.activity_id order by activity_id, rownum) myrank,
+                                      min(rownum) keep (dense_rank first order by rownum) over (partition by r.activity_id) activity_pk
+                                 from fa_regular_result!' || suffix || ' r
+                                      join fa_station' || suffix || ' s
+                                        on r.fk_station = s.pk_isn';
+
+      select listagg(partition_desc, ', ') within group (order by sort_order)
+        into partition_list
+        from (select 'partition activity_' || sort_order || q'! values ('!' || code_value || q'!')!' partition_desc, sort_order
+          from organization);
+          
+      execute immediate
+     'create table activity' || suffix || ' compress pctfree 0 nologging
+      partition by list (organization_id) (' || partition_list || q'!) as
+      select /*+ no_parallel */
+             *
+        from activity_temp';
+
+      cleanup(20) := 'drop table activity' || suffix || ' cascade constraints purge';
+
+      select listagg(partition_desc, ', ') within group (order by sort_order)
+        into partition_list
+        from (select 'partition result_' || sort_order || q'! values ('!' || code_value || q'!')!' partition_desc, sort_order
+          from organization);
+          
+      execute immediate
+     'create table result' || suffix || ' compress pctfree 0 nologging
+      partition by list (organization_id) (' || partition_list || q'!) as
+      select /*+ no_parallel */
+             *
+        from result_temp';
+
+      cleanup(21) := 'drop table result' || suffix || ' cascade constraints purge';
+
    exception
       when others then
-         message := 'FAIL to create public_srsnames: ' || SQLERRM;
+         message := 'FAIL to create an xml table: ' || SQLERRM;
          append_email_text(message);
    end create_xml_tables;
 
@@ -1429,8 +1592,8 @@ create or replace package body create_nad_objects
                   cast(sum(case when months_between(sysdate, activity_start_date_time) between 0 and 60 then 1 else 0 end) as number(7)) as results_past_60_months,
                   cast(count(*) as number(7)) as results_all_time
                from
-                  nwis_ws_star.fa_station station,
-                  nwis_ws_star.fa_regular_result result
+                  nwis_ws_star.fa_station' || suffix || ' station,
+                  nwis_ws_star.fa_regular_result' || suffix || ' result
                where
                   station.pk_isn = result.fk_station and
                   station.state_cd between ''01'' and ''56'' and
@@ -1463,7 +1626,7 @@ create or replace package body create_nad_objects
                from
                   storet_sum';
 
-      cleanup(20) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
+      cleanup(22) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
 
       append_email_text('creating qwportal_summary...');
       execute immediate stmt;
@@ -1722,12 +1885,12 @@ create or replace package body create_nad_objects
       execute immediate 'grant select on public_srsnames'     || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on characteristicname'  || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on characteristictype'  || suffix || ' to nwis_ws_user';
-      execute immediate 'grant select on country'             || suffix || ' to nwis_ws_user';
-      execute immediate 'grant select on county'              || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on country'             || suffix || ' to nwis_ws_user, ars_stewards';
+      execute immediate 'grant select on county'              || suffix || ' to nwis_ws_user, ars_stewards';
       execute immediate 'grant select on organization'        || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on samplemedia'         || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on sitetype'            || suffix || ' to nwis_ws_user';
-      execute immediate 'grant select on state'               || suffix || ' to nwis_ws_user';
+      execute immediate 'grant select on state'               || suffix || ' to nwis_ws_user, ars_stewards';
 
       append_email_text('analyze fa_station...');  /* takes about 1.5 minutes*/
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_STATION'        || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
@@ -1934,6 +2097,7 @@ create or replace package body create_nad_objects
       execute immediate 'create or replace synonym samplemedia for samplemedia'                || suffix;
       execute immediate 'create or replace synonym sitetype for sitetype'                      || suffix;
       execute immediate 'create or replace synonym state for state'                            || suffix;
+      execute immediate 'create or replace synonym station for station'                        || suffix;
 
       execute immediate 'create or replace synonym nwis_lctn_loc_new for nwis_lctn_loc'        || suffix;
       execute immediate 'create or replace synonym nwis_lctn_loc_old for nwis_lctn_loc'        || suffix_less_one;
@@ -2002,7 +2166,7 @@ create or replace package body create_nad_objects
       message := null;
       dbms_output.enable(100000);
 
-      for k in 1 .. 20 loop
+      for k in 1 .. 25 loop
          cleanup(k) := NULL;
       end loop;
 
@@ -2025,7 +2189,7 @@ create or replace package body create_nad_objects
          email_subject := 'nad load FAILED';
          email_text := email_subject || lf || lf || email_text;
          email_notify := failure_notify;
-         for k in 1 .. 20 loop
+         for k in 1 .. 25 loop
             if cleanup(k) is not null then
                append_email_text('CLEANUP: ' || cleanup(k));
                execute immediate cleanup(k);

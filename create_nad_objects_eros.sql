@@ -752,7 +752,7 @@ create or replace package body create_nad_objects
           end */ cast(NULL as varchar2(32)) as WQX_STATION_TYPE,
           mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(round(dec_long_va, 7),round(dec_lat_va, 7), null), null, null) as GEOM,
           fips.state_fips,
-          substr(station_type_name||'':'',1,instr(station_type_name||'':'','':'')-1) site_type
+          site_tp.primary_site_type
       from
           nwis_ws_star.sitefile sitefile,
          (select cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
@@ -766,7 +766,10 @@ create or replace package body create_nad_objects
              a.site_tp_cd,
              case when a.site_tp_prim_fg = ''Y'' then a.site_tp_ln
                   else b.site_tp_ln || '': '' || a.site_tp_ln
-             end as station_type_name
+             end as station_type_name,
+             case when a.site_tp_prim_fg = ''Y'' then a.site_tp_ln
+                  else b.site_tp_ln
+             end as primary_site_type
           from
              site_tp a,
              site_tp b
@@ -833,7 +836,7 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         substr(station_type_name , 1, instr(station_type_name || '':'', '':'') - 1) station_type_name,
+         primary_site_type,
          description_text,
          organization_id,
          organization_name,
@@ -851,7 +854,7 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         station_type_name ';
+         primary_site_type';
 
       cleanup(3) := 'drop table NWIS_STATION_SUM' || suffix || ' cascade constraints purge';
 
@@ -893,7 +896,7 @@ create or replace package body create_nad_objects
             country_cd,
             state_cd,
             county_cd,
-            station_type_name,
+            primary_site_type,
             organization_id,
             hydrologic_unit_code,
             activity_media_name,
@@ -956,7 +959,7 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         station_type_name,
+         primary_site_type,
          organization_id,
          hydrologic_unit_code,
          activity_media_name,
@@ -972,7 +975,7 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         station_type_name,
+         primary_site_type,
          organization_id,
          hydrologic_unit_code,
          activity_media_name,
@@ -1166,7 +1169,7 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating characteristicname...');
       execute immediate
       'create table characteristicname' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
+      select cast(code_value as varchar2(500 char)) code_value,
              cast(null as varchar2(4000 char)) description,
              rownum sort_order
         from (select distinct characteristic_name code_value
@@ -1177,7 +1180,7 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating characteristictype...');
       execute immediate
       'create table characteristictype' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
+      select cast(code_value as varchar2(500 char)) code_value,
              cast(null as varchar2(4000 char)) description,
              rownum sort_order
         from (select distinct characteristic_type code_value
@@ -1188,8 +1191,8 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating country...');
       execute immediate
       'create table country' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             description,
+      select cast(code_value as varchar2(2 char)) code_value,
+             cast(description as varchar2(48 char)) description,
              rownum sort_order
         from (select distinct country_cd code_value,
                      country_name description
@@ -1200,10 +1203,10 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating county...');
       execute immediate
       'create table county' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             description,
-             country_cd,
-             state_cd,
+      select cast(code_value as varchar2(9 char)) code_value,
+             cast(description as varchar2(107 char)) description,
+             cast(country_cd as varchar2(2 char)) country_cd,
+             cast(state_cd as varchar2(2 char)) state_cd,
              rownum sort_order
         from (select distinct country_cd||'':''||state_cd|| '':''||county_cd code_value,
                      country_cd||'', ''||state_name||'', ''||county_name description,
@@ -1219,7 +1222,7 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating organization...');
       execute immediate
       'create table organization' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
+      select cast(code_value as varchar2(500 char)) code_value,
              cast(null as varchar2(4000 char)) description,
              rownum sort_order
         from (select distinct organization_id code_value
@@ -1230,7 +1233,7 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating samplemedia...');
       execute immediate
       'create table samplemedia' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
+       select cast(code_value as varchar2(30 char)) code_value,
               cast(null as varchar2(4000 char)) description,
               rownum sort_order
          from (select distinct activity_media_name code_value
@@ -1241,10 +1244,10 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating sitetype...');
       execute immediate
       'create table sitetype' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
+       select cast(code_value as varchar2(500 char)) code_value,
               cast(null as varchar2(4000 char)) description,
               rownum sort_order
-         from (select distinct substr(station_type_name||'':'',1,instr(station_type_name||'':'','':'')-1) code_value
+         from (select distinct primary_site_type code_value
                  from fa_station' || suffix || '
                     order by 1)';
       cleanup(17) := 'drop table sitetype' || suffix || ' cascade constraints purge';
@@ -1252,10 +1255,10 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating state...');
       execute immediate
       'create table state' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             description_with_country,
-             description_with_out_country,
-             country_cd,
+      select cast(code_value as varchar2(5 char)) code_value,
+             cast(description_with_country as varchar2(57 char)) description_with_country,
+             cast(description_with_out_country as varchar2(53 char)) description_with_out_country,
+             cast(country_cd as varchar2(2 char)) country_cd,
              rownum sort_order
         from (select distinct country_cd||'':''||state_cd code_value,
                      country_cd||'', ''||state_name description_with_country,
@@ -1283,18 +1286,14 @@ create or replace package body create_nad_objects
 
       table_name := 'FA_STATION' || suffix;
 
-      /*------------usage:
-         SUBSTR(a.STATION_TYPE_NAME||':',1,INSTR(a.STATION_TYPE_NAME||':',':')-1)    --> verified used
-      ---------------------------------*/
-
       stmt := 'create table qwportal_summary' || suffix || ' compress nologging pctfree 0 cache as
                select
                   trim(station.state_cd) as fips_state_code,
                   trim(station.county_cd) as fips_county_code,
                   trim(station.state_cd) || trim(station.county_cd) as fips_state_and_county,
-                  cast(''N'' as varchar2(1)) as nwis_or_epa,
+                  cast(''N'' as varchar2(1 char)) as nwis_or_epa,
                   /* took out trim(result.characteristic_type) as characteristic_type, */
-                  cast(substr(station.station_type_name, 1, instr(station.station_type_name || '':'', '':'') - 1) as varchar2(30)) as site_type,
+                  cast(primary_site_type as varchar2(30)) as site_type,
                   cast(trim(station.hydrologic_unit_code) as varchar2(8)) as huc8,
                   cast(null as varchar2(12)) as huc12,
                   min(case when activity_start_date_time between to_date(''01-JAN-1875'', ''DD-MON-YYYY'') and sysdate then activity_start_date_time else null end) as min_date,
@@ -1317,7 +1316,7 @@ create or replace package body create_nad_objects
                   trim(station.county_cd),
                   trim(station.state_cd) || trim(station.county_cd),
                   /*  took out trim(result.characteristic_type), */
-                  substr(station.station_type_name, 1, instr(station.station_type_name || '':'', '':'') - 1),
+                  primary_site_type,
                   trim(station.hydrologic_unit_code)
                union all
                select
@@ -1352,8 +1351,8 @@ create or replace package body create_nad_objects
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
-      stmt := 'create bitmap index station_tp_nm_abbr' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'')-1)) nologging';
+      stmt := 'create bitmap index fa_station_primary_type' || suffix || ' on ' ||
+               table_name || ' (primary_site_type) nologging';
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
@@ -1461,7 +1460,7 @@ create or replace package body create_nad_objects
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_4' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) nologging';
+               table_name || ' (primary_site_type) nologging';
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
@@ -1488,7 +1487,7 @@ create or replace package body create_nad_objects
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_3' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) local nologging';
+               table_name || ' (primary_site_type) local nologging';
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
@@ -1534,7 +1533,7 @@ create or replace package body create_nad_objects
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_3' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) local nologging';
+               table_name || ' (primary_site_type) local nologging';
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
