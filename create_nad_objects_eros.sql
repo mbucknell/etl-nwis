@@ -93,32 +93,32 @@ create or replace package body create_nad_objects
       dbms_output.put_line('creating regular_result...');
 
       execute immediate '
-      create table fa_regular_result' || suffix || ' parallel 4 compress pctfree 0 nologging
+      create table fa_regular_result' || suffix || q'! parallel 4 compress pctfree 0 nologging
       partition by range(activity_start_date_time)
       (
-         partition fa_regular_result_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1990     values less than (to_date(''01-JAN-1991'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1991     values less than (to_date(''01-JAN-1992'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1992     values less than (to_date(''01-JAN-1993'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1993     values less than (to_date(''01-JAN-1994'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1994     values less than (to_date(''01-JAN-1995'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1995     values less than (to_date(''01-JAN-1996'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1996     values less than (to_date(''01-JAN-1997'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1997     values less than (to_date(''01-JAN-1998'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1998     values less than (to_date(''01-JAN-1999'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1999     values less than (to_date(''01-JAN-2000'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2000     values less than (to_date(''01-JAN-2001'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2001     values less than (to_date(''01-JAN-2002'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2002     values less than (to_date(''01-JAN-2003'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2003     values less than (to_date(''01-JAN-2004'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2004     values less than (to_date(''01-JAN-2005'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2005     values less than (to_date(''01-JAN-2006'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2006     values less than (to_date(''01-JAN-2007'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2007     values less than (to_date(''01-JAN-2008'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2008     values less than (to_date(''01-JAN-2009'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2009     values less than (to_date(''01-JAN-2010'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2010     values less than (to_date(''01-JAN-2011'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2011     values less than (to_date(''01-JAN-2012'', ''DD-MON-YYYY'')),
+         partition fa_regular_result_pre_1990 values less than (to_date('01-JAN-1990', 'DD-MON-YYYY')),
+         partition fa_regular_result_1990     values less than (to_date('01-JAN-1991', 'DD-MON-YYYY')),
+         partition fa_regular_result_1991     values less than (to_date('01-JAN-1992', 'DD-MON-YYYY')),
+         partition fa_regular_result_1992     values less than (to_date('01-JAN-1993', 'DD-MON-YYYY')),
+         partition fa_regular_result_1993     values less than (to_date('01-JAN-1994', 'DD-MON-YYYY')),
+         partition fa_regular_result_1994     values less than (to_date('01-JAN-1995', 'DD-MON-YYYY')),
+         partition fa_regular_result_1995     values less than (to_date('01-JAN-1996', 'DD-MON-YYYY')),
+         partition fa_regular_result_1996     values less than (to_date('01-JAN-1997', 'DD-MON-YYYY')),
+         partition fa_regular_result_1997     values less than (to_date('01-JAN-1998', 'DD-MON-YYYY')),
+         partition fa_regular_result_1998     values less than (to_date('01-JAN-1999', 'DD-MON-YYYY')),
+         partition fa_regular_result_1999     values less than (to_date('01-JAN-2000', 'DD-MON-YYYY')),
+         partition fa_regular_result_2000     values less than (to_date('01-JAN-2001', 'DD-MON-YYYY')),
+         partition fa_regular_result_2001     values less than (to_date('01-JAN-2002', 'DD-MON-YYYY')),
+         partition fa_regular_result_2002     values less than (to_date('01-JAN-2003', 'DD-MON-YYYY')),
+         partition fa_regular_result_2003     values less than (to_date('01-JAN-2004', 'DD-MON-YYYY')),
+         partition fa_regular_result_2004     values less than (to_date('01-JAN-2005', 'DD-MON-YYYY')),
+         partition fa_regular_result_2005     values less than (to_date('01-JAN-2006', 'DD-MON-YYYY')),
+         partition fa_regular_result_2006     values less than (to_date('01-JAN-2007', 'DD-MON-YYYY')),
+         partition fa_regular_result_2007     values less than (to_date('01-JAN-2008', 'DD-MON-YYYY')),
+         partition fa_regular_result_2008     values less than (to_date('01-JAN-2009', 'DD-MON-YYYY')),
+         partition fa_regular_result_2009     values less than (to_date('01-JAN-2010', 'DD-MON-YYYY')),
+         partition fa_regular_result_2010     values less than (to_date('01-JAN-2011', 'DD-MON-YYYY')),
+         partition fa_regular_result_2011     values less than (to_date('01-JAN-2012', 'DD-MON-YYYY')),
          partition fa_regular_result_last     values less than (maxvalue)
       )
       as
@@ -201,7 +201,19 @@ create or replace package body create_nad_objects
          y.SAMPLE_COLLECT_METHOD_NAME,
          y.SAMPLE_COLLECT_METHOD_ID,
          y.SAMPLE_COLLECT_METHOD_CTX,
-         y.SAMPLE_ID
+         y.SAMPLE_ID,
+         cast(case
+                when nemi.method_id is not null
+                  then
+                    case nemi.method_type
+                      when 'analytical'
+                        then 'https://www.nemi.gov/methods/method_summary/' || method_id || '/'
+                      when 'statistical'
+                        then 'https://www.nemi.gov/methods/sams_method_summary/' || method_id || '/'
+                    end
+                else 
+                  null 
+              end as varchar2(256 char)) nemi_url
       from
         (select /*+ full(r) full(samp) full(site) full(parameter)
                     full(z_param_alias) full(tu) full(wqx_medium_cd) full(body_part) full(parm) full(fxd)
@@ -213,7 +225,7 @@ create or replace package body create_nad_objects
                     use_hash(val_qual_cd1) use_hash(val_qual_cd2) use_hash(val_qual_cd3) use_hash(val_qual_cd4) use_hash(val_qual_cd5) use_hash(dist) */
             site.site_id as FK_STATION,
             samp.sample_start_dt as ACTIVITY_START_DATE_TIME,
-            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then samp.SAMPLE_START_TIME_DATUM_CD
+            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in ('h','m') then samp.SAMPLE_START_TIME_DATUM_CD
                  else null
             end as ACT_START_TIME_ZONE,
             cast(parm.srsname as varchar2(500)) as CHARACTERISTIC_NAME,
@@ -221,55 +233,55 @@ create or replace package body create_nad_objects
             cast(null as number) as RESULT_VALUE,
             parm.parm_unt_tx as RESULT_UNIT,
             nvl(fxd.fxd_tx,
-                   case when r.REMARK_CD in (''U'', ''M'', ''N'', ''<'', ''>'') then null
-                        when r.REMARK_CD in (''R'', ''V'', ''S'', ''E'', ''A'') or r.REMARK_CD is null then r.result_va
+                   case when r.REMARK_CD in ('U', 'M', 'N', '<', '>') then null
+                        when r.REMARK_CD in ('R', 'V', 'S', 'E', 'A') or r.REMARK_CD is null then r.result_va
                         else r.result_va
                    end) as RESULT_VALUE_TEXT,
             parm.parm_frac_tx as SAMPLE_FRACTION_TYPE,
-            case when r.RESULT_MD is null then ''Calculated''
-                 when r.REMARK_CD=''E'' then''Estimated''
-                 else ''Actual''
+            case when r.RESULT_MD is null then 'Calculated'
+                 when r.REMARK_CD='E' then'Estimated'
+                 else 'Actual'
             end as RESULT_VALUE_TYPE,
             nvl(parm.parm_stat_tx,
-                    case when r.REMARK_CD = ''S'' then ''MPN''
-                         when r.REMARK_CD = ''A'' then ''mean''
+                    case when r.REMARK_CD = 'S' then 'MPN'
+                         when r.REMARK_CD = 'A' then 'mean'
                          else null
                     end) as STATISTIC_TYPE,
-            case when r.DQI_CD = ''S'' then ''Preliminary''
-                 when r.DQI_CD = ''A'' then ''Historical''
-                 when r.DQI_CD = ''R'' then ''Accepted''
+            case when r.DQI_CD = 'S' then 'Preliminary'
+                 when r.DQI_CD = 'A' then 'Historical'
+                 when r.DQI_CD = 'R' then 'Accepted'
                  else null end as RESULT_VALUE_STATUS,
             parm.parm_wt_tx as WEIGHT_BASIS_TYPE,
             parm.parm_temp_tx  as TEMPERATURE_BASIS_LEVEL,
             parm.parm_tm_tx as DURATION_BASIS,
-            case when r.METH_CD is not null then cast(''USGS'' as varchar2(4))
+            case when r.METH_CD is not null then cast('USGS' as varchar2(4))
                  else null
             end as ANALYTICAL_PROCEDURE_SOURCE,
             r.meth_cd as ANALYTICAL_PROCEDURE_ID,
             proto_org.proto_org_nm as LAB_NAME,
             case when r.ANL_DT is not null then
-                    substr(ANL_DT, 1, 4) || ''-'' || substr(ANL_DT, 5, 2) || ''-'' || substr(ANL_DT, 7, 2)
+                    substr(ANL_DT, 1, 4) || '-' || substr(ANL_DT, 5, 2) || '-' || substr(ANL_DT, 7, 2)
                  else null
             end as ANALYSIS_DATE_TIME,
             cast(null as varchar(2)) as ANALYSIS_TIME_ZONE,
             cast(null as varchar(2)) as LOWER_QUANTITATION_LIMIT,
             cast(null as varchar(2)) as UPPER_QUANTITATION_LIMIT,
-            case when r.remark_cd = ''<'' and r.rpt_lev_va is null then r.result_va
-                 when r.remark_cd = ''<'' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then r.result_va
-                 when r.remark_cd = ''>'' then r.result_va
-                 when r.remark_cd in (''N'', ''U'') and r.rpt_lev_va is not null then r.rpt_lev_va
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
+            case when r.remark_cd = '<' and r.rpt_lev_va is null then r.result_va
+                 when r.remark_cd = '<' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then r.result_va
+                 when r.remark_cd = '>' then r.result_va
+                 when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
                  when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
                  else null
             end as DETECTION_LIMIT,
-            case when r.remark_cd = ''<'' and r.rpt_lev_va is null then ''Historical Lower Reporting Limit''
-                 when r.remark_cd = ''<'' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then ''Elevated Detection Limit''
-                 when r.remark_cd = ''<'' and nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
-                 when r.remark_cd = ''>'' then ''Upper Reporting Limit''
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is not null then ''Lower Quantitation Limit''
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
+            case when r.remark_cd = '<' and r.rpt_lev_va is null then 'Historical Lower Reporting Limit'
+                 when r.remark_cd = '<' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then 'Elevated Detection Limit'
+                 when r.remark_cd = '<' and nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
+                 when r.remark_cd = '>' then 'Upper Reporting Limit'
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then 'Lower Quantitation Limit'
+                 when r.remark_cd = 'M' and r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
                  when r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
                  else null
             end as DETECTION_LIMIT_DESCRIPTION,
@@ -278,7 +290,7 @@ create or replace package body create_nad_objects
                   val_qual_cd3.val_qual_nm ||
                   val_qual_cd4.val_qual_nm ||
                   val_qual_cd5.val_qual_nm ||
-                  case when r.remark_cd = ''R'' then ''Result below sample specific critical level.''
+                  case when r.remark_cd = 'R' then 'Result below sample specific critical level.'
                        else null
                   end) as LAB_REMARK,
             trim(parm.parm_size_tx) as PARTICLE_SIZE,
@@ -287,31 +299,31 @@ create or replace package body create_nad_objects
             cast(null as varchar(2)) as DILUTION_INDICATOR,
             cast(null as varchar(2)) as RECOVERY_INDICATOR,
             cast(null as varchar(2)) as CORRECTION_INDICATOR,
-            samp.nwis_host||''.''||samp.qw_db_no||''.''||samp.record_no as ACTIVITY_ID,
-            case when samp.samp_type_cd = ''A'' then ''Not determined''
-                 when samp.samp_type_cd = ''B'' then ''Quality Control Sample-Other''
-                 when samp.samp_type_cd = ''H'' then ''Sample-Composite Without Parents''
-                 when samp.samp_type_cd = ''1'' then ''Quality Control Sample-Field Spike''
-                 when samp.samp_type_cd = ''2'' then ''Quality Control Sample-Field Blank''
-                 when samp.samp_type_cd = ''3'' then ''Quality Control Sample-Reference Sample''
-                 when samp.samp_type_cd = ''4'' then ''Quality Control Sample-Blind''
-                 when samp.samp_type_cd = ''5'' then ''Quality Control Sample-Field Replicate''
-                 when samp.samp_type_cd = ''6'' then ''Quality Control Sample-Reference Material''
-                 when samp.samp_type_cd = ''7'' then ''Quality Control Sample-Field Replicate''
-                 when samp.samp_type_cd = ''8'' then ''Quality Control Sample-Spike Solution''
-                 when samp.samp_type_cd = ''9'' then ''Sample-Routine''
-                 else ''Unknown''
+            samp.nwis_host||'.'||samp.qw_db_no||'.'||samp.record_no as ACTIVITY_ID,
+            case when samp.samp_type_cd = 'A' then 'Not determined'
+                 when samp.samp_type_cd = 'B' then 'Quality Control Sample-Other'
+                 when samp.samp_type_cd = 'H' then 'Sample-Composite Without Parents'
+                 when samp.samp_type_cd = '1' then 'Quality Control Sample-Field Spike'
+                 when samp.samp_type_cd = '2' then 'Quality Control Sample-Field Blank'
+                 when samp.samp_type_cd = '3' then 'Quality Control Sample-Reference Sample'
+                 when samp.samp_type_cd = '4' then 'Quality Control Sample-Blind'
+                 when samp.samp_type_cd = '5' then 'Quality Control Sample-Field Replicate'
+                 when samp.samp_type_cd = '6' then 'Quality Control Sample-Reference Material'
+                 when samp.samp_type_cd = '7' then 'Quality Control Sample-Field Replicate'
+                 when samp.samp_type_cd = '8' then 'Quality Control Sample-Spike Solution'
+                 when samp.samp_type_cd = '9' then 'Sample-Routine'
+                 else 'Unknown'
             end as ACTIVITY_TYPE,
             cast(null as varchar(80)) as ACTIVITY_INTENT,
-            to_date(samp.sample_end_dt, ''YYYY-MM-DD HH24:MI:SS'') as ACTIVITY_STOP_DATE_TIME,
-            case when samp.sample_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then samp.sample_start_time_datum_cd
+            to_date(samp.sample_end_dt, 'YYYY-MM-DD HH24:MI:SS') as ACTIVITY_STOP_DATE_TIME,
+            case when samp.sample_end_dt is not null and samp.sample_end_sg in ('h', 'm') then samp.sample_start_time_datum_cd
                  else null
             end as ACT_STOP_TIME_ZONE,
             coalesce(parameter.V00003, parameter.V00098, parameter.V78890, parameter.V78891) as ACTIVITY_DEPTH,
-            case when parameter.V00003 is not null then ''feet''
-                 when parameter.V00098 is not null then ''meters''
-                 when parameter.V78890 is not null then ''feet''
-                 when parameter.V78891 is not null then ''meters''
+            case when parameter.V00003 is not null then 'feet'
+                 when parameter.V00098 is not null then 'meters'
+                 when parameter.V78890 is not null then 'feet'
+                 when parameter.V78891 is not null then 'meters'
                  else null
             end as ACTIVITY_DEPTH_UNIT,
             coalesce(parameter.V72015, parameter.V82047) as ACTIVITY_UPPER_DEPTH,
@@ -321,10 +333,10 @@ create or replace package body create_nad_objects
                  when parameter.V82048 is not null then parameter.V82048
                  else null
             end as ACTIVITY_LOWER_DEPTH,
-            case when parameter.V72015 is not null then ''feet''
-                 when parameter.V82047 is not null then ''meters''
-                 when parameter.V72016 is not null then ''feet''
-                 when parameter.V82048 is not null then ''meters''
+            case when parameter.V72015 is not null then 'feet'
+                 when parameter.V82047 is not null then 'meters'
+                 when parameter.V72016 is not null then 'feet'
+                 when parameter.V82048 is not null then 'meters'
                  else null
             end as UPR_LWR_DEPTH_UNIT,
             trim(r.result_lab_cm_tx) RESULT_COMMENT,
@@ -332,24 +344,24 @@ create or replace package body create_nad_objects
             tu.tu_id as ITIS_NUMBER,
             trim(samp.sample_lab_cm_tx) as ACTIVITY_COMMENT,
             case when parameter.V00003 is not null or parameter.V00098 is not null then null
-                 when parameter.V78890 is not null or parameter.V78891 is not null then cast(''Below mean sea level'' as varchar2(20))
+                 when parameter.V78890 is not null or parameter.V78891 is not null then cast('Below mean sea level' as varchar2(20))
                  else null
             end as ACTIVITY_DEPTH_REF_POINT,
-            case when r.remark_cd = ''U'' then ''Not Detected''
-                 when r.remark_cd = ''V'' then ''Systematic Contamination''
-                 when r.remark_cd = ''S'' then null
-                 when r.remark_cd = ''M'' then ''Detected Not Quantified''
-                 when r.remark_cd = ''N'' then ''Detected Not Quantified''
-                 when r.remark_cd = ''A'' then null
-                 when r.remark_cd = ''<'' then ''Not Detected''
-                 when r.remark_cd = ''>'' then ''Present Above Quantification Limit''
+            case when r.remark_cd = 'U' then 'Not Detected'
+                 when r.remark_cd = 'V' then 'Systematic Contamination'
+                 when r.remark_cd = 'S' then null
+                 when r.remark_cd = 'M' then 'Detected Not Quantified'
+                 when r.remark_cd = 'N' then 'Detected Not Quantified'
+                 when r.remark_cd = 'A' then null
+                 when r.remark_cd = '<' then 'Not Detected'
+                 when r.remark_cd = '>' then 'Present Above Quantification Limit'
                  else null
             end as RESULT_DETECTION_CONDITION_TX,
-            case when parm.PARM_MEDIUM_TX = ''Biological Tissue'' then tu.composite_tu_name
+            case when parm.PARM_MEDIUM_TX = 'Biological Tissue' then tu.composite_tu_name
             end as SAMPLE_TISSUE_TAXONOMIC_NAME,
             wqx_medium_cd.WQX_ACT_MED_NM as ACTIVITY_MEDIA_NAME,
             wqx_medium_cd.WQX_ACT_MED_SUB as ACTIVITY_MEDIA_SUBDIV_NAME,
-            case when r.prep_dt is not null then substr(r.prep_dt, 1, 4) || ''-'' || substr(r.prep_dt, 5, 2) || ''-'' || substr(r.prep_dt, 7, 2)
+            case when r.prep_dt is not null then substr(r.prep_dt, 1, 4) || '-' || substr(r.prep_dt, 5, 2) || '-' || substr(r.prep_dt, 7, 2)
                  else null
             end as ANALYSIS_PREP_DATE_TX,
             samp.aqfr_cd,  /* these next two needed for join but are not in final result */
@@ -358,19 +370,19 @@ create or replace package body create_nad_objects
             hyd_event_cd.hyd_event_nm as HYDROLOGIC_EVENT_NAME,
             nvl(parameter.v71999_fxd_nm, samp.project_cd) as PROJECT_ID,
               --This is the way Informatica does it.  Above is theoretically equal and I think easier to read
-              --case when parameter.V71999 = 15 then ''NAWQA''
-              --     when parameter.V71999 = 20 then ''NASQAN''
-              --     when parameter.V71999 = 25 then ''NMN''
+              --case when parameter.V71999 = 15 then 'NAWQA'
+              --     when parameter.V71999 = 20 then 'NASQAN'
+              --     when parameter.V71999 = 25 then 'NMN'
               --     when parameter.V71999 = 30 then substr(P71999_fxd_tx parameter.v1999_fxd_tx, 1, 35)
-              --     when parameter.V71999 = 35 then ''RASA''
+              --     when parameter.V71999 = 35 then 'RASA'
               --     else substr(samp.project_cd, 1, 35) as PROJECT_ID,
-            case when parameter.V72015 is not null then ''Below land-surface datum''
-                 when parameter.V82047 is not null then ''''
-                 when parameter.V72016 is not null then ''Below land-surface datum''
-                 when parameter.V82048 is not null then ''''
+            case when parameter.V72015 is not null then 'Below land-surface datum'
+                 when parameter.V82047 is not null then ''
+                 when parameter.V72016 is not null then 'Below land-surface datum'
+                 when parameter.V82048 is not null then ''
                  else null
             end as ACTIVITY_UPRLWR_DEPTH_REF_PT,
-            case when parm.parm_medium_tx = ''Biological Tissue'' then body_part.body_part_nm
+            case when parm.parm_medium_tx = 'Biological Tissue' then body_part.body_part_nm
                  else null
             end as SAMPLE_TISSUE_ANATOMY_NAME,
             r.parameter_cd as PARAMETER_CODE,
@@ -378,44 +390,44 @@ create or replace package body create_nad_objects
             coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) as ACTIVITY_CONDUCTING_ORG,
             meth.meth_nm as ANALYTICAL_METHOD_NAME,
             meth.cit_nm ANALYTICAL_METHOD_CITATION,
-            case when samp.sample_start_sg in (''m'', ''h'', ''D'') then to_char(samp.sample_start_dt, ''YYYY-MM-DD'')
-                 when samp.sample_start_sg = ''M'' then to_char(samp.sample_start_dt, ''YYYY-MM'')
-                 when samp.sample_start_sg = ''Y'' then to_char(samp.sample_start_dt, ''YYYY'')
+            case when samp.sample_start_sg in ('m', 'h', 'D') then to_char(samp.sample_start_dt, 'YYYY-MM-DD')
+                 when samp.sample_start_sg = 'M' then to_char(samp.sample_start_dt, 'YYYY-MM')
+                 when samp.sample_start_sg = 'Y' then to_char(samp.sample_start_dt, 'YYYY')
                  else null
             end as ACTIVITY_START_DATE_TX,
-            case when samp.sample_start_sg in (''m'', ''h'') then to_char(samp.sample_start_dt, ''HH24:MI:SS'')
+            case when samp.sample_start_sg in ('m', 'h') then to_char(samp.sample_start_dt, 'HH24:MI:SS')
                  else null
             end as ACTIVITY_START_TIME_TX,
-            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then lu_tz.tz_utc_offset_tm
+            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in ('h','m') then lu_tz.tz_utc_offset_tm
                  else null
             end as ACT_START_TIME_ZONE_LOCAL,/*here dave*/
-            case when samp.sample_start_sg in (''m'', ''h'', ''D'') then to_char(samp.sample_utc_start_dt, ''YYYY-MM-DD'')
-                 when samp.sample_start_sg = ''M'' then to_char(samp.sample_utc_start_dt, ''YYYY-MM'')
-                 when samp.sample_start_sg = ''Y'' then to_char(samp.sample_utc_start_dt, ''YYYY'')
+            case when samp.sample_start_sg in ('m', 'h', 'D') then to_char(samp.sample_utc_start_dt, 'YYYY-MM-DD')
+                 when samp.sample_start_sg = 'M' then to_char(samp.sample_utc_start_dt, 'YYYY-MM')
+                 when samp.sample_start_sg = 'Y' then to_char(samp.sample_utc_start_dt, 'YYYY')
                  else null
             end as ACTIVITY_START_DATE_TX_UTC,
-            case when samp.sample_start_sg in (''m'', ''h'') then to_char(samp.sample_utc_start_dt, ''HH24:MI:SS'')
+            case when samp.sample_start_sg in ('m', 'h') then to_char(samp.sample_utc_start_dt, 'HH24:MI:SS')
                  else null
             end as ACTIVITY_START_TIME_TX_UTC,
-            case when samp.SAMPLE_UTC_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then ''+00:00''
+            case when samp.SAMPLE_UTC_START_DT is not null and samp.SAMPLE_START_SG in ('h','m') then '+00:00'
                  else null
             end as ACT_START_TIME_ZONE_UTC,
-            case when samp.sample_end_sg in (''m'', ''h'', ''D'') then substr(samp.sample_end_dt, 1, 10)
-                 when samp.sample_end_sg = ''M'' then substr(samp.sample_end_dt, 1, 7)
-                 when samp.sample_end_sg = ''Y'' then substr(samp.sample_end_dt, 1, 4)
+            case when samp.sample_end_sg in ('m', 'h', 'D') then substr(samp.sample_end_dt, 1, 10)
+                 when samp.sample_end_sg = 'M' then substr(samp.sample_end_dt, 1, 7)
+                 when samp.sample_end_sg = 'Y' then substr(samp.sample_end_dt, 1, 4)
                  else null
             end as ACTIVITY_STOP_DATE_TX,
-            case when samp.sample_end_sg in (''m'', ''h'') then substr(samp.sample_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX,
-           case when samp.sample_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then lu_tz.tz_utc_offset_tm
+            case when samp.sample_end_sg in ('m', 'h') then substr(samp.sample_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX,
+           case when samp.sample_end_dt is not null and samp.sample_end_sg in ('h', 'm') then lu_tz.tz_utc_offset_tm
                  else null
             end ACT_STOP_TIME_ZONE_LOCAL,/*here dave*/
-            case when samp.sample_end_sg in (''m'', ''h'', ''D'') then substr(samp.sample_utc_end_dt, 1, 10)
-                 when samp.sample_end_sg = ''M'' then substr(samp.sample_utc_end_dt, 1, 7)
-                 when samp.sample_end_sg = ''Y'' then substr(samp.sample_utc_end_dt, 1, 4)
+            case when samp.sample_end_sg in ('m', 'h', 'D') then substr(samp.sample_utc_end_dt, 1, 10)
+                 when samp.sample_end_sg = 'M' then substr(samp.sample_utc_end_dt, 1, 7)
+                 when samp.sample_end_sg = 'Y' then substr(samp.sample_utc_end_dt, 1, 4)
                  else null
             end as ACTIVITY_STOP_DATE_TX_UTC,
-            case when samp.sample_end_sg in (''m'', ''h'') then substr(samp.sample_utc_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX_UTC,
-            case when samp.sample_utc_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then ''+00:00''
+            case when samp.sample_end_sg in ('m', 'h') then substr(samp.sample_utc_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX_UTC,
+            case when samp.sample_utc_end_dt is not null and samp.sample_end_sg in ('h', 'm') then '+00:00'
                  else null
             end ACT_STOP_TIME_ZONE_UTC,
             case when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
@@ -431,7 +443,7 @@ create or replace package body create_nad_objects
                  else null
             end as SAMPLE_COLLECT_METHOD_ID,
             case when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-                 then cast(''USGS parameter code 82398'' as varchar2(25))
+                 then cast('USGS parameter code 82398' as varchar2(25))
                  else null
             end as SAMPLE_COLLECT_METHOD_CTX,
             samp.sample_id as SAMPLE_ID
@@ -468,28 +480,28 @@ create or replace package body create_nad_objects
             from
               (select /*+ full(p1) parallel(p1, 4) */
                   sample_id,
-                  max(case when parameter_cd = ''71999'' then result_unrnd_va else null end) AS V71999,
-                  max(case when parameter_cd = ''50280'' then result_unrnd_va else null end) AS V50280,
-                  max(case when parameter_cd = ''72015'' then result_unrnd_va else null end) AS V72015,
-                  max(case when parameter_cd = ''82047'' then result_unrnd_va else null end) AS V82047,
-                  max(case when parameter_cd = ''72016'' then result_unrnd_va else null end) AS V72016,
-                  max(case when parameter_cd = ''82048'' then result_unrnd_va else null end) AS V82048,
-                  max(case when parameter_cd = ''00003'' then result_unrnd_va else null end) AS V00003,
-                  max(case when parameter_cd = ''00098'' then result_unrnd_va else null end) AS V00098,
-                  max(case when parameter_cd = ''78890'' then result_unrnd_va else null end) AS V78890,
-                  max(case when parameter_cd = ''78891'' then result_unrnd_va else null end) AS V78891,
-                  max(case when parameter_cd = ''82398'' then result_unrnd_va else null end) AS V82398,
-                  max(case when parameter_cd = ''84164'' then result_unrnd_va else null end) AS V84164
+                  max(case when parameter_cd = '71999' then result_unrnd_va else null end) AS V71999,
+                  max(case when parameter_cd = '50280' then result_unrnd_va else null end) AS V50280,
+                  max(case when parameter_cd = '72015' then result_unrnd_va else null end) AS V72015,
+                  max(case when parameter_cd = '82047' then result_unrnd_va else null end) AS V82047,
+                  max(case when parameter_cd = '72016' then result_unrnd_va else null end) AS V72016,
+                  max(case when parameter_cd = '82048' then result_unrnd_va else null end) AS V82048,
+                  max(case when parameter_cd = '00003' then result_unrnd_va else null end) AS V00003,
+                  max(case when parameter_cd = '00098' then result_unrnd_va else null end) AS V00098,
+                  max(case when parameter_cd = '78890' then result_unrnd_va else null end) AS V78890,
+                  max(case when parameter_cd = '78891' then result_unrnd_va else null end) AS V78891,
+                  max(case when parameter_cd = '82398' then result_unrnd_va else null end) AS V82398,
+                  max(case when parameter_cd = '84164' then result_unrnd_va else null end) AS V84164
                from
                   nwis_ws_star.qw_result p1
                where
-                  result_web_cd = ''Y'' and
-                  parameter_cd in (''71999'', ''50280'', ''72015'', ''82047'', ''72016'', ''82048'', ''00003'', ''00098'', ''78890'', ''78891'', ''82398'', ''84164'')
+                  result_web_cd = 'Y' and
+                  parameter_cd in ('71999', '50280', '72015', '82047', '72016', '82048', '00003', '00098', '78890', '78891', '82398', '84164')
                group by
                   sample_id) p2,
-              (select fxd_nm v71999_fxd_nm, fxd_va from fxd where parm_cd = ''71999'') fxd_71999,
-              (select fxd_tx v82398_fxd_tx, fxd_va from fxd where parm_cd = ''82398'') fxd_82398,
-              (select fxd_tx v84164_fxd_tx, fxd_va from fxd where parm_cd = ''84164'') fxd_84164
+              (select fxd_nm v71999_fxd_nm, fxd_va from fxd where parm_cd = '71999') fxd_71999,
+              (select fxd_tx v82398_fxd_tx, fxd_va from fxd where parm_cd = '82398') fxd_82398,
+              (select fxd_tx v84164_fxd_tx, fxd_va from fxd where parm_cd = '84164') fxd_84164
             where
                p2.v71999 = fxd_71999.fxd_va(+) and
                p2.v82398 = fxd_82398.fxd_va(+) and
@@ -497,12 +509,12 @@ create or replace package body create_nad_objects
            (select
                tu_id,
                trim(tu_1_nm) ||
-               case when trim(tu_2_cd) is not null then '' '' || trim(tu_2_cd) end ||
-               case when trim(tu_2_nm) is not null then '' '' || trim(tu_2_nm) end ||
-               case when trim(tu_3_cd) is not null then '' '' || trim(tu_3_cd) end ||
-               case when trim(tu_3_nm) is not null then '' '' || trim(tu_3_nm) end ||
-               case when trim(tu_4_cd) is not null then '' '' || trim(tu_4_cd) end ||
-               case when trim(tu_4_nm) is not null then '' '' || trim(tu_4_nm) end AS composite_tu_name
+               case when trim(tu_2_cd) is not null then ' ' || trim(tu_2_cd) end ||
+               case when trim(tu_2_nm) is not null then ' ' || trim(tu_2_nm) end ||
+               case when trim(tu_3_cd) is not null then ' ' || trim(tu_3_cd) end ||
+               case when trim(tu_3_nm) is not null then ' ' || trim(tu_3_nm) end ||
+               case when trim(tu_4_cd) is not null then ' ' || trim(tu_4_cd) end ||
+               case when trim(tu_4_nm) is not null then ' ' || trim(tu_4_nm) end AS composite_tu_name
             from
                tu) tu,
            (select
@@ -536,33 +548,33 @@ create or replace package body create_nad_objects
                lu_parm_seq_grp_cd b,
               (select
                   parm_cd,
-                  max(case when parm_alias_cd = ''SRSNAME'' then parm_alias_nm else null end) AS srsname,
-                  max(case when parm_alias_cd = ''SRSID''   then parm_alias_nm else null end) AS srsid  ,
-                  max(case when parm_alias_cd = ''CASRN''   then parm_alias_nm else null end) AS casrn
+                  max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) AS srsname,
+                  max(case when parm_alias_cd = 'SRSID'   then parm_alias_nm else null end) AS srsid  ,
+                  max(case when parm_alias_cd = 'CASRN'   then parm_alias_nm else null end) AS casrn
                from
                   lu_parm_alias
                group by
                   parm_cd
                having
-                  max(case when parm_alias_cd = ''SRSNAME'' then parm_alias_nm else null end) is not null) z_parm_alias,
+                  max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) is not null) z_parm_alias,
               (select
-                  decode(REGEXP_INSTR(PARM_METH_RND_TX, ''[1-9]'', 1, 1),
-                         1, ''0.001'',
-                         2, ''0.01'',
-                         3, ''0.1'',
-                         4, ''1.'',
-                         5, ''10'',
-                         6, ''100'',
-                         7, ''1000'',
-                         8, ''10000'',
-                         9, ''100000'') multiplier,
+                  decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
+                         1, '0.001',
+                         2, '0.01',
+                         3, '0.1',
+                         4, '1.',
+                         5, '10',
+                         6, '100',
+                         7, '1000',
+                         8, '10000',
+                         9, '100000') multiplier,
                   parm_cd
                from
                   lu_parm_meth
                where
                   meth_cd is null) z_parm_meth2
             where
-               a.parm_public_fg = ''Y'' and
+               a.parm_public_fg = 'Y' and
                a.parm_seq_grp_cd = b.parm_seq_grp_cd(+) and
                a.parm_cd = z_parm_alias.parm_cd and
                a.parm_cd = z_parm_meth2.parm_cd(+)) parm,
@@ -592,38 +604,38 @@ create or replace package body create_nad_objects
             where
                meth1.meth_cd = z_cit_meth.meth_cd(+)) meth,
            (select
-               decode(REGEXP_INSTR(PARM_METH_RND_TX, ''[1-9]'', 1, 1),
-                      1, ''0.001'',
-                      2, ''0.01'',
-                      3, ''0.1'',
-                      4, ''1.'',
-                      5, ''10'',
-                      6, ''100'',
-                      7, ''1000'',
-                      8, ''10000'',
-                      9, ''100000'') multiplier,
+               decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
+                      1, '0.001',
+                      2, '0.01',
+                      3, '0.1',
+                      4, '1.',
+                      5, '10',
+                      6, '100',
+                      7, '1000',
+                      8, '10000',
+                      9, '100000') multiplier,
                parm_cd,
                meth_cd
             from
                lu_parm_meth) z_parm_meth,
            (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_wqx_rpt_lev_cd) nwis_wqx_rpt_lev_cd,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd1,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd2,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd3,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd4,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd5,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd1,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd2,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd3,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd4,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd5,
            (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from hyd_event_cd) hyd_event_cd,
            (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from hyd_cond_cd) hyd_cond_cd,
            (select district_cd, host_name from nwis_district_cds_by_host) dist
          where
-            r.result_web_cd    = ''Y''                         and
+            r.result_web_cd    = 'Y'                         and
            (r.RESULT_VA        is not null  OR
             r.RPT_LEV_VA       is not null  OR
             r.REMARK_CD        is not null)                  and
             r.sample_id        = samp.sample_id              and
             r.parameter_cd     = parm.parm_cd              and  /* not outer join on z_parm or z_parm_alias */
             r.parameter_cd     = fxd.parm_cd(+)              and
-            case when r.result_va = ''0.0'' then ''0'' else r.result_va end = fxd.fxd_va(+) and
+            case when r.result_va = '0.0' then '0' else r.result_va end = fxd.fxd_va(+) and
             r.anl_ent_cd       = proto_org.proto_org_cd(+)   and
             r.meth_cd          = meth.meth_cd(+)             and
             r.parameter_cd     = z_parm_meth.parm_cd(+)      and
@@ -634,8 +646,8 @@ create or replace package body create_nad_objects
             substr(r.val_qual_tx, 3, 1) = val_qual_cd3.val_qual_cd(+) and
             substr(r.val_qual_tx, 4, 1) = val_qual_cd4.val_qual_cd(+) and
             substr(r.val_qual_tx, 5, 1) = val_qual_cd5.val_qual_cd(+) and
-            samp.sample_web_cd = ''Y''                         and
-            samp.qw_db_no      = ''01''                        and
+            samp.sample_web_cd = 'Y'                         and
+            samp.qw_db_no      = '01'                        and
             samp.site_id       = site.site_id                  and
             samp.sample_id     = parameter.sample_id(+)        and
             to_number(samp.tu_id) = tu.tu_id(+)                and
@@ -646,18 +658,21 @@ create or replace package body create_nad_objects
             samp.hyd_cond_cd   = hyd_cond_cd.hyd_cond_cd(+)    and
             site.dec_lat_va    <> 0                            and
             site.dec_long_va   <> 0                            and
-            site.db_no         = ''01''                        and
-            site.site_web_cd   = ''Y''                         and
-            site.site_tp_cd not in (''FA-WTP'', ''FA-WWTP'', ''FA-TEP'', ''FA-HP'')  and
-            site.nwis_host  not in (''fltlhsr001'', ''fltpasr001'', ''flalssr003'') and
+            site.db_no         = '01'                        and
+            site.site_web_cd   = 'Y'                         and
+            site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP')  and
+            site.nwis_host  not in ('fltlhsr001', 'fltpasr001', 'flalssr003') and
             site.district_cd   = dist.district_cd              and
             site.nwis_host     = dist.host_name and
             samp.SAMPLE_START_TIME_DATUM_CD = lu_tz.tz_cd(+)
          ) y,
-         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from aqfr) aqfr
+         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from aqfr) aqfr,
+         wqp_core.wqp_nemi_nwis_crosswalk nemi
       where
          y.aqfr_cd  = aqfr.aqfr_cd (+) and
-         y.state_cd = aqfr.state_cd(+)' ;
+         y.state_cd = aqfr.state_cd(+) and
+         y.analytical_procedure_source = nemi.analytical_procedure_source(+) and
+         y.analytical_procedure_id = nemi.analytical_procedure_id(+)!' ;
 
         cleanup(1) := 'drop table FA_REGULAR_RESULT' || suffix || ' cascade constraints purge';
      exception
