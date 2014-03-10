@@ -919,17 +919,18 @@ create or replace package body create_nad_objects
             characteristic_name,
             activity_start_date_time,
             parameter_code,
+            b.nemi_url,
             b.result_count
          from
              nwis_station_sum' || suffix || ' a,
              (select
                  fk_station, activity_media_name, characteristic_type, characteristic_name, parameter_code,
-                 trunc(activity_start_date_time) activity_start_date_time,
+                 trunc(activity_start_date_time) activity_start_date_time, nemi_url,
                  cast(count(*) as number(9)) result_count
               from
                  fa_regular_result' || suffix || '
               group by
-                 fk_station, activity_media_name, characteristic_type, characteristic_name, parameter_code,
+                 fk_station, activity_media_name, characteristic_type, characteristic_name, parameter_code, nemi_url,
                  trunc(activity_start_date_time)
              ) b
          where
@@ -940,7 +941,8 @@ create or replace package body create_nad_objects
             activity_media_name,
             characteristic_type,
             characteristic_name,
-            parameter_code ';
+            parameter_code,
+            nemi_url ';
 
       cleanup(4) := 'drop table NWIS_RESULT_SUM' || suffix || ' cascade constraints purge';
 
@@ -981,6 +983,7 @@ create or replace package body create_nad_objects
          characteristic_type,
          characteristic_name,
          parameter_code,
+         nemi_url,
          cast(sum(result_count) as number(9)) result_count
       from
           nwis_result_sum' || suffix || ' a
@@ -996,14 +999,16 @@ create or replace package body create_nad_objects
          activity_media_name,
          characteristic_type,
          characteristic_name,
-         parameter_code
+         parameter_code,
+         nemi_url
       order by
          fk_station,
          station_id,
          activity_media_name,
          characteristic_type,
          characteristic_name,
-         parameter_code ';
+         parameter_code,
+         nemi_url ';
 
       cleanup(5) := 'drop table NWIS_RESULT_CT_SUM' || suffix || ' cascade constraints purge';
 
@@ -1046,6 +1051,7 @@ create or replace package body create_nad_objects
          characteristic_name,
          parameter_code,
          activity_start_date_time,
+         nemi_url,
          cast(sum(result_count) as number(9)) result_count
       from
           nwis_result_sum' || suffix || ' a
@@ -1055,14 +1061,16 @@ create or replace package body create_nad_objects
          characteristic_type,
          characteristic_name,
          parameter_code,
-         activity_start_date_time
+         activity_start_date_time,
+         nemi_url
       order by
          fk_station,
          activity_media_name,
          characteristic_type,
          characteristic_name,
          parameter_code,
-         activity_start_date_time ';
+         activity_start_date_time,
+         nemi_url ';
 
       cleanup(6) := 'drop table NWIS_RESULT_NR_SUM' || suffix || ' cascade constraints purge';
 
@@ -1429,6 +1437,11 @@ create or replace package body create_nad_objects
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
+      stmt := 'create bitmap index nemi_url_i' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
       /* note: this view seems to use the invoker rather than the definer.
                so, must run as NWIS_WS_STAR, despite the fact that everything
                else in this large package would work as any user with rights
@@ -1535,6 +1548,12 @@ create or replace package body create_nad_objects
                table_name || ' (parameter_code      ) local nologging';
       dbms_output.put_line(stmt);
       execute immediate stmt;
+      
+      stmt := 'create bitmap index nwis_result_sum_10' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
 
       table_name := 'NWIS_RESULT_CT_SUM' || suffix;
       stmt := 'create bitmap index nwis_result_ct_sum_1' || suffix || ' on ' ||
@@ -1577,6 +1596,11 @@ create or replace package body create_nad_objects
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
+      stmt := 'create bitmap index nwis_result_ct_sum_9' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
       table_name := 'NWIS_RESULT_NR_SUM' || suffix;
       stmt := 'create bitmap index nwis_result_nr_sum_1' || suffix || ' on ' ||
                table_name || ' (fk_station          ) local nologging';
@@ -1595,6 +1619,11 @@ create or replace package body create_nad_objects
 
       stmt := 'create bitmap index nwis_result_nr_sum_4' || suffix || ' on ' ||
                table_name || ' (characteristic_name ) local nologging';
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
+      stmt := 'create bitmap index nwis_result_nr_sum_5' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
       dbms_output.put_line(stmt);
       execute immediate stmt;
 
@@ -1765,7 +1794,7 @@ create or replace package body create_nad_objects
       fetch c into index_count;
       close c;
 
-      if index_count < 14 then  /* there are exactly 14 as of 29APR2013 */
+      if index_count < 46 then  /* there are exactly 46 as of 10MAR2014 */
          pass_fail := 'FAIL';
       else
          pass_fail := 'PASS';
@@ -1782,7 +1811,7 @@ create or replace package body create_nad_objects
       fetch c into grant_count;
       close c;
 
-      if grant_count < 19 then
+      if grant_count < 19 then  /* there are exactly 19 as of 10MAR2014 */
          pass_fail := 'FAIL';
       else
          pass_fail := 'PASS';
