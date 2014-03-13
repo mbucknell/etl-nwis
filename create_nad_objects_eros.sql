@@ -667,12 +667,12 @@ create or replace package body create_nad_objects
             samp.SAMPLE_START_TIME_DATUM_CD = lu_tz.tz_cd(+)
          ) y,
          (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from aqfr) aqfr,
-         wqp_core.wqp_nemi_nwis_crosswalk nemi
+         wqp_nemi_nwis_crosswalk nemi
       where
          y.aqfr_cd  = aqfr.aqfr_cd (+) and
          y.state_cd = aqfr.state_cd(+) and
-         y.analytical_procedure_source = nemi.analytical_procedure_source(+) and
-         y.analytical_procedure_id = nemi.analytical_procedure_id(+)!' ;
+         trim(y.analytical_procedure_source) = nemi.analytical_procedure_source(+) and
+         trim(y.analytical_procedure_id) = nemi.analytical_procedure_id(+)!' ;
 
         cleanup(1) := 'drop table FA_REGULAR_RESULT' || suffix || ' cascade constraints purge';
      exception
