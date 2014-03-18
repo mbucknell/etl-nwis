@@ -1,7 +1,7 @@
-<project name="QwStoretEtl" default="default">
-	<target name="default" depends="buildPackage, scpScript, dos2unix, scpScriptB, qwNwisEtl"/>
+<project name="QwNwisEtl" default="default">
+    <target name="default" depends="buildPackage, scpScript, dos2unix, qwNwisEtl"/>
 
-	<target name="dev" depends="buildPackage, runPackage"/>
+    <target name="devEros" depends="buildPackage, runPackage"/>
 
 	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage"/>
 
@@ -13,45 +13,25 @@
 		</exec>
 	</target>
 		
-	<target name="compilePackageEmptyCiDB">
-		<echo>Rebuiling the etl database package and body with the empty_db flag set</echo>
-		<exec executable="sqlplus" failonerror="true">
-			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
-			<arg value="@${basedir}/emptyCiDB.sql"/>
-		</exec>
-	</target>
-		
-	<target name="runPackage">
-		<echo>Running the main ETL Package</echo>
-		<exec executable="sqlplus" failonerror="true">
-			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
-			<arg value="@${basedir}/runPackage.sql"/>
-			<arg value="${success_notify}"/>
-			<arg value="${failure_notify}"/>
-		</exec>
-	</target>
-			
 	<target name="scpScript">
 		<echo>Copy the script to ${nwis_host}</echo>
-		<scp file="spool_out_all.sh" todir="nwis_user:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true"/>
+		<scp todir="${nwis_user}:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true">
+		    <fileset dir=".">
+		      <include name="copy_sitefile/*.sql"/>
+		      <include name="spool_out_all.sh"/>
+		    </fileset>
+		  </scp>
 	</target>
 
 	<target name="dos2unix">
 		<echo>Fix cr/lf</echo>
 		<sshexec host="${nwis_host}"
 			trust="true"
-			username="nwis_user"
+			username="${nwis_user}"
 			password="${nwis_user_password}"
 			command="dos2unix spool_out_all.sh "/>
 	</target>
 	
-	<target name="scpScriptB">
-		<echo>Copy the script to ${nwis_host}</echo>
-		<scp todir="nwis_user:${nwis_user_password}@${nwis_host}:/var/lib/mysql/copy_sitefile" trust="true">
-			<fileset dir="copy_sitefile"/>
-		</scp>
-	</target>
-
 	<target name="qwNwisEtl">
 		<echo>Run the script</echo>
 		<sshexec host="${nwis_host}"
@@ -63,46 +43,22 @@
 		/>
 	</target>
 
-	<target name="defaultEros" depends="buildPackageEros, scpScriptEros, dos2unixEros, qwNwisEtlEros"/>
-
-    <target name="devEros" depends="buildPackageEros, runPackage"/>
-
-	<target name="buildPackageEros">
-		<echo>Rebuiling the etl database package and body</echo>
-		<exec executable="sqlplus" failonerror="true">
-			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
-			<arg value="@${basedir}/create_nad_objects_eros.sql"/>
-		</exec>
-	</target>
-		
-	<target name="scpScriptEros">
-		<echo>Copy the script to ${nwis_host}</echo>
-		<scp todir="${nwis_user}:${nwis_user_password}@${nwis_host}:/home/nwis_user" trust="true">
-		    <fileset dir=".">
-		      <include name="copy_sitefile/*.sql"/>
-		      <include name="spool_out_all_eros.sh"/>
-		    </fileset>
-		  </scp>
-	</target>
-
-	<target name="dos2unixEros">
-		<echo>Fix cr/lf</echo>
-		<sshexec host="${nwis_host}"
-			trust="true"
-			username="${nwis_user}"
-			password="${nwis_user_password}"
-			command="dos2unix spool_out_all_eros.sh "/>
-	</target>
-	
-	<target name="qwNwisEtlEros">
-		<echo>Run the script</echo>
-		<sshexec host="${nwis_host}"
-			trust="true"
-			failonerror="true"
-			username="nwis_user"
-			password="${nwis_user_password}"
-			command="bash -e spool_out_all_eros.sh "
-		/>
-	</target>
-
+    <target name="runPackage">
+        <echo>Running the main ETL Package</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
+            <arg value="@${basedir}/runPackage.sql"/>
+            <arg value="${success_notify}"/>
+            <arg value="${failure_notify}"/>
+        </exec>
+    </target>
+            
+    <target name="compilePackageEmptyCiDB">
+        <echo>Rebuiling the etl database package and body with the empty_db flag set</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}"/>
+            <arg value="@${basedir}/emptyCiDB.sql"/>
+        </exec>
+    </target>
+        
 </project>

@@ -1,14 +1,15 @@
 #!/bin/bash
 
-cd /var/lib/mysql/copy_sitefile
+cd /home/nwis_user/copy_sitefile
 
 export date_suffix=`date +%Y%m%d_%H%M`
 
-export DIR=/mnt/nad-mysql1/spool
-export ORACLE_HOME=/usr/oracle/product/11.2.0/db_1
+export DIR=/srv/mysql-data/spool
+export ORACLE_HOME=/usr/oracle/app/oracle/product/11.2.0/client_1
 export PATH=$PATH:$ORACLE_HOME/bin
 export success_notify="bheck@usgs.gov,barry_heck@yahoo.com"
 export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com"
+export TNS_ADMIN=/usr/local/etc
 
 (
 tries=0
@@ -69,16 +70,18 @@ done
 
 export nwis_ws_star_pass=`cat .sp`
 
-time sqlldr userid=NWIS_WS_STAR@wiws.er.usgs.gov control=QW_RESULT.ctl data=$DIR/QW_RESULT.out direct=true skip=1 << EOT
+rm -f *.bad
+
+time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=QW_RESULT.ctl data=$DIR/QW_RESULT.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
-time sqlldr userid=NWIS_WS_STAR@wiws.er.usgs.gov control=QW_SAMPLE.ctl data=$DIR/QW_SAMPLE.out direct=true skip=1 << EOT
+time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=QW_SAMPLE.ctl data=$DIR/QW_SAMPLE.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
-time sqlldr userid=NWIS_WS_STAR@wiws.er.usgs.gov control=SITEFILE.ctl  data=$DIR/SITEFILE.out direct=true skip=1 << EOT
+time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=SITEFILE.ctl  data=$DIR/SITEFILE.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
-time sqlldr userid=NWIS_WS_STAR@wiws.er.usgs.gov control=SERIES_CATALOG.ctl  data=$DIR/SERIES_CATALOG.out direct=true skip=1 << EOT
+time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=SERIES_CATALOG.ctl  data=$DIR/SERIES_CATALOG.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
 
@@ -101,13 +104,13 @@ if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad -o -f SERIES_CATALO
    exit 1
 fi
 
-cd /var/lib/mysql/copy_sitefile
+cd /home/nwis_user/copy_sitefile
 export nwis_ws_star_pass=`cat .sp`
 export success_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
 export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
 
 sqlplus /nolog << EOT
-connect NWIS_WS_STAR/$nwis_ws_star_pass@wiws.er.usgs.gov
+connect NWIS_WS_STAR/$nwis_ws_star_pass@dbdw.er.usgs.gov
 set serveroutput on
 set linesize 160
 exec dbms_output.enable(100000);
@@ -123,4 +126,3 @@ EOT
 
 date
 ) 2>&1 | tee spool_out_all_$date_suffix.out
-

@@ -45,34 +45,14 @@ create or replace package body create_nad_objects
    type cleanuptable is table of varchar2(80) index by binary_integer;
    cleanup cleanuptable;
 
-   email_text varchar2(32000);
-   
    table_list varchar2(4000 char) := 'translate(table_name, ''0123456789'', ''0000000000'') in ' ||
                                      '(''FA_REGULAR_RESULT_00000'',''FA_STATION_00000'',''SERIES_CATALOG_00000'',''QWPORTAL_SUMMARY_00000'',' ||
                                       '''NWIS_STATION_SUM_00000'',''NWIS_RESULT_SUM_00000'',''NWIS_RESULT_CT_SUM_00000'',''NWIS_RESULT_NR_SUM_00000'',' ||
                                       '''NWIS_LCTN_LOC_00000'',''PUBLIC_SRSNAMES_00000'',''NWIS_DI_ORG_00000'',''CHARACTERISTICNAME_00000'',' ||
                                       '''CHARACTERISTICTYPE_00000'',''COUNTRY_00000'',''COUNTY_00000'',''ORGANIZATION_00000'',''SAMPLEMEDIA_00000'',' ||
-                                      '''SITETYPE_00000'',''STATE_00000'',''STATION_00000'')';
+                                      '''SITETYPE_00000'',''STATE_00000'')';
                                       
    type cursor_type is ref cursor;
-
-   procedure append_email_text(addition in varchar2)
-   is
-      addition_with_time varchar2(4000);
-   begin
-
-      addition_with_time := to_char(sysdate, 'YYYY.MM.DD HH24:MI:SS ') || addition;
-      dbms_output.put_line(addition_with_time);
-      if nvl(length(email_text), 0) + nvl(length(addition_with_time), 0) + nvl(length(lf), 0) < 32000 then
-         email_text := email_text || addition_with_time || lf;
-      end if;
-
-   exception
-      when others then
-         if message is null then
-            message := 'failed to append to email message';
-         end if;
-   end append_email_text;
 
    procedure determine_suffix
    is
@@ -89,56 +69,56 @@ create or replace package body create_nad_objects
         into suffix from user_tables
         where translate(table_name, '0123456789', '0000000000') = 'FA_REGULAR_RESULT_00000';
 
-      append_email_text('using ''' || suffix || ''' for suffix.');
+      dbms_output.put_line('using ''' || suffix || ''' for suffix.');
 
       open drop_remnants for query using suffix;
       loop
          fetch drop_remnants into drop_name;
          exit when drop_remnants%NOTFOUND;
          stmt := 'drop table ' || drop_name || ' cascade constraints purge';
-         append_email_text('CLEANUP remnants: ' || stmt);
+         dbms_output.put_line('CLEANUP remnants: ' || stmt);
          execute immediate stmt;
       end loop;
 
    exception
       when others then
          message := 'FAIL to determine suffix: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end determine_suffix;
 
    procedure create_regular_result
    is
    begin
 
-      append_email_text('creating regular_result...');
+      dbms_output.put_line('creating regular_result...');
 
       execute immediate '
-      create table fa_regular_result' || suffix || ' parallel 4 compress pctfree 0 nologging
+      create table fa_regular_result' || suffix || q'! parallel 4 compress pctfree 0 nologging
       partition by range(activity_start_date_time)
       (
-         partition fa_regular_result_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1990     values less than (to_date(''01-JAN-1991'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1991     values less than (to_date(''01-JAN-1992'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1992     values less than (to_date(''01-JAN-1993'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1993     values less than (to_date(''01-JAN-1994'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1994     values less than (to_date(''01-JAN-1995'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1995     values less than (to_date(''01-JAN-1996'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1996     values less than (to_date(''01-JAN-1997'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1997     values less than (to_date(''01-JAN-1998'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1998     values less than (to_date(''01-JAN-1999'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_1999     values less than (to_date(''01-JAN-2000'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2000     values less than (to_date(''01-JAN-2001'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2001     values less than (to_date(''01-JAN-2002'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2002     values less than (to_date(''01-JAN-2003'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2003     values less than (to_date(''01-JAN-2004'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2004     values less than (to_date(''01-JAN-2005'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2005     values less than (to_date(''01-JAN-2006'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2006     values less than (to_date(''01-JAN-2007'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2007     values less than (to_date(''01-JAN-2008'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2008     values less than (to_date(''01-JAN-2009'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2009     values less than (to_date(''01-JAN-2010'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2010     values less than (to_date(''01-JAN-2011'', ''DD-MON-YYYY'')),
-         partition fa_regular_result_2011     values less than (to_date(''01-JAN-2012'', ''DD-MON-YYYY'')),
+         partition fa_regular_result_pre_1990 values less than (to_date('01-JAN-1990', 'DD-MON-YYYY')),
+         partition fa_regular_result_1990     values less than (to_date('01-JAN-1991', 'DD-MON-YYYY')),
+         partition fa_regular_result_1991     values less than (to_date('01-JAN-1992', 'DD-MON-YYYY')),
+         partition fa_regular_result_1992     values less than (to_date('01-JAN-1993', 'DD-MON-YYYY')),
+         partition fa_regular_result_1993     values less than (to_date('01-JAN-1994', 'DD-MON-YYYY')),
+         partition fa_regular_result_1994     values less than (to_date('01-JAN-1995', 'DD-MON-YYYY')),
+         partition fa_regular_result_1995     values less than (to_date('01-JAN-1996', 'DD-MON-YYYY')),
+         partition fa_regular_result_1996     values less than (to_date('01-JAN-1997', 'DD-MON-YYYY')),
+         partition fa_regular_result_1997     values less than (to_date('01-JAN-1998', 'DD-MON-YYYY')),
+         partition fa_regular_result_1998     values less than (to_date('01-JAN-1999', 'DD-MON-YYYY')),
+         partition fa_regular_result_1999     values less than (to_date('01-JAN-2000', 'DD-MON-YYYY')),
+         partition fa_regular_result_2000     values less than (to_date('01-JAN-2001', 'DD-MON-YYYY')),
+         partition fa_regular_result_2001     values less than (to_date('01-JAN-2002', 'DD-MON-YYYY')),
+         partition fa_regular_result_2002     values less than (to_date('01-JAN-2003', 'DD-MON-YYYY')),
+         partition fa_regular_result_2003     values less than (to_date('01-JAN-2004', 'DD-MON-YYYY')),
+         partition fa_regular_result_2004     values less than (to_date('01-JAN-2005', 'DD-MON-YYYY')),
+         partition fa_regular_result_2005     values less than (to_date('01-JAN-2006', 'DD-MON-YYYY')),
+         partition fa_regular_result_2006     values less than (to_date('01-JAN-2007', 'DD-MON-YYYY')),
+         partition fa_regular_result_2007     values less than (to_date('01-JAN-2008', 'DD-MON-YYYY')),
+         partition fa_regular_result_2008     values less than (to_date('01-JAN-2009', 'DD-MON-YYYY')),
+         partition fa_regular_result_2009     values less than (to_date('01-JAN-2010', 'DD-MON-YYYY')),
+         partition fa_regular_result_2010     values less than (to_date('01-JAN-2011', 'DD-MON-YYYY')),
+         partition fa_regular_result_2011     values less than (to_date('01-JAN-2012', 'DD-MON-YYYY')),
          partition fa_regular_result_last     values less than (maxvalue)
       )
       as
@@ -221,7 +201,19 @@ create or replace package body create_nad_objects
          y.SAMPLE_COLLECT_METHOD_NAME,
          y.SAMPLE_COLLECT_METHOD_ID,
          y.SAMPLE_COLLECT_METHOD_CTX,
-         y.SAMPLE_ID
+         y.SAMPLE_ID,
+         cast(case
+                when nemi.method_id is not null
+                  then
+                    case nemi.method_type
+                      when 'analytical'
+                        then 'https://www.nemi.gov/methods/method_summary/' || method_id || '/'
+                      when 'statistical'
+                        then 'https://www.nemi.gov/methods/sams_method_summary/' || method_id || '/'
+                    end
+                else 
+                  null 
+              end as varchar2(256 char)) nemi_url
       from
         (select /*+ full(r) full(samp) full(site) full(parameter)
                     full(z_param_alias) full(tu) full(wqx_medium_cd) full(body_part) full(parm) full(fxd)
@@ -233,7 +225,7 @@ create or replace package body create_nad_objects
                     use_hash(val_qual_cd1) use_hash(val_qual_cd2) use_hash(val_qual_cd3) use_hash(val_qual_cd4) use_hash(val_qual_cd5) use_hash(dist) */
             site.site_id as FK_STATION,
             samp.sample_start_dt as ACTIVITY_START_DATE_TIME,
-            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then samp.SAMPLE_START_TIME_DATUM_CD
+            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in ('h','m') then samp.SAMPLE_START_TIME_DATUM_CD
                  else null
             end as ACT_START_TIME_ZONE,
             cast(parm.srsname as varchar2(500)) as CHARACTERISTIC_NAME,
@@ -241,55 +233,55 @@ create or replace package body create_nad_objects
             cast(null as number) as RESULT_VALUE,
             parm.parm_unt_tx as RESULT_UNIT,
             nvl(fxd.fxd_tx,
-                   case when r.REMARK_CD in (''U'', ''M'', ''N'', ''<'', ''>'') then null
-                        when r.REMARK_CD in (''R'', ''V'', ''S'', ''E'', ''A'') or r.REMARK_CD is null then r.result_va
+                   case when r.REMARK_CD in ('U', 'M', 'N', '<', '>') then null
+                        when r.REMARK_CD in ('R', 'V', 'S', 'E', 'A') or r.REMARK_CD is null then r.result_va
                         else r.result_va
                    end) as RESULT_VALUE_TEXT,
             parm.parm_frac_tx as SAMPLE_FRACTION_TYPE,
-            case when r.RESULT_MD is null then ''Calculated''
-                 when r.REMARK_CD=''E'' then''Estimated''
-                 else ''Actual''
+            case when r.RESULT_MD is null then 'Calculated'
+                 when r.REMARK_CD='E' then'Estimated'
+                 else 'Actual'
             end as RESULT_VALUE_TYPE,
             nvl(parm.parm_stat_tx,
-                    case when r.REMARK_CD = ''S'' then ''MPN''
-                         when r.REMARK_CD = ''A'' then ''mean''
+                    case when r.REMARK_CD = 'S' then 'MPN'
+                         when r.REMARK_CD = 'A' then 'mean'
                          else null
                     end) as STATISTIC_TYPE,
-            case when r.DQI_CD = ''S'' then ''Preliminary''
-                 when r.DQI_CD = ''A'' then ''Historical''
-                 when r.DQI_CD = ''R'' then ''Accepted''
+            case when r.DQI_CD = 'S' then 'Preliminary'
+                 when r.DQI_CD = 'A' then 'Historical'
+                 when r.DQI_CD = 'R' then 'Accepted'
                  else null end as RESULT_VALUE_STATUS,
             parm.parm_wt_tx as WEIGHT_BASIS_TYPE,
             parm.parm_temp_tx  as TEMPERATURE_BASIS_LEVEL,
             parm.parm_tm_tx as DURATION_BASIS,
-            case when r.METH_CD is not null then cast(''USGS'' as varchar2(4))
+            case when r.METH_CD is not null then cast('USGS' as varchar2(4))
                  else null
             end as ANALYTICAL_PROCEDURE_SOURCE,
             r.meth_cd as ANALYTICAL_PROCEDURE_ID,
             proto_org.proto_org_nm as LAB_NAME,
             case when r.ANL_DT is not null then
-                    substr(ANL_DT, 1, 4) || ''-'' || substr(ANL_DT, 5, 2) || ''-'' || substr(ANL_DT, 7, 2)
+                    substr(ANL_DT, 1, 4) || '-' || substr(ANL_DT, 5, 2) || '-' || substr(ANL_DT, 7, 2)
                  else null
             end as ANALYSIS_DATE_TIME,
             cast(null as varchar(2)) as ANALYSIS_TIME_ZONE,
             cast(null as varchar(2)) as LOWER_QUANTITATION_LIMIT,
             cast(null as varchar(2)) as UPPER_QUANTITATION_LIMIT,
-            case when r.remark_cd = ''<'' and r.rpt_lev_va is null then r.result_va
-                 when r.remark_cd = ''<'' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then r.result_va
-                 when r.remark_cd = ''>'' then r.result_va
-                 when r.remark_cd in (''N'', ''U'') and r.rpt_lev_va is not null then r.rpt_lev_va
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
+            case when r.remark_cd = '<' and r.rpt_lev_va is null then r.result_va
+                 when r.remark_cd = '<' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then r.result_va
+                 when r.remark_cd = '>' then r.result_va
+                 when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
                  when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
                  else null
             end as DETECTION_LIMIT,
-            case when r.remark_cd = ''<'' and r.rpt_lev_va is null then ''Historical Lower Reporting Limit''
-                 when r.remark_cd = ''<'' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then ''Elevated Detection Limit''
-                 when r.remark_cd = ''<'' and nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
-                 when r.remark_cd = ''>'' then ''Upper Reporting Limit''
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is null and r.result_unrnd_va is not null then ''Lower Quantitation Limit''
-                 when r.remark_cd = ''M'' and r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
+            case when r.remark_cd = '<' and r.rpt_lev_va is null then 'Historical Lower Reporting Limit'
+                 when r.remark_cd = '<' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then 'Elevated Detection Limit'
+                 when r.remark_cd = '<' and nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
+                 when r.remark_cd = '>' then 'Upper Reporting Limit'
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
+                 when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then 'Lower Quantitation Limit'
+                 when r.remark_cd = 'M' and r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
                  when r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
                  else null
             end as DETECTION_LIMIT_DESCRIPTION,
@@ -298,7 +290,7 @@ create or replace package body create_nad_objects
                   val_qual_cd3.val_qual_nm ||
                   val_qual_cd4.val_qual_nm ||
                   val_qual_cd5.val_qual_nm ||
-                  case when r.remark_cd = ''R'' then ''Result below sample specific critical level.''
+                  case when r.remark_cd = 'R' then 'Result below sample specific critical level.'
                        else null
                   end) as LAB_REMARK,
             trim(parm.parm_size_tx) as PARTICLE_SIZE,
@@ -307,31 +299,31 @@ create or replace package body create_nad_objects
             cast(null as varchar(2)) as DILUTION_INDICATOR,
             cast(null as varchar(2)) as RECOVERY_INDICATOR,
             cast(null as varchar(2)) as CORRECTION_INDICATOR,
-            samp.nwis_host||''.''||samp.qw_db_no||''.''||samp.record_no as ACTIVITY_ID,
-            case when samp.samp_type_cd = ''A'' then ''Not determined''
-                 when samp.samp_type_cd = ''B'' then ''Quality Control Sample-Other''
-                 when samp.samp_type_cd = ''H'' then ''Sample-Composite Without Parents''
-                 when samp.samp_type_cd = ''1'' then ''Quality Control Sample-Field Spike''
-                 when samp.samp_type_cd = ''2'' then ''Quality Control Sample-Field Blank''
-                 when samp.samp_type_cd = ''3'' then ''Quality Control Sample-Reference Sample''
-                 when samp.samp_type_cd = ''4'' then ''Quality Control Sample-Blind''
-                 when samp.samp_type_cd = ''5'' then ''Quality Control Sample-Field Replicate''
-                 when samp.samp_type_cd = ''6'' then ''Quality Control Sample-Reference Material''
-                 when samp.samp_type_cd = ''7'' then ''Quality Control Sample-Field Replicate''
-                 when samp.samp_type_cd = ''8'' then ''Quality Control Sample-Spike Solution''
-                 when samp.samp_type_cd = ''9'' then ''Sample-Routine''
-                 else ''Unknown''
+            samp.nwis_host||'.'||samp.qw_db_no||'.'||samp.record_no as ACTIVITY_ID,
+            case when samp.samp_type_cd = 'A' then 'Not determined'
+                 when samp.samp_type_cd = 'B' then 'Quality Control Sample-Other'
+                 when samp.samp_type_cd = 'H' then 'Sample-Composite Without Parents'
+                 when samp.samp_type_cd = '1' then 'Quality Control Sample-Field Spike'
+                 when samp.samp_type_cd = '2' then 'Quality Control Sample-Field Blank'
+                 when samp.samp_type_cd = '3' then 'Quality Control Sample-Reference Sample'
+                 when samp.samp_type_cd = '4' then 'Quality Control Sample-Blind'
+                 when samp.samp_type_cd = '5' then 'Quality Control Sample-Field Replicate'
+                 when samp.samp_type_cd = '6' then 'Quality Control Sample-Reference Material'
+                 when samp.samp_type_cd = '7' then 'Quality Control Sample-Field Replicate'
+                 when samp.samp_type_cd = '8' then 'Quality Control Sample-Spike Solution'
+                 when samp.samp_type_cd = '9' then 'Sample-Routine'
+                 else 'Unknown'
             end as ACTIVITY_TYPE,
             cast(null as varchar(80)) as ACTIVITY_INTENT,
-            to_date(samp.sample_end_dt, ''YYYY-MM-DD HH24:MI:SS'') as ACTIVITY_STOP_DATE_TIME,
-            case when samp.sample_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then samp.sample_start_time_datum_cd
+            to_date(samp.sample_end_dt, 'YYYY-MM-DD HH24:MI:SS') as ACTIVITY_STOP_DATE_TIME,
+            case when samp.sample_end_dt is not null and samp.sample_end_sg in ('h', 'm') then samp.sample_start_time_datum_cd
                  else null
             end as ACT_STOP_TIME_ZONE,
             coalesce(parameter.V00003, parameter.V00098, parameter.V78890, parameter.V78891) as ACTIVITY_DEPTH,
-            case when parameter.V00003 is not null then ''feet''
-                 when parameter.V00098 is not null then ''meters''
-                 when parameter.V78890 is not null then ''feet''
-                 when parameter.V78891 is not null then ''meters''
+            case when parameter.V00003 is not null then 'feet'
+                 when parameter.V00098 is not null then 'meters'
+                 when parameter.V78890 is not null then 'feet'
+                 when parameter.V78891 is not null then 'meters'
                  else null
             end as ACTIVITY_DEPTH_UNIT,
             coalesce(parameter.V72015, parameter.V82047) as ACTIVITY_UPPER_DEPTH,
@@ -341,10 +333,10 @@ create or replace package body create_nad_objects
                  when parameter.V82048 is not null then parameter.V82048
                  else null
             end as ACTIVITY_LOWER_DEPTH,
-            case when parameter.V72015 is not null then ''feet''
-                 when parameter.V82047 is not null then ''meters''
-                 when parameter.V72016 is not null then ''feet''
-                 when parameter.V82048 is not null then ''meters''
+            case when parameter.V72015 is not null then 'feet'
+                 when parameter.V82047 is not null then 'meters'
+                 when parameter.V72016 is not null then 'feet'
+                 when parameter.V82048 is not null then 'meters'
                  else null
             end as UPR_LWR_DEPTH_UNIT,
             trim(r.result_lab_cm_tx) RESULT_COMMENT,
@@ -352,24 +344,24 @@ create or replace package body create_nad_objects
             tu.tu_id as ITIS_NUMBER,
             trim(samp.sample_lab_cm_tx) as ACTIVITY_COMMENT,
             case when parameter.V00003 is not null or parameter.V00098 is not null then null
-                 when parameter.V78890 is not null or parameter.V78891 is not null then cast(''Below mean sea level'' as varchar2(20))
+                 when parameter.V78890 is not null or parameter.V78891 is not null then cast('Below mean sea level' as varchar2(20))
                  else null
             end as ACTIVITY_DEPTH_REF_POINT,
-            case when r.remark_cd = ''U'' then ''Not Detected''
-                 when r.remark_cd = ''V'' then ''Systematic Contamination''
-                 when r.remark_cd = ''S'' then null
-                 when r.remark_cd = ''M'' then ''Detected Not Quantified''
-                 when r.remark_cd = ''N'' then ''Detected Not Quantified''
-                 when r.remark_cd = ''A'' then null
-                 when r.remark_cd = ''<'' then ''Not Detected''
-                 when r.remark_cd = ''>'' then ''Present Above Quantification Limit''
+            case when r.remark_cd = 'U' then 'Not Detected'
+                 when r.remark_cd = 'V' then 'Systematic Contamination'
+                 when r.remark_cd = 'S' then null
+                 when r.remark_cd = 'M' then 'Detected Not Quantified'
+                 when r.remark_cd = 'N' then 'Detected Not Quantified'
+                 when r.remark_cd = 'A' then null
+                 when r.remark_cd = '<' then 'Not Detected'
+                 when r.remark_cd = '>' then 'Present Above Quantification Limit'
                  else null
             end as RESULT_DETECTION_CONDITION_TX,
-            case when parm.PARM_MEDIUM_TX = ''Biological Tissue'' then tu.composite_tu_name
+            case when parm.PARM_MEDIUM_TX = 'Biological Tissue' then tu.composite_tu_name
             end as SAMPLE_TISSUE_TAXONOMIC_NAME,
             wqx_medium_cd.WQX_ACT_MED_NM as ACTIVITY_MEDIA_NAME,
             wqx_medium_cd.WQX_ACT_MED_SUB as ACTIVITY_MEDIA_SUBDIV_NAME,
-            case when r.prep_dt is not null then substr(r.prep_dt, 1, 4) || ''-'' || substr(r.prep_dt, 5, 2) || ''-'' || substr(r.prep_dt, 7, 2)
+            case when r.prep_dt is not null then substr(r.prep_dt, 1, 4) || '-' || substr(r.prep_dt, 5, 2) || '-' || substr(r.prep_dt, 7, 2)
                  else null
             end as ANALYSIS_PREP_DATE_TX,
             samp.aqfr_cd,  /* these next two needed for join but are not in final result */
@@ -378,19 +370,19 @@ create or replace package body create_nad_objects
             hyd_event_cd.hyd_event_nm as HYDROLOGIC_EVENT_NAME,
             nvl(parameter.v71999_fxd_nm, samp.project_cd) as PROJECT_ID,
               --This is the way Informatica does it.  Above is theoretically equal and I think easier to read
-              --case when parameter.V71999 = 15 then ''NAWQA''
-              --     when parameter.V71999 = 20 then ''NASQAN''
-              --     when parameter.V71999 = 25 then ''NMN''
+              --case when parameter.V71999 = 15 then 'NAWQA'
+              --     when parameter.V71999 = 20 then 'NASQAN'
+              --     when parameter.V71999 = 25 then 'NMN'
               --     when parameter.V71999 = 30 then substr(P71999_fxd_tx parameter.v1999_fxd_tx, 1, 35)
-              --     when parameter.V71999 = 35 then ''RASA''
+              --     when parameter.V71999 = 35 then 'RASA'
               --     else substr(samp.project_cd, 1, 35) as PROJECT_ID,
-            case when parameter.V72015 is not null then ''Below land-surface datum''
-                 when parameter.V82047 is not null then ''''
-                 when parameter.V72016 is not null then ''Below land-surface datum''
-                 when parameter.V82048 is not null then ''''
+            case when parameter.V72015 is not null then 'Below land-surface datum'
+                 when parameter.V82047 is not null then ''
+                 when parameter.V72016 is not null then 'Below land-surface datum'
+                 when parameter.V82048 is not null then ''
                  else null
             end as ACTIVITY_UPRLWR_DEPTH_REF_PT,
-            case when parm.parm_medium_tx = ''Biological Tissue'' then body_part.body_part_nm
+            case when parm.parm_medium_tx = 'Biological Tissue' then body_part.body_part_nm
                  else null
             end as SAMPLE_TISSUE_ANATOMY_NAME,
             r.parameter_cd as PARAMETER_CODE,
@@ -398,44 +390,44 @@ create or replace package body create_nad_objects
             coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) as ACTIVITY_CONDUCTING_ORG,
             meth.meth_nm as ANALYTICAL_METHOD_NAME,
             meth.cit_nm ANALYTICAL_METHOD_CITATION,
-            case when samp.sample_start_sg in (''m'', ''h'', ''D'') then to_char(samp.sample_start_dt, ''YYYY-MM-DD'')
-                 when samp.sample_start_sg = ''M'' then to_char(samp.sample_start_dt, ''YYYY-MM'')
-                 when samp.sample_start_sg = ''Y'' then to_char(samp.sample_start_dt, ''YYYY'')
+            case when samp.sample_start_sg in ('m', 'h', 'D') then to_char(samp.sample_start_dt, 'YYYY-MM-DD')
+                 when samp.sample_start_sg = 'M' then to_char(samp.sample_start_dt, 'YYYY-MM')
+                 when samp.sample_start_sg = 'Y' then to_char(samp.sample_start_dt, 'YYYY')
                  else null
             end as ACTIVITY_START_DATE_TX,
-            case when samp.sample_start_sg in (''m'', ''h'') then to_char(samp.sample_start_dt, ''HH24:MI:SS'')
+            case when samp.sample_start_sg in ('m', 'h') then to_char(samp.sample_start_dt, 'HH24:MI:SS')
                  else null
             end as ACTIVITY_START_TIME_TX,
-            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then lu_tz.tz_utc_offset_tm
+            case when samp.SAMPLE_START_DT is not null and samp.SAMPLE_START_SG in ('h','m') then lu_tz.tz_utc_offset_tm
                  else null
             end as ACT_START_TIME_ZONE_LOCAL,/*here dave*/
-            case when samp.sample_start_sg in (''m'', ''h'', ''D'') then to_char(samp.sample_utc_start_dt, ''YYYY-MM-DD'')
-                 when samp.sample_start_sg = ''M'' then to_char(samp.sample_utc_start_dt, ''YYYY-MM'')
-                 when samp.sample_start_sg = ''Y'' then to_char(samp.sample_utc_start_dt, ''YYYY'')
+            case when samp.sample_start_sg in ('m', 'h', 'D') then to_char(samp.sample_utc_start_dt, 'YYYY-MM-DD')
+                 when samp.sample_start_sg = 'M' then to_char(samp.sample_utc_start_dt, 'YYYY-MM')
+                 when samp.sample_start_sg = 'Y' then to_char(samp.sample_utc_start_dt, 'YYYY')
                  else null
             end as ACTIVITY_START_DATE_TX_UTC,
-            case when samp.sample_start_sg in (''m'', ''h'') then to_char(samp.sample_utc_start_dt, ''HH24:MI:SS'')
+            case when samp.sample_start_sg in ('m', 'h') then to_char(samp.sample_utc_start_dt, 'HH24:MI:SS')
                  else null
             end as ACTIVITY_START_TIME_TX_UTC,
-            case when samp.SAMPLE_UTC_START_DT is not null and samp.SAMPLE_START_SG in (''h'',''m'') then ''+00:00''
+            case when samp.SAMPLE_UTC_START_DT is not null and samp.SAMPLE_START_SG in ('h','m') then '+00:00'
                  else null
             end as ACT_START_TIME_ZONE_UTC,
-            case when samp.sample_end_sg in (''m'', ''h'', ''D'') then substr(samp.sample_end_dt, 1, 10)
-                 when samp.sample_end_sg = ''M'' then substr(samp.sample_end_dt, 1, 7)
-                 when samp.sample_end_sg = ''Y'' then substr(samp.sample_end_dt, 1, 4)
+            case when samp.sample_end_sg in ('m', 'h', 'D') then substr(samp.sample_end_dt, 1, 10)
+                 when samp.sample_end_sg = 'M' then substr(samp.sample_end_dt, 1, 7)
+                 when samp.sample_end_sg = 'Y' then substr(samp.sample_end_dt, 1, 4)
                  else null
             end as ACTIVITY_STOP_DATE_TX,
-            case when samp.sample_end_sg in (''m'', ''h'') then substr(samp.sample_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX,
-           case when samp.sample_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then lu_tz.tz_utc_offset_tm
+            case when samp.sample_end_sg in ('m', 'h') then substr(samp.sample_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX,
+           case when samp.sample_end_dt is not null and samp.sample_end_sg in ('h', 'm') then lu_tz.tz_utc_offset_tm
                  else null
             end ACT_STOP_TIME_ZONE_LOCAL,/*here dave*/
-            case when samp.sample_end_sg in (''m'', ''h'', ''D'') then substr(samp.sample_utc_end_dt, 1, 10)
-                 when samp.sample_end_sg = ''M'' then substr(samp.sample_utc_end_dt, 1, 7)
-                 when samp.sample_end_sg = ''Y'' then substr(samp.sample_utc_end_dt, 1, 4)
+            case when samp.sample_end_sg in ('m', 'h', 'D') then substr(samp.sample_utc_end_dt, 1, 10)
+                 when samp.sample_end_sg = 'M' then substr(samp.sample_utc_end_dt, 1, 7)
+                 when samp.sample_end_sg = 'Y' then substr(samp.sample_utc_end_dt, 1, 4)
                  else null
             end as ACTIVITY_STOP_DATE_TX_UTC,
-            case when samp.sample_end_sg in (''m'', ''h'') then substr(samp.sample_utc_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX_UTC,
-            case when samp.sample_utc_end_dt is not null and samp.sample_end_sg in (''h'', ''m'') then ''+00:00''
+            case when samp.sample_end_sg in ('m', 'h') then substr(samp.sample_utc_end_dt,12) else null end as ACTIVITY_STOP_TIME_TX_UTC,
+            case when samp.sample_utc_end_dt is not null and samp.sample_end_sg in ('h', 'm') then '+00:00'
                  else null
             end ACT_STOP_TIME_ZONE_UTC,
             case when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
@@ -451,7 +443,7 @@ create or replace package body create_nad_objects
                  else null
             end as SAMPLE_COLLECT_METHOD_ID,
             case when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-                 then cast(''USGS parameter code 82398'' as varchar2(25))
+                 then cast('USGS parameter code 82398' as varchar2(25))
                  else null
             end as SAMPLE_COLLECT_METHOD_CTX,
             samp.sample_id as SAMPLE_ID
@@ -488,28 +480,28 @@ create or replace package body create_nad_objects
             from
               (select /*+ full(p1) parallel(p1, 4) */
                   sample_id,
-                  max(case when parameter_cd = ''71999'' then result_unrnd_va else null end) AS V71999,
-                  max(case when parameter_cd = ''50280'' then result_unrnd_va else null end) AS V50280,
-                  max(case when parameter_cd = ''72015'' then result_unrnd_va else null end) AS V72015,
-                  max(case when parameter_cd = ''82047'' then result_unrnd_va else null end) AS V82047,
-                  max(case when parameter_cd = ''72016'' then result_unrnd_va else null end) AS V72016,
-                  max(case when parameter_cd = ''82048'' then result_unrnd_va else null end) AS V82048,
-                  max(case when parameter_cd = ''00003'' then result_unrnd_va else null end) AS V00003,
-                  max(case when parameter_cd = ''00098'' then result_unrnd_va else null end) AS V00098,
-                  max(case when parameter_cd = ''78890'' then result_unrnd_va else null end) AS V78890,
-                  max(case when parameter_cd = ''78891'' then result_unrnd_va else null end) AS V78891,
-                  max(case when parameter_cd = ''82398'' then result_unrnd_va else null end) AS V82398,
-                  max(case when parameter_cd = ''84164'' then result_unrnd_va else null end) AS V84164
+                  max(case when parameter_cd = '71999' then result_unrnd_va else null end) AS V71999,
+                  max(case when parameter_cd = '50280' then result_unrnd_va else null end) AS V50280,
+                  max(case when parameter_cd = '72015' then result_unrnd_va else null end) AS V72015,
+                  max(case when parameter_cd = '82047' then result_unrnd_va else null end) AS V82047,
+                  max(case when parameter_cd = '72016' then result_unrnd_va else null end) AS V72016,
+                  max(case when parameter_cd = '82048' then result_unrnd_va else null end) AS V82048,
+                  max(case when parameter_cd = '00003' then result_unrnd_va else null end) AS V00003,
+                  max(case when parameter_cd = '00098' then result_unrnd_va else null end) AS V00098,
+                  max(case when parameter_cd = '78890' then result_unrnd_va else null end) AS V78890,
+                  max(case when parameter_cd = '78891' then result_unrnd_va else null end) AS V78891,
+                  max(case when parameter_cd = '82398' then result_unrnd_va else null end) AS V82398,
+                  max(case when parameter_cd = '84164' then result_unrnd_va else null end) AS V84164
                from
                   nwis_ws_star.qw_result p1
                where
-                  result_web_cd = ''Y'' and
-                  parameter_cd in (''71999'', ''50280'', ''72015'', ''82047'', ''72016'', ''82048'', ''00003'', ''00098'', ''78890'', ''78891'', ''82398'', ''84164'')
+                  result_web_cd = 'Y' and
+                  parameter_cd in ('71999', '50280', '72015', '82047', '72016', '82048', '00003', '00098', '78890', '78891', '82398', '84164')
                group by
                   sample_id) p2,
-              (select fxd_nm v71999_fxd_nm, fxd_va from fxd where parm_cd = ''71999'') fxd_71999,
-              (select fxd_tx v82398_fxd_tx, fxd_va from fxd where parm_cd = ''82398'') fxd_82398,
-              (select fxd_tx v84164_fxd_tx, fxd_va from fxd where parm_cd = ''84164'') fxd_84164
+              (select fxd_nm v71999_fxd_nm, fxd_va from fxd where parm_cd = '71999') fxd_71999,
+              (select fxd_tx v82398_fxd_tx, fxd_va from fxd where parm_cd = '82398') fxd_82398,
+              (select fxd_tx v84164_fxd_tx, fxd_va from fxd where parm_cd = '84164') fxd_84164
             where
                p2.v71999 = fxd_71999.fxd_va(+) and
                p2.v82398 = fxd_82398.fxd_va(+) and
@@ -517,12 +509,12 @@ create or replace package body create_nad_objects
            (select
                tu_id,
                trim(tu_1_nm) ||
-               case when trim(tu_2_cd) is not null then '' '' || trim(tu_2_cd) end ||
-               case when trim(tu_2_nm) is not null then '' '' || trim(tu_2_nm) end ||
-               case when trim(tu_3_cd) is not null then '' '' || trim(tu_3_cd) end ||
-               case when trim(tu_3_nm) is not null then '' '' || trim(tu_3_nm) end ||
-               case when trim(tu_4_cd) is not null then '' '' || trim(tu_4_cd) end ||
-               case when trim(tu_4_nm) is not null then '' '' || trim(tu_4_nm) end AS composite_tu_name
+               case when trim(tu_2_cd) is not null then ' ' || trim(tu_2_cd) end ||
+               case when trim(tu_2_nm) is not null then ' ' || trim(tu_2_nm) end ||
+               case when trim(tu_3_cd) is not null then ' ' || trim(tu_3_cd) end ||
+               case when trim(tu_3_nm) is not null then ' ' || trim(tu_3_nm) end ||
+               case when trim(tu_4_cd) is not null then ' ' || trim(tu_4_cd) end ||
+               case when trim(tu_4_nm) is not null then ' ' || trim(tu_4_nm) end AS composite_tu_name
             from
                tu) tu,
            (select
@@ -556,33 +548,33 @@ create or replace package body create_nad_objects
                lu_parm_seq_grp_cd b,
               (select
                   parm_cd,
-                  max(case when parm_alias_cd = ''SRSNAME'' then parm_alias_nm else null end) AS srsname,
-                  max(case when parm_alias_cd = ''SRSID''   then parm_alias_nm else null end) AS srsid  ,
-                  max(case when parm_alias_cd = ''CASRN''   then parm_alias_nm else null end) AS casrn
+                  max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) AS srsname,
+                  max(case when parm_alias_cd = 'SRSID'   then parm_alias_nm else null end) AS srsid  ,
+                  max(case when parm_alias_cd = 'CASRN'   then parm_alias_nm else null end) AS casrn
                from
                   lu_parm_alias
                group by
                   parm_cd
                having
-                  max(case when parm_alias_cd = ''SRSNAME'' then parm_alias_nm else null end) is not null) z_parm_alias,
+                  max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) is not null) z_parm_alias,
               (select
-                  decode(REGEXP_INSTR(PARM_METH_RND_TX, ''[1-9]'', 1, 1),
-                         1, ''0.001'',
-                         2, ''0.01'',
-                         3, ''0.1'',
-                         4, ''1.'',
-                         5, ''10'',
-                         6, ''100'',
-                         7, ''1000'',
-                         8, ''10000'',
-                         9, ''100000'') multiplier,
+                  decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
+                         1, '0.001',
+                         2, '0.01',
+                         3, '0.1',
+                         4, '1.',
+                         5, '10',
+                         6, '100',
+                         7, '1000',
+                         8, '10000',
+                         9, '100000') multiplier,
                   parm_cd
                from
                   lu_parm_meth
                where
                   meth_cd is null) z_parm_meth2
             where
-               a.parm_public_fg = ''Y'' and
+               a.parm_public_fg = 'Y' and
                a.parm_seq_grp_cd = b.parm_seq_grp_cd(+) and
                a.parm_cd = z_parm_alias.parm_cd and
                a.parm_cd = z_parm_meth2.parm_cd(+)) parm,
@@ -612,38 +604,38 @@ create or replace package body create_nad_objects
             where
                meth1.meth_cd = z_cit_meth.meth_cd(+)) meth,
            (select
-               decode(REGEXP_INSTR(PARM_METH_RND_TX, ''[1-9]'', 1, 1),
-                      1, ''0.001'',
-                      2, ''0.01'',
-                      3, ''0.1'',
-                      4, ''1.'',
-                      5, ''10'',
-                      6, ''100'',
-                      7, ''1000'',
-                      8, ''10000'',
-                      9, ''100000'') multiplier,
+               decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
+                      1, '0.001',
+                      2, '0.01',
+                      3, '0.1',
+                      4, '1.',
+                      5, '10',
+                      6, '100',
+                      7, '1000',
+                      8, '10000',
+                      9, '100000') multiplier,
                parm_cd,
                meth_cd
             from
                lu_parm_meth) z_parm_meth,
            (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_wqx_rpt_lev_cd) nwis_wqx_rpt_lev_cd,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd1,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd2,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd3,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd4,
-           (select val_qual_nm || ''. '' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd5,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd1,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd2,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd3,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd4,
+           (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from val_qual_cd) val_qual_cd5,
            (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from hyd_event_cd) hyd_event_cd,
            (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from hyd_cond_cd) hyd_cond_cd,
            (select district_cd, host_name from nwis_district_cds_by_host) dist
          where
-            r.result_web_cd    = ''Y''                         and
+            r.result_web_cd    = 'Y'                         and
            (r.RESULT_VA        is not null  OR
             r.RPT_LEV_VA       is not null  OR
             r.REMARK_CD        is not null)                  and
             r.sample_id        = samp.sample_id              and
             r.parameter_cd     = parm.parm_cd              and  /* not outer join on z_parm or z_parm_alias */
             r.parameter_cd     = fxd.parm_cd(+)              and
-            case when r.result_va = ''0.0'' then ''0'' else r.result_va end = fxd.fxd_va(+) and
+            case when r.result_va = '0.0' then '0' else r.result_va end = fxd.fxd_va(+) and
             r.anl_ent_cd       = proto_org.proto_org_cd(+)   and
             r.meth_cd          = meth.meth_cd(+)             and
             r.parameter_cd     = z_parm_meth.parm_cd(+)      and
@@ -654,8 +646,8 @@ create or replace package body create_nad_objects
             substr(r.val_qual_tx, 3, 1) = val_qual_cd3.val_qual_cd(+) and
             substr(r.val_qual_tx, 4, 1) = val_qual_cd4.val_qual_cd(+) and
             substr(r.val_qual_tx, 5, 1) = val_qual_cd5.val_qual_cd(+) and
-            samp.sample_web_cd = ''Y''                         and
-            samp.qw_db_no      = ''01''                        and
+            samp.sample_web_cd = 'Y'                         and
+            samp.qw_db_no      = '01'                        and
             samp.site_id       = site.site_id                  and
             samp.sample_id     = parameter.sample_id(+)        and
             to_number(samp.tu_id) = tu.tu_id(+)                and
@@ -666,31 +658,34 @@ create or replace package body create_nad_objects
             samp.hyd_cond_cd   = hyd_cond_cd.hyd_cond_cd(+)    and
             site.dec_lat_va    <> 0                            and
             site.dec_long_va   <> 0                            and
-            site.db_no         = ''01''                        and
-            site.site_web_cd   = ''Y''                         and
-            site.site_tp_cd not in (''FA-WTP'', ''FA-WWTP'', ''FA-TEP'', ''FA-HP'')  and
-            site.nwis_host  not in (''fltlhsr001'', ''fltpasr001'', ''flalssr003'') and
+            site.db_no         = '01'                        and
+            site.site_web_cd   = 'Y'                         and
+            site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP')  and
+            site.nwis_host  not in ('fltlhsr001', 'fltpasr001', 'flalssr003') and
             site.district_cd   = dist.district_cd              and
             site.nwis_host     = dist.host_name and
             samp.SAMPLE_START_TIME_DATUM_CD = lu_tz.tz_cd(+)
          ) y,
-         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from aqfr) aqfr
+         (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from aqfr) aqfr,
+         wqp_nemi_nwis_crosswalk nemi
       where
          y.aqfr_cd  = aqfr.aqfr_cd (+) and
-         y.state_cd = aqfr.state_cd(+)' ;
+         y.state_cd = aqfr.state_cd(+) and
+         trim(y.analytical_procedure_source) = nemi.analytical_procedure_source(+) and
+         trim(y.analytical_procedure_id) = nemi.analytical_procedure_id(+)!' ;
 
         cleanup(1) := 'drop table FA_REGULAR_RESULT' || suffix || ' cascade constraints purge';
      exception
       when others then
          message := 'FAIL to create FA_REGULAR_RESULT: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_regular_result;
 
    procedure create_station
    is
    begin
 
-      append_email_text('creating station...');
+      dbms_output.put_line('creating station...');
 
       execute immediate
      'create table fa_station' || suffix || ' compress pctfree 0 nologging as
@@ -771,7 +766,8 @@ create or replace package body create_nad_objects
                else null
           end */ cast(NULL as varchar2(32)) as WQX_STATION_TYPE,
           mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(round(dec_long_va, 7),round(dec_lat_va, 7), null), null, null) as GEOM,
-          fips.state_fips
+          fips.state_fips,
+          cast(site_tp.primary_site_type as varchar2(30)) primary_site_type
       from
           nwis_ws_star.sitefile sitefile,
          (select cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
@@ -785,7 +781,10 @@ create or replace package body create_nad_objects
              a.site_tp_cd,
              case when a.site_tp_prim_fg = ''Y'' then a.site_tp_ln
                   else b.site_tp_ln || '': '' || a.site_tp_ln
-             end as station_type_name
+             end as station_type_name,
+             case when a.site_tp_prim_fg = ''Y'' then a.site_tp_ln
+                  else b.site_tp_ln
+             end as primary_site_type
           from
              site_tp a,
              site_tp b
@@ -832,7 +831,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL to create FA_STATION: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_station;
 
 
@@ -840,7 +839,7 @@ create or replace package body create_nad_objects
    is
    begin
 
-      append_email_text('creating nwis_station_sum...');
+      dbms_output.put_line('creating nwis_station_sum...');
 
       execute immediate     /* have seen problems with parallel 4, so make it parallel 1 */
      'create table NWIS_STATION_SUM' || suffix || ' compress pctfree 0 nologging parallel 1 as
@@ -852,7 +851,7 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         substr(station_type_name , 1, instr(station_type_name || '':'', '':'') - 1) station_type_name,
+         primary_site_type,
          description_text,
          organization_id,
          organization_name,
@@ -870,14 +869,14 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         station_type_name ';
+         primary_site_type';
 
       cleanup(3) := 'drop table NWIS_STATION_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_result_sum...');
+      dbms_output.put_line('creating nwis_result_sum...');
 
       execute immediate
-     'create table NWIS_RESULT_SUM' || suffix || ' compress pctfree 0 nologging  parallel 4
+     'create table NWIS_RESULT_SUM' || suffix || ' compress pctfree 0 nologging noparallel
       partition by range(activity_start_date_time)
          (
             partition nwis_result_sum_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
@@ -912,7 +911,7 @@ create or replace package body create_nad_objects
             country_cd,
             state_cd,
             county_cd,
-            station_type_name,
+            primary_site_type,
             organization_id,
             hydrologic_unit_code,
             activity_media_name,
@@ -920,17 +919,18 @@ create or replace package body create_nad_objects
             characteristic_name,
             activity_start_date_time,
             parameter_code,
+            b.nemi_url,
             b.result_count
          from
              nwis_station_sum' || suffix || ' a,
              (select
                  fk_station, activity_media_name, characteristic_type, characteristic_name, parameter_code,
-                 trunc(activity_start_date_time) activity_start_date_time,
+                 trunc(activity_start_date_time) activity_start_date_time, nemi_url,
                  cast(count(*) as number(9)) result_count
               from
                  fa_regular_result' || suffix || '
               group by
-                 fk_station, activity_media_name, characteristic_type, characteristic_name, parameter_code,
+                 fk_station, activity_media_name, characteristic_type, characteristic_name, parameter_code, nemi_url,
                  trunc(activity_start_date_time)
              ) b
          where
@@ -941,14 +941,15 @@ create or replace package body create_nad_objects
             activity_media_name,
             characteristic_type,
             characteristic_name,
-            parameter_code ';
+            parameter_code,
+            nemi_url ';
 
       cleanup(4) := 'drop table NWIS_RESULT_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_result_ct_sum...');
+      dbms_output.put_line('creating nwis_result_ct_sum...');
 
       execute immediate
-     'create table NWIS_RESULT_CT_SUM' || suffix || ' pctfree 0 compress nologging parallel 4
+     'create table NWIS_RESULT_CT_SUM' || suffix || ' pctfree 0 compress nologging noparallel
       partition by list(characteristic_type)
       (
          partition nwis_result_ct_sum_sediment    values (''Sediment''),
@@ -975,13 +976,14 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         station_type_name,
+         primary_site_type,
          organization_id,
          hydrologic_unit_code,
          activity_media_name,
          characteristic_type,
          characteristic_name,
          parameter_code,
+         nemi_url,
          cast(sum(result_count) as number(9)) result_count
       from
           nwis_result_sum' || suffix || ' a
@@ -991,27 +993,29 @@ create or replace package body create_nad_objects
          country_cd,
          state_cd,
          county_cd,
-         station_type_name,
+         primary_site_type,
          organization_id,
          hydrologic_unit_code,
          activity_media_name,
          characteristic_type,
          characteristic_name,
-         parameter_code
+         parameter_code,
+         nemi_url
       order by
          fk_station,
          station_id,
          activity_media_name,
          characteristic_type,
          characteristic_name,
-         parameter_code ';
+         parameter_code,
+         nemi_url ';
 
       cleanup(5) := 'drop table NWIS_RESULT_CT_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_result_nr_sum...');
+      dbms_output.put_line('creating nwis_result_nr_sum...');
 
       execute immediate
-     'create table NWIS_RESULT_NR_SUM' || suffix || ' pctfree 0 compress nologging parallel 4
+     'create table NWIS_RESULT_NR_SUM' || suffix || ' pctfree 0 compress nologging noparallel
       partition by range(activity_start_date_time)
       (
          partition nwis_result_nr_sum_pre_1990 values less than (to_date(''01-JAN-1990'', ''DD-MON-YYYY'')),
@@ -1047,6 +1051,7 @@ create or replace package body create_nad_objects
          characteristic_name,
          parameter_code,
          activity_start_date_time,
+         nemi_url,
          cast(sum(result_count) as number(9)) result_count
       from
           nwis_result_sum' || suffix || ' a
@@ -1056,21 +1061,23 @@ create or replace package body create_nad_objects
          characteristic_type,
          characteristic_name,
          parameter_code,
-         activity_start_date_time
+         activity_start_date_time,
+         nemi_url
       order by
          fk_station,
          activity_media_name,
          characteristic_type,
          characteristic_name,
          parameter_code,
-         activity_start_date_time ';
+         activity_start_date_time,
+         nemi_url ';
 
       cleanup(6) := 'drop table NWIS_RESULT_NR_SUM' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating nwis_lctn_loc...');
+      dbms_output.put_line('creating nwis_lctn_loc...');
 
       execute immediate
-     'create table nwis_lctn_loc' || suffix || ' compress pctfree 0 nologging parallel 1 as
+     'create table nwis_lctn_loc' || suffix || ' compress pctfree 0 nologging noparallel as
       select /*+ parallel(4) */ distinct
              country_cd,
              state_cd state_fips,
@@ -1080,10 +1087,10 @@ create or replace package body create_nad_objects
 
       cleanup(7) := 'drop table nwis_lctn_loc' || suffix || ' cascade constraints purge';
       
-      append_email_text('creating nwis_di_org...');
+      dbms_output.put_line('creating nwis_di_org...');
 
       execute immediate
-     'create table nwis_di_org' || suffix || ' compress pctfree 0 nologging parallel 1 as
+     'create table nwis_di_org' || suffix || ' compress pctfree 0 nologging noparallel as
       select distinct
              cast(''USGS-'' || state_postal_cd as varchar2(7)) as organization_id,
              ''USGS '' || STATE_NAME || '' Water Science Center'' as organization_name
@@ -1094,14 +1101,14 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL to create summaries: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_summaries;
 
    procedure create_series_catalog
    is
    begin
 
-      append_email_text('creating series catalog...');
+      dbms_output.put_line('creating series catalog...');
 
       execute immediate
      'create table SERIES_CATALOG' || suffix || ' compress pctfree 0 nologging as
@@ -1132,14 +1139,14 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL to create SERIES_CATALOG: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_series_catalog;
 
    procedure create_public_srsnames
    is
    begin
 
-      append_email_text('creating public_srsnames...');
+      dbms_output.put_line('creating public_srsnames...');
 
       execute immediate
      'create table public_srsnames' || suffix || ' compress pctfree 0 nologging as
@@ -1175,86 +1182,81 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL to create public_srsnames: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_public_srsnames;
 
    procedure create_code_tables
    is
    begin
 
-      append_email_text('creating characteristicname...');
+      dbms_output.put_line('creating characteristicname...');
       execute immediate
       'create table characteristicname' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
-              cast(null as varchar2(4000 char)) description,
-              rownum sort_order
-         from (select distinct characteristic_name code_value
-                 from fa_regular_result' || suffix || '
-                   order by 1)';
+      select cast(code_value as varchar2(500 char)) code_value,
+             cast(null as varchar2(4000 char)) description,
+             rownum sort_order
+        from (select distinct characteristic_name code_value
+                from fa_regular_result' || suffix || '
+                  order by 1)';
       cleanup(11) := 'drop table characteristicname' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating characteristictype...');
+      dbms_output.put_line('creating characteristictype...');
       execute immediate
       'create table characteristictype' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
-              cast(null as varchar2(4000 char)) description,
-              rownum sort_order
-         from (select distinct characteristic_type code_value
-                 from fa_regular_result' || suffix || '
-                   order by 1)';
+      select cast(code_value as varchar2(500 char)) code_value,
+             cast(null as varchar2(4000 char)) description,
+             rownum sort_order
+        from (select distinct characteristic_type code_value
+                from fa_regular_result' || suffix || '
+                  order by 1)';
       cleanup(12) := 'drop table characteristictype' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating country...');
+      dbms_output.put_line('creating country...');
       execute immediate
       'create table country' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
-              description,
-              rownum sort_order
-         from (select distinct country_cd code_value,
-                      country_name description
-                 from fa_station' || suffix || '
-                   order by country_name desc)';
+      select cast(code_value as varchar2(2 char)) code_value,
+             cast(description as varchar2(48 char)) description,
+             rownum sort_order
+        from (select distinct country_cd code_value,
+                     country_name description
+                from fa_station' || suffix || '
+                  order by country_name desc)';
       cleanup(13) := 'drop table country' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating county...');
+      dbms_output.put_line('creating county...');
       execute immediate
       'create table county' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
-              description,
-              country_cd,
-              state_cd,
-              rownum sort_order
-         from (select distinct country_cd||'':''||state_cd|| '':''||county_cd code_value,
-                      country_cd||'', ''||state_name||'', ''||county_name description,
-                      country_cd,
-                      state_cd,
-                      county_cd
-                 from fa_station' || suffix || '
-                   order by country_cd desc,
-                            state_cd,
-                            county_cd)';
+      select cast(code_value as varchar2(9 char)) code_value,
+             cast(description as varchar2(107 char)) description,
+             cast(country_cd as varchar2(2 char)) country_cd,
+             cast(state_cd as varchar2(2 char)) state_cd,
+             rownum sort_order
+        from (select distinct country_cd||'':''||state_cd|| '':''||county_cd code_value,
+                     country_cd||'', ''||state_name||'', ''||county_name description,
+                     country_cd,
+                     state_cd,
+                     county_cd
+                from fa_station' || suffix || '
+                  order by country_cd desc,
+                           state_cd,
+                           county_cd)';
      cleanup(14) := 'drop table county' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating organization...');
+      dbms_output.put_line('creating organization...');
       execute immediate
       'create table organization' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
-              cast(null as varchar2(4000 char)) description,
-              xmlelement("OrganizationDescription", 
-                         xmlelement("OrganizationIdentifier", code_value),
-                         xmlelement("OrganizationFormalName", description)
-                        ) organization_details,
-              rownum sort_order
-         from (select distinct organization_id code_value,
-                               organization_name description
-                 from fa_station' || suffix || '
-                   order by 1)';
+      select cast(code_value as varchar2(500 char)) code_value,
+             cast(description as varchar2(4000 char)) description,
+             rownum sort_order
+        from (select distinct organization_id code_value, organization_name description
+                from fa_station' || suffix || '
+                  order by 1)';
       cleanup(15) := 'drop table organization' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating samplemedia...');
+      dbms_output.put_line('creating samplemedia...');
       execute immediate
       'create table samplemedia' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
+       select cast(code_value as varchar2(30 char)) code_value,
               cast(null as varchar2(4000 char)) description,
               rownum sort_order
          from (select distinct activity_media_name code_value
@@ -1262,24 +1264,24 @@ create or replace package body create_nad_objects
                    order by 1)';
       cleanup(16) := 'drop table samplemedia' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating sitetype...');
+      dbms_output.put_line('creating sitetype...');
       execute immediate
       'create table sitetype' || suffix || ' compress pctfree 0 nologging as
-       select code_value,
+       select cast(code_value as varchar2(500 char)) code_value,
               cast(null as varchar2(4000 char)) description,
               rownum sort_order
-         from (select distinct substr(station_type_name||'':'',1,instr(station_type_name||'':'','':'')-1) code_value
+         from (select distinct primary_site_type code_value
                  from fa_station' || suffix || '
                     order by 1)';
       cleanup(17) := 'drop table sitetype' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating state...');
+      dbms_output.put_line('creating state...');
       execute immediate
       'create table state' || suffix || ' compress pctfree 0 nologging as
-      select code_value,
-             description_with_country,
-             description_with_out_country,
-             country_cd,
+      select cast(code_value as varchar2(5 char)) code_value,
+             cast(description_with_country as varchar2(57 char)) description_with_country,
+             cast(description_with_out_country as varchar2(53 char)) description_with_out_country,
+             cast(country_cd as varchar2(2 char)) country_cd,
              rownum sort_order
         from (select distinct country_cd||'':''||state_cd code_value,
                      country_cd||'', ''||state_name description_with_country,
@@ -1294,293 +1296,27 @@ create or replace package body create_nad_objects
       exception
       when others then
          message := 'FAIL to create code_tables: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_code_tables;
    
-   procedure create_xml_tables
-   is
-      partition_list varchar2(32000);
-   begin
-
-      append_email_text('creating station...');
-      
-      select listagg(partition_desc, ', ') within group (order by sort_order)
-        into partition_list
-        from (select 'partition station_' || sort_order || q'! values ('!' || code_value || q'!')!' partition_desc, sort_order
-          from organization);
-          
-      execute immediate
-     'create table station' || suffix || ' compress pctfree 0 nologging
-      partition by list (organization_id) (' || partition_list || q'!) as
-      select /*+ no_parallel */
-             pk_isn,
-             'USGS-' || station_id station_id,
-             xmlelement("MonitoringLocation", 
-                        xmlelement("MonitoringLocationIdentity",
-                                   xmlelement("MonitoringLocationIdentifier", 'USGS-' || station_id),
-                                   xmlelement("MonitoringLocationName", station_name),
-                                   xmlelement("MonitoringLocationTypeName", station_type_name),
-                                   xmlelement("MonitoringLocationDescriptionText", description_text),
-                                   xmlelement("HUCEightDigitCode", hydrologic_unit_code),
-                                   xmlelement("HUCTwelveDigitCode", null),
-                                   xmlelement("DrainageAreaMeasure",
-                                              xmlelement("MeasureValue", drain_area_mi2_va),
-                                              xmlelement("MeasureUnitCode", nvl2(drain_area_mi2_va,'sq mi',null))
-                                             ),
-                                   xmlelement("ContributingDrainageAreaMeasure",
-                                              xmlelement("MeasureValue", contrib_drain_mi2_area_va),
-                                              xmlelement("MeasureUnitCode", nvl2(contrib_drain_mi2_area_va,'sq mi',null))
-                                             )
-                                  ),
-                        xmlelement("MonitoringLocationGeospatial",
-                                   xmlelement("LatitudeMeasure", latitude),
-                                   xmlelement("LongitudeMeasure", longitude),
-                                   xmlelement("SourceMapScaleNumeric", map_scale),
-                                   xmlelement("HorizontalAccuracyMeasure",
-                                             xmlelement("MeasureValue", geopositioning_accuracy_value),
-                                             xmlelement("MeasureUnitCode", geopositioning_accuracy_units)
-                                             ),
-                                   xmlelement("HorizontalCollectionMethodName", nvl(geopositioning_method, 'Unknown')),
-                                   xmlelement("HorizontalCoordinateReferenceSystemDatumName", nvl(horiz_datum_name, 'Unknown')),
-                                   xmlelement("VerticalMeasure",
-                                             xmlelement("MeasureValue", elevation),
-                                             xmlelement("MeasureUnitCode", elev_units)
-                                             ),
-                                   xmlelement("VerticalAccuracyMeasure",
-                                             xmlelement("MeasureValue", vertical_accuracy_value),
-                                             xmlelement("MeasureUnitCode", ltrim(vertical_accuracy_units))
-                                             ),
-                                   xmlelement("VerticalCollectionMethodName", vertical_method_name),
-                                   xmlelement("VerticalCoordinateReferenceSystemDatumName", vertical_datum_name),
-                                   xmlelement("CountryCode", country_cd),
-                                   xmlelement("StateCode", state_cd),
-                                   xmlelement("CountyCode", county_cd)
-                                  ),
-                        xmlelement("WellInformation",
-                                   xmlelement("AquiferName", nat_aqfr_name),
-                                   xmlelement("FormationTypeText", aqfr_name),
-                                   xmlelement("AquiferTypeName", aqfr_type_name),
-                                   xmlelement("ConstructionDateText", construction_date_tx),
-                                   xmlelement("WellDepthMeasure",
-                                             xmlelement("MeasureValue", well_depth_ft_blw_land_sfc_va),
-                                             xmlelement("MeasureUnitCode", nvl2(well_depth_ft_blw_land_sfc_va, 'ft', null))
-                                             ),
-                                   xmlelement("WellHoleDepthMeasure",
-                                             xmlelement("MeasureValue", hole_depth_ft_blw_land_sfc_va),
-                                             xmlelement("MeasureUnitCode", nvl2(hole_depth_ft_blw_land_sfc_va, 'ft', null))
-                                             )
-                                  )
-                       ) station_details,           
-             country_cd,
-             to_char(county_cd, 'fm009') county_cd,
-             mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(longitude, latitude, null), null, null) geom,
-             hydrologic_unit_code,
-             organization_id,
-             to_char(state_cd, 'fm09') state_cd,
-             station_type_name,
-             0 result_count
-        from fa_station!' || suffix;
-
-      execute immediate 'merge into station' || suffix || ' a
-                         using (select pk_isn, result_count
-                                  from nwis_station_sum' || suffix || ') b
-                            on (a.pk_isn = b.pk_isn)
-                           when matched then update set a.result_count = b.result_count';
-                           
-      commit;
-      
-      cleanup(19) := 'drop table station' || suffix || ' cascade constraints purge';
-
-      append_email_text('creating activity & result...');
-      
-      execute immediate 'truncate table result_temp';
-      execute immediate 'delete from activity_temp';
-      commit;
-      
-      execute immediate q'!insert all /*+ append nologging parallel 4*/
-                           when myrank = 1 then
-                             into activity_temp
-                               values (sequence1.nextval, activity_details, station_pk, organization_id, station_id, activity_start, activity_id) 
-                           when 1=1 then
-                           into result_temp
-                             values (result_id, result_details, sequence1.currval, station_pk, station_id, activity_start, characteristic_name, country_cd, county_cd, huc_8, organization_id, sample_media, state_cd, site_type) 
-                               select /*+ no_parallel */
-                                      --pk_isn,
-                                      xmlelement("Activity",
-                                                 xmlelement("ActivityDescription",
-                                                            xmlelement("ActivityIdentifier", r.activity_id),
-                                                            xmlelement("ActivityTypeCode", r.activity_type),
-                                                            xmlelement("ActivityMediaName", r.activity_media_name),
-                                                            xmlelement("ActivityMediaSubdivisionName", r.activity_media_subdiv_name),
-                                                            xmlelement("ActivityStartDate", r.activity_start_date_tx),
-                                                            xmlelement("ActivityStartTime",
-                                                                       xmlelement("Time", r.activity_start_time_tx),
-                                                                       xmlelement("TimeZoneCode", r.act_start_time_zone)
-                                                                      ),
-                                                            xmlelement("ActivityEndDate", r.activity_stop_date_tx),
-                                                            xmlelement("ActivityEndTime",
-                                                                       xmlelement("Time", r.activity_stop_time_tx),
-                                                                       xmlelement("TimeZoneCode", r.act_stop_time_zone)
-                                                                      ),
-                                                            xmlelement("ActivityDepthHeightMeasure",
-                                                                       xmlelement("MeasureValue", r.activity_depth),
-                                                                       xmlelement("MeasureUnitCode", r.activity_depth_unit)
-                                                                      ),
-                                                            xmlelement("ActivityDepthAltitudeReferencePointText", r.activity_depth_ref_point),
-                                                            xmlelement("ActivityTopDepthHeightMeasure",
-                                                                       xmlelement("MeasureValue", r.activity_upper_depth),
-                                                                       xmlelement("MeasureUnitCode", NVL2(r.ACTIVITY_UPPER_DEPTH, r.UPR_LWR_DEPTH_UNIT, NULL) /*r.activity_upper_depth_unit*/)
-                                                                      ),
-                                                            xmlelement("ActivityBottomDepthHeightMeasure",
-                                                                       xmlelement("MeasureValue", r.activity_lower_depth),
-                                                                       xmlelement("MeasureUnitCode", NVL2(r.ACTIVITY_LOWER_DEPTH, r.UPR_LWR_DEPTH_UNIT, NULL) /*r.activity_lower_depth_unit*/)
-                                                                      ),
-                                                            xmlelement("ActivityDepthAltitudeReferencePointText", r.activity_uprlwr_depth_ref_pt),
-                                                            xmlelement("ProjectIdentifier", r.project_id),
-                                                            xmlelement("ActivityConductingOrganizationText", r.activity_conducting_org),
-                                                            xmlelement("MonitoringLocationIdentifier", s.station_id),
-                                                            xmlelement("ActivityCommentText", r.activity_comment),
-                                                            xmlelement("SampleAquifer", r.sample_aqfr_name),
-                                                            xmlelement("HydrologicCondition", r.hydrologic_condition_name),
-                                                            xmlelement("HydrologicEvent", r.hydrologic_event_name)
-                                                           ),
-                                                 xmlelement("SampleDescription",
-                                                            xmlelement("SampleCollectionMethod",
-                                                                       xmlelement("MethodIdentifier", r.sample_collect_method_id),
-                                                                       xmlelement("MethodIdentifierContext", r.sample_collect_method_ctx),
-                                                                       xmlelement("MethodName", r.sample_collect_method_name)
-                                                                      ),
-                                                            xmlelement("SampleCollectionEquipmentName", r.sample_collect_equip_name)
-                                                           )
-                                                ) activity_details,
-                                      xmlelement("Result", 
-                                                 xmlelement("ResultDescription",
-                                                            xmlelement("ResultDetectionConditionText", r.result_detection_condition_tx),
-                                                            xmlelement("CharacteristicName", r.characteristic_name),
-                                                            xmlelement("ResultSampleFractionText", r.sample_fraction_type),
-                                                            xmlelement("ResultMeasure",
-                                                                       xmlelement("ResultMeasureValue", r.result_value_text),
-                                                                       xmlelement("MeasureUnitCode", r.result_unit),
-                                                                       xmlelement("MeasureQualifierCode", null)
-                                                                      ),
-                                                            xmlelement("ResultStatusIdentifier", r.result_value_status),
-                                                            xmlelement("StatisticalBaseCode", r.statistic_type),
-                                                            xmlelement("ResultValueTypeName", r.result_value_type),
-                                                            xmlelement("ResultWeightBasisText", r.weight_basis_type),
-                                                            xmlelement("ResultTimeBasisText", r.duration_basis),
-                                                            xmlelement("ResultTemperatureBasisText", r.temperature_basis_level),
-                                                            xmlelement("ResultParticleSizeBasisText", r.particle_size),
-                                                            xmlelement("DataQuality",
-                                                                       xmlelement("PrecisionValue", r.precision)
-                                                                      ),
-                                                            xmlelement("ResultCommentText", r.result_comment),
-                                                            xmlelement("USGSPCode", r.parameter_code),
-                                                            xmlelement("ResultDepthHeightMeasure",
-                                                                       xmlelement("MeasureValue", null),
-                                                                       xmlelement("MeasureUnitCode", null)
-                                                                      ),
-                                                           xmlelement("ResultDepthAltitudeReferencePointText", null)
-                                                           ),
-                                                 xmlelement("BiologicalResultDescription",
-                                                            xmlelement("SubjectTaxonomicName", r.sample_tissue_taxonomic_name),
-                                                            xmlelement("SampleTissueAnatomyName", r.sample_tissue_anatomy_name)
-                                                           ),
-                                                 xmlelement("ResultAnalyticalMethod",
-                                                            xmlelement("MethodIdentifier", r.analytical_procedure_id),
-                                                            xmlelement("MethodIdentifierContext", r.analytical_method_name),
-                                                            xmlelement("MethodDescriptionText", r.analytical_method_citation)
-                                                           ),
-                                                 xmlelement("ResultLabInformation",
-                                                            xmlelement("LaboratoryName", r.lab_name),
-                                                            xmlelement("AnalysisStartDate", r.analysis_date_time),
-                                                            xmlelement("ResultLaboratoryCommentText", r.lab_remark),
-                                                            xmlelement("ResultDetectionQuantitationLimit",
-                                                                       xmlelement("DetectionQuantitationLimitTypeName", NVL2(r.DETECTION_LIMIT, r.DETECTION_LIMIT_DESCRIPTION, NULL) /*myqldesc*/),
-                                                                       xmlelement("DetectionQuantitationLimitMeasure",
-                                                                                  xmlelement("MeasureValue", r.DETECTION_LIMIT /*myql*/),
-                                                                                  xmlelement("MeasureUnitCode", NVL2(r.DETECTION_LIMIT, r.RESULT_UNIT, NULL) /*myqlunits*/)
-                                                                                 )
-                                                                      )
-                                                           ),
-                                                 xmlelement("LabSamplePreparation",
-                                                            xmlelement("PreparationStartDate", r.analysis_prep_date_tx)
-                                                           )
-                                                ) result_details,
-                                      activity_id,
-                                      r.fk_station station_pk,
-                                      s.station_id,
-                                      r.activity_start_date_time activity_start,
-                                      r.characteristic_name,       
-                                      s.country_cd,
-                                      to_char(s.county_cd, 'fm009') county_cd,
-                                      s.hydrologic_unit_code huc_8,
-                                      s.organization_id,
-                                      r.activity_media_name sample_media,
-                                      to_char(s.state_cd, 'fm09') state_cd,
-                                      s.station_type_name site_type,
-                                      rownum result_id,
-                                      dense_rank() over (partition by r.activity_id order by activity_id, rownum) myrank,
-                                      min(rownum) keep (dense_rank first order by rownum) over (partition by r.activity_id) activity_pk
-                                 from fa_regular_result!' || suffix || ' r
-                                      join fa_station' || suffix || ' s
-                                        on r.fk_station = s.pk_isn';
-
-      select listagg(partition_desc, ', ') within group (order by sort_order)
-        into partition_list
-        from (select 'partition activity_' || sort_order || q'! values ('!' || code_value || q'!')!' partition_desc, sort_order
-          from organization);
-          
-      execute immediate
-     'create table activity' || suffix || ' compress pctfree 0 nologging
-      partition by list (organization_id) (' || partition_list || q'!) as
-      select /*+ no_parallel */
-             *
-        from activity_temp';
-
-      cleanup(20) := 'drop table activity' || suffix || ' cascade constraints purge';
-
-      select listagg(partition_desc, ', ') within group (order by sort_order)
-        into partition_list
-        from (select 'partition result_' || sort_order || q'! values ('!' || code_value || q'!')!' partition_desc, sort_order
-          from organization);
-          
-      execute immediate
-     'create table result' || suffix || ' compress pctfree 0 nologging
-      partition by list (organization_id) (' || partition_list || q'!) as
-      select /*+ no_parallel */
-             *
-        from result_temp';
-
-      cleanup(21) := 'drop table result' || suffix || ' cascade constraints purge';
-
-   exception
-      when others then
-         message := 'FAIL to create an xml table: ' || SQLERRM;
-         append_email_text(message);
-   end create_xml_tables;
-
    procedure create_index
    is
       stmt            varchar2(32000);
       table_name      varchar2(   80);
    begin
 
-      append_email_text('creating indexes...');
+      dbms_output.put_line('creating indexes...');
 
       table_name := 'FA_STATION' || suffix;
-
-      /*------------usage:
-         SUBSTR(a.STATION_TYPE_NAME||':',1,INSTR(a.STATION_TYPE_NAME||':',':')-1)    --> verified used
-      ---------------------------------*/
 
       stmt := 'create table qwportal_summary' || suffix || ' compress nologging pctfree 0 cache as
                select
                   trim(station.state_cd) as fips_state_code,
                   trim(station.county_cd) as fips_county_code,
                   trim(station.state_cd) || trim(station.county_cd) as fips_state_and_county,
-                  cast(''N'' as varchar2(1)) as nwis_or_epa,
+                  cast(''N'' as varchar2(1 char)) as nwis_or_epa,
                   /* took out trim(result.characteristic_type) as characteristic_type, */
-                  cast(substr(station.station_type_name, 1, instr(station.station_type_name || '':'', '':'') - 1) as varchar2(30)) as site_type,
+                  cast(primary_site_type as varchar2(30)) as site_type,
                   cast(trim(station.hydrologic_unit_code) as varchar2(8)) as huc8,
                   cast(null as varchar2(12)) as huc12,
                   min(case when activity_start_date_time between to_date(''01-JAN-1875'', ''DD-MON-YYYY'') and sysdate then activity_start_date_time else null end) as min_date,
@@ -1603,7 +1339,7 @@ create or replace package body create_nad_objects
                   trim(station.county_cd),
                   trim(station.state_cd) || trim(station.county_cd),
                   /*  took out trim(result.characteristic_type), */
-                  substr(station.station_type_name, 1, instr(station.station_type_name || '':'', '':'') - 1),
+                  primary_site_type,
                   trim(station.hydrologic_unit_code)
                union all
                select
@@ -1611,7 +1347,6 @@ create or replace package body create_nad_objects
                   fips_county_code,
                   fips_state_code || fips_county_code fips_state_and_county,
                   cast(''E'' as varchar2(1)) nwis_or_epa,
-                  /* took out characteristic_group, */
                   site_type,
                   huc8,
                   huc12,
@@ -1624,34 +1359,34 @@ create or replace package body create_nad_objects
                   results_past_60_months,
                   results_all_time
                from
-                  storet_sum';
+                  storetmodern.storet_sum';
 
-      cleanup(22) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
+      cleanup(19) := 'drop table qwportal_summary' || suffix || ' cascade constraints purge';
 
-      append_email_text('creating qwportal_summary...');
+      dbms_output.put_line('creating qwportal_summary...');
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' cache noparallel';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' add constraint pk_' || table_name || ' primary key (pk_isn) using index nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
-      stmt := 'create bitmap index station_tp_nm_abbr' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'')-1)) nologging';
-      append_email_text(stmt);
+      stmt := 'create bitmap index fa_station_primary_type' || suffix || ' on ' ||
+               table_name || ' (primary_site_type) nologging';
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index fa_station_co_st_co' || suffix || ' on ' ||
                table_name || ' (country_cd, state_cd, county_cd) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create index station_id' || suffix || ' on ' ||
                table_name || ' (station_id) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'FA_REGULAR_RESULT' || suffix;
@@ -1665,22 +1400,22 @@ create or replace package body create_nad_objects
             parameter_code
       ---------------------------------*/
       stmt := 'alter table ' || table_name || ' cache ';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index fk_station_i' || suffix || ' on ' ||
                table_name || ' (FK_STATION) local nologging ';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index activity_id_i' || suffix || ' on ' ||
                table_name || ' (ACTIVITY_ID) local nologging ';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' add (constraint fk_station_fk' || suffix ||
               ' foreign key (fk_station) references ' || 'fa_station' || suffix || ' (pk_isn))';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index media_nm_bm_i' || suffix || ' on ' ||
@@ -1689,17 +1424,22 @@ create or replace package body create_nad_objects
 
       stmt := 'create bitmap index char_nm_bm_i' || suffix || ' on ' ||
                table_name || ' (characteristic_name) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index parm_i' || suffix || ' on ' ||
                table_name || ' (parameter_code) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index char_type_bm_i' || suffix || ' on ' ||
                table_name || ' (characteristic_type) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
+      stmt := 'create bitmap index nemi_url_i' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       /* note: this view seems to use the invoker rather than the definer.
@@ -1713,19 +1453,19 @@ create or replace package body create_nad_objects
 
       stmt := 'create index fa_station_geom_sp_idx' || suffix || ' on ' ||
               'FA_STATION' || suffix || ' (GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARAMETERS (''SDO_INDX_DIMS=2 LAYER_GTYPE="POINT"'')';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'SERIES_CATALOG' || suffix;
 
       stmt := 'create index fk_station2_i' || suffix || ' on ' ||
                table_name || ' (FK_STATION) nologging compress';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'alter table ' || table_name || ' add (constraint fk_station2_fk' || suffix ||
               ' foreign key (fk_station) references ' || 'fa_station' || suffix || ' (pk_isn))';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'NWIS_STATION_SUM' || suffix;
@@ -1739,139 +1479,155 @@ create or replace package body create_nad_objects
 
       stmt := 'create        index nwis_station_sum_2' || suffix || ' on ' ||
                table_name || ' (geom) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARAMETERS (''SDO_INDX_DIMS=2 LAYER_GTYPE="POINT"'')';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_3' || suffix || ' on ' ||
                table_name || ' (state_cd, county_cd ) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_4' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) nologging';
-      append_email_text(stmt);
+               table_name || ' (primary_site_type) nologging';
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_5' || suffix || ' on ' ||
                table_name || ' (organization_id     ) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_station_sum_6' || suffix || ' on ' ||
                table_name || ' (hydrologic_unit_code) nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'NWIS_RESULT_SUM' || suffix;
 
       stmt := 'create bitmap index nwis_result_sum_1' || suffix || ' on ' ||
                table_name || ' (fk_station          ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_2' || suffix || ' on ' ||
                table_name || ' (state_cd, county_cd ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_3' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) local nologging';
-      append_email_text(stmt);
+               table_name || ' (primary_site_type) local nologging';
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_4' || suffix || ' on ' ||
                table_name || ' (organization_id     ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_5' || suffix || ' on ' ||
                table_name || ' (hydrologic_unit_code) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_6' || suffix || ' on ' ||
                table_name || ' (activity_media_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_7' || suffix || ' on ' ||
                table_name || ' (characteristic_type ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_8' || suffix || ' on ' ||
                table_name || ' (characteristic_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_sum_9' || suffix || ' on ' ||
                table_name || ' (parameter_code      ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
+      
+      stmt := 'create bitmap index nwis_result_sum_10' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
 
       table_name := 'NWIS_RESULT_CT_SUM' || suffix;
       stmt := 'create bitmap index nwis_result_ct_sum_1' || suffix || ' on ' ||
                table_name || ' (fk_station          ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_2' || suffix || ' on ' ||
                table_name || ' (state_cd, county_cd ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_3' || suffix || ' on ' ||
-               table_name || ' (substr(station_type_name || '':'', 1, instr(station_type_name || '':'', '':'') - 1)   ) local nologging';
-      append_email_text(stmt);
+               table_name || ' (primary_site_type) local nologging';
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_4' || suffix || ' on ' ||
                table_name || ' (organization_id     ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_5' || suffix || ' on ' ||
                table_name || ' (hydrologic_unit_code) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_6' || suffix || ' on ' ||
                table_name || ' (activity_media_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_7' || suffix || ' on ' ||
                table_name || ' (characteristic_type ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_ct_sum_8' || suffix || ' on ' ||
                table_name || ' (characteristic_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
+      stmt := 'create bitmap index nwis_result_ct_sum_9' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       table_name := 'NWIS_RESULT_NR_SUM' || suffix;
       stmt := 'create bitmap index nwis_result_nr_sum_1' || suffix || ' on ' ||
                table_name || ' (fk_station          ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_nr_sum_2' || suffix || ' on ' ||
                table_name || ' (activity_media_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_nr_sum_3' || suffix || ' on ' ||
                table_name || ' (characteristic_type ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
       stmt := 'create bitmap index nwis_result_nr_sum_4' || suffix || ' on ' ||
                table_name || ' (characteristic_name ) local nologging';
-      append_email_text(stmt);
+      dbms_output.put_line(stmt);
       execute immediate stmt;
 
-      append_email_text('grants...');
+      stmt := 'create bitmap index nwis_result_nr_sum_5' || suffix || ' on ' ||
+               table_name || ' (nemi_url) local nologging';
+      dbms_output.put_line(stmt);
+      execute immediate stmt;
+
+      dbms_output.put_line('grants...');
       execute immediate 'grant select on fa_station'          || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on fa_regular_result'   || suffix || ' to nwis_ws_user, wqp_user';
       execute immediate 'grant select on series_catalog'      || suffix || ' to nwis_ws_user';
@@ -1892,50 +1648,50 @@ create or replace package body create_nad_objects
       execute immediate 'grant select on sitetype'            || suffix || ' to nwis_ws_user';
       execute immediate 'grant select on state'               || suffix || ' to nwis_ws_user, ars_stewards';
 
-      append_email_text('analyze fa_station...');  /* takes about 1.5 minutes*/
+      dbms_output.put_line('analyze fa_station...');  /* takes about 1.5 minutes*/
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_STATION'        || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze fa_regular_result...');  /* takes about 20 minutes */
+      dbms_output.put_line('analyze fa_regular_result...');  /* takes about 20 minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'FA_REGULAR_RESULT' || suffix, null,  10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze series_catalog...');  /* takes about 3 minutes */
+      dbms_output.put_line('analyze series_catalog...');  /* takes about 3 minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SERIES_CATALOG'    || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze qwportal_summary...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze qwportal_summary...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'QWPORTAL_SUMMARY'  || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_station_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_station_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_STATION_SUM'  || suffix, null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_result_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_result_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_result_ct_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_result_ct_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_CT_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_result_nr_sum...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_result_nr_sum...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_RESULT_NR_SUM'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_lctn_loc...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_lctn_loc...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_LCTN_LOC'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze nwis_di_org...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze nwis_di_org...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'NWIS_DI_ORG'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze public_srsnames...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze public_srsnames...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'PUBLIC_SRSNAMES'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
-      append_email_text('analyze characteristicname...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze characteristicname...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'CHARACTERISTICNAME'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze characteristictype...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze characteristictype...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'CHARACTERISTICTYPE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze country...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze country...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'COUNTRY'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze county...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze county...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'COUNTY'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze organization...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze organization...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'ORGANIZATION'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze samplemedia...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze samplemedia...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SAMPLEMEDIA'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze sitetype...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze sitetype...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'SITETYPE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-      append_email_text('analyze state...');  /* takes about ?? minutes */
+      dbms_output.put_line('analyze state...');  /* takes about ?? minutes */
       dbms_stats.gather_table_stats('NWIS_WS_STAR', 'STATE'  || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
    exception
       when others then
          message := 'FAIL with index: ' || stmt || '  --> ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
    end create_index;
 
    procedure validate
@@ -1951,7 +1707,7 @@ create or replace package body create_nad_objects
       situation    varchar2(200);
    begin
 
-      append_email_text('validating...');
+      dbms_output.put_line('validating...');
 
       select count(*) into old_rows from fa_regular_result;
       query := 'select count(*) from fa_regular_result' || suffix;
@@ -1968,7 +1724,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for fa_regular_result: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -1988,7 +1744,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for fa_station: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -2008,7 +1764,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for series_catalog: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -2028,7 +1784,7 @@ create or replace package body create_nad_objects
       	 $END
       end if;
       situation := pass_fail || ': table comparison for qwportal_summary: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -2038,13 +1794,13 @@ create or replace package body create_nad_objects
       fetch c into index_count;
       close c;
 
-      if index_count < 14 then  /* there are exactly 14 as of 29APR2013 */
+      if index_count < 46 then  /* there are exactly 46 as of 10MAR2014 */
          pass_fail := 'FAIL';
       else
          pass_fail := 'PASS';
       end if;
       situation := pass_fail || ': found ' || to_char(index_count) || ' indexes.';
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -2055,13 +1811,13 @@ create or replace package body create_nad_objects
       fetch c into grant_count;
       close c;
 
-      if grant_count < 19 then
+      if grant_count < 19 then  /* there are exactly 19 as of 10MAR2014 */
          pass_fail := 'FAIL';
       else
          pass_fail := 'PASS';
       end if;
       situation := pass_fail || ': found ' || to_char(grant_count) || ' grants.';
-      append_email_text(situation);
+      dbms_output.put_line(situation);
       if pass_fail = 'FAIL' and message is null then
          message := situation;
       end if;
@@ -2069,7 +1825,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL validation with query problem: ' || query || ' ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
 
    end validate;
 
@@ -2078,7 +1834,7 @@ create or replace package body create_nad_objects
    	  suffix_less_one varchar2(10) := '_' || to_char(to_number(substr(suffix, 2) - 1), 'fm00000');
    begin
 
-      append_email_text('installing...');
+      dbms_output.put_line('installing...');
 
       execute immediate 'create or replace synonym fa_station for fa_station'                  || suffix;
       execute immediate 'create or replace synonym fa_regular_result for fa_regular_result'    || suffix;
@@ -2097,7 +1853,6 @@ create or replace package body create_nad_objects
       execute immediate 'create or replace synonym samplemedia for samplemedia'                || suffix;
       execute immediate 'create or replace synonym sitetype for sitetype'                      || suffix;
       execute immediate 'create or replace synonym state for state'                            || suffix;
-      execute immediate 'create or replace synonym station for station'                        || suffix;
 
       execute immediate 'create or replace synonym nwis_lctn_loc_new for nwis_lctn_loc'        || suffix;
       execute immediate 'create or replace synonym nwis_lctn_loc_old for nwis_lctn_loc'        || suffix_less_one;
@@ -2108,7 +1863,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'FAIL with synonyms: ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
 
    end install;
 
@@ -2117,6 +1872,7 @@ create or replace package body create_nad_objects
       to_drop cursor_type;
       drop_query varchar2(4000) := 'select table_name from user_tables where ' || table_list ||
             ' and substr(table_name, -5) <= to_char(to_number(substr(:current_suffix, 2) - 2), ''fm00000'')' ||
+            ' and substr(table_name, -5) <> ''00000''' ||
                ' order by case when table_name like ''FA_STATION%'' then 2 else 1 end, table_name';
 
       to_nocache cursor_type;
@@ -2129,14 +1885,14 @@ create or replace package body create_nad_objects
       stmt      varchar2(80);
    begin
 
-      append_email_text('drop_old_stuff...');
+      dbms_output.put_line('drop_old_stuff...');
 
       open to_drop for drop_query using suffix;
       loop
          fetch to_drop into drop_name;
          exit when to_drop%NOTFOUND;
          stmt := 'drop table ' || drop_name;
-         append_email_text('CLEANUP old stuff: ' || stmt);
+         dbms_output.put_line('CLEANUP old stuff: ' || stmt);
          execute immediate stmt;
       end loop;
       close to_drop;
@@ -2146,7 +1902,7 @@ create or replace package body create_nad_objects
          fetch to_nocache into nocache_name;
          exit when to_nocache%NOTFOUND;
          stmt := 'alter table ' || nocache_name || ' nocache';
-         append_email_text('CLEANUP old stuff: ' || stmt);
+         dbms_output.put_line('CLEANUP old stuff: ' || stmt);
          execute immediate stmt;
       end loop;
       close to_nocache;
@@ -2154,7 +1910,7 @@ create or replace package body create_nad_objects
    exception
       when others then
          message := 'tried to drop ' || drop_name || ' : ' || SQLERRM;
-         append_email_text(message);
+         dbms_output.put_line(message);
 
    end drop_old_stuff;
 
@@ -2166,11 +1922,11 @@ create or replace package body create_nad_objects
       message := null;
       dbms_output.enable(100000);
 
-      for k in 1 .. 25 loop
+      for k in 1 .. 20 loop
          cleanup(k) := NULL;
       end loop;
 
-      append_email_text('started nad table transformation.');
+      dbms_output.put_line('started nad table transformation.');
       determine_suffix;
       if message is null then create_regular_result;  end if;
       if message is null then create_station;         end if;
@@ -2178,20 +1934,18 @@ create or replace package body create_nad_objects
       if message is null then create_summaries;       end if;
       if message is null then create_public_srsnames; end if;
       if message is null then create_code_tables;     end if;
-      if message is null then create_xml_tables;      end if;
       if message is null then create_index;           end if;
       if message is null then validate;               end if;
       if message is null then
          install;
       else
-         append_email_text('completed. (failed)');
+         dbms_output.put_line('completed. (failed)');
          dbms_output.put_line('errors occurred.');
-         email_subject := 'nad load FAILED';
-         email_text := email_subject || lf || lf || email_text;
+         dbms_output.put_line('nad load FAILED');
          email_notify := failure_notify;
-         for k in 1 .. 25 loop
+         for k in 1 .. 20 loop
             if cleanup(k) is not null then
-               append_email_text('CLEANUP: ' || cleanup(k));
+               dbms_output.put_line('CLEANUP: ' || cleanup(k));
                execute immediate cleanup(k);
             end if;
          end loop;
@@ -2200,26 +1954,13 @@ create or replace package body create_nad_objects
       if message is null then
          drop_old_stuff;
          if message is null then
-            append_email_text('completed. (success)');
-            message := 'OK';
-            email_subject := 'nad load successful';
-            email_text := email_subject || lf || lf || email_text || lf || 'have a nice day!' || lf || '-barry''s program';
-            email_notify := success_notify;
+            dbms_output.put_line('completed. (success)');
          else
-            append_email_text('completed. (failed)');
+            dbms_output.put_line('completed. (failed)');
             dbms_output.put_line('errors occurred.');
-            email_subject := 'nad load FAILED in drop_old_stuff';
-            email_text := email_subject || lf || lf || email_text;
-            email_notify := failure_notify;
          end if;
       end if;
       
-      $IF $$ci_db $THEN
-         dbms_output.put_line('Not emailing from ci database.');
-         dbms_output.put_line(email_text);
-	  $ELSE
-         utl_mail.send@witrans(sender => 'bheck@usgs.gov', recipients => email_notify, subject => email_subject, message => email_text);
-      $END
       mesg := message;
 
    end main;
