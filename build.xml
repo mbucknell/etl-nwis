@@ -50,7 +50,7 @@
 			failonerror="true"
 			username="nwis_user"
 			password="${nwis_user_password}"
-			command="bash -e spool_out_all.sh "/>
+			command="bash -e spool_out_all.sh ${instance}"/>
 	</target>
 
     <target name="runPackage">

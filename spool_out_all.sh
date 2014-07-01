@@ -1,4 +1,11 @@
 #!/bin/bash
+if [[ "$#" -ne "1" ]]; then
+	echo "Invalid parameter count."
+	echo "Usage: `basename $0` db_instance"
+	exit 1;
+fi
+
+instance=$1
 
 cd /home/nwis_user/copy_sitefile
 
@@ -16,16 +23,16 @@ export nwis_ws_star_pass=`cat .sp`
 
 rm -f *.bad
 
-time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=QW_RESULT.ctl data=$DIR/QW_RESULT.out direct=true skip=1 << EOT
+time sqlldr userid=NWIS_WS_STAR@${instance} control=QW_RESULT.ctl data=$DIR/QW_RESULT.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
-time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=QW_SAMPLE.ctl data=$DIR/QW_SAMPLE.out direct=true skip=1 << EOT
+time sqlldr userid=NWIS_WS_STAR@${instance} control=QW_SAMPLE.ctl data=$DIR/QW_SAMPLE.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
-time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=SITEFILE.ctl  data=$DIR/SITEFILE.out direct=true skip=1 << EOT
+time sqlldr userid=NWIS_WS_STAR@${instance} control=SITEFILE.ctl  data=$DIR/SITEFILE.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
-time sqlldr userid=NWIS_WS_STAR@dbdw.er.usgs.gov control=SERIES_CATALOG.ctl  data=$DIR/SERIES_CATALOG.out direct=true skip=1 << EOT
+time sqlldr userid=NWIS_WS_STAR@${instance} control=SERIES_CATALOG.ctl  data=$DIR/SERIES_CATALOG.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
 
