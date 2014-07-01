@@ -105,24 +105,6 @@ if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad -o -f SERIES_CATALO
 fi
 
 cd /home/nwis_user/copy_sitefile
-export nwis_ws_star_pass=`cat .sp`
-export success_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
-export failure_notify="bheck@usgs.gov,barry_heck@yahoo.com,drsteini@usgs.gov"
-
-sqlplus /nolog << EOT
-connect NWIS_WS_STAR/$nwis_ws_star_pass@dbdw.er.usgs.gov
-set serveroutput on
-set linesize 160
-exec dbms_output.enable(100000);
-declare
-mesg varchar2(100);
-begin
-   mesg := null;
-   nwis_ws_star.create_nad_objects.main(mesg, '$success_notify', '$failure_notify');
-   dbms_output.put_line(mesg);
-end;
-/
-EOT
 
 date
 ) 2>&1 | tee spool_out_all_$date_suffix.out

@@ -1,5 +1,5 @@
 <project name="QwNwisEtl" default="default">
-    <target name="default" depends="buildPackage, scpScript, dos2unix, qwNwisEtl"/>
+    <target name="default" depends="buildPackage, scpScript, dos2unix, qwNwisEtl, runPackage"/>
 
     <target name="dev" depends="buildPackage, runPackage"/>
 
