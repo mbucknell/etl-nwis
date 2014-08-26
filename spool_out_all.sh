@@ -55,9 +55,6 @@ if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad -o -f SERIES_CATALO
    exit 1
 fi
 
-echo "Hit the cache clear service"
-curl http://www.waterqualitydata.us/ogcservices/rest/clearcache/wqp_sites > /dev/null 2>&1
-
 cd /home/nwis_user/copy_sitefile
 
 date
