@@ -1,6 +1,6 @@
 <project name="QwNwisEtl" default="default">
-	<target name="default" depends="buildPackage, scpScript, dos2unix, capture_data, qwNwisEtl, runPackage, clearCache" />
-	<target name="dev" depends="buildPackage, runPackage, clearCache" />
+	<target name="default" depends="buildPackage, scpScript, dos2unix, capture_data, qwNwisEtl, runPackage" />
+	<target name="dev" depends="buildPackage, runPackage" />
 	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage" />
 	
 	<target name="buildPackage">
@@ -60,16 +60,6 @@
 			<arg value="${success_notify}" />
 			<arg value="${failure_notify}" />
 		</exec>
-	</target>
-	
-	<target name="clearCache">
-		<echo>Run the script</echo>
-		<sshexec host="${nwis_host}"
-			trust="true"
-			failonerror="true"
-			username="nwis_user"
-			password="${nwis_user_password}"
-			command="bash nwis_finish.sh" />
 	</target>
 	
 	<target name="compilePackageEmptyCiDB">
