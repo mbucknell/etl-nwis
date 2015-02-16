@@ -1,15 +1,8 @@
 <project name="QwNwisEtl" default="default">
-	<target name="default" depends="buildPackage, scpScript, dos2unix, capture_data, qwNwisEtl, runPackage" />
-	<target name="dev" depends="buildPackage, runPackage" />
-	<target name="ci" depends="buildPackage, compilePackageEmptyCiDB, runPackage" />
+
+	<!-- default and it's depends are the normal automated full ETL. -->
 	
-	<target name="buildPackage">
-		<echo>Rebuiling the etl database package and body</echo>
-		<exec executable="sqlplus" failonerror="true">
-			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}" />
-			<arg value="@${basedir}/create_nad_objects.sql" />
-		</exec>
-	</target>
+	<target name="default" depends="scpScript, dos2unix, extractData, importData, transformAndLoadData" />
 	
 	<target name="scpScript">
 		<echo>Copy the script to ${nwis_host}</echo>
@@ -17,8 +10,7 @@
 			<fileset dir=".">
 				<include name="copy_sitefile/*.sql" />
 				<include name="capture_data.sh" />
-				<include name="spool_out_all.sh" />
-				<include name="nwis_finish.sh" />
+				<include name="import_data.sh" />
 			 </fileset>
 		 </scp>
 	</target>
@@ -32,7 +24,7 @@
 			command="dos2unix *.sh " />
 	</target>
 	
-	<target name="capture_data">
+	<target name="extractData">
 		<echo>Capture data from mysql</echo>
 		<sshexec host="${nwis_host}"
 			trust="true"
@@ -42,31 +34,88 @@
 			command="bash -e capture_data.sh " />
 	</target>
 
-	<target name="qwNwisEtl">
-		<echo>Run the script</echo>
+	<target name="importData">
+		<echo>Load into the Oracle staging tables</echo>
 		<sshexec host="${nwis_host}"
 			trust="true"
 			failonerror="true"
 			username="nwis_user"
 			password="${nwis_user_password}"
-			command="bash -e spool_out_all.sh ${instance}" />
+			command="bash -e import_data.sh ${instance}" />
 	</target>
 	
-	<target name="runPackage">
-		<echo>Running the main ETL Package</echo>
-		<exec executable="sqlplus" failonerror="true">
-			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}" />
-			<arg value="@${basedir}/runPackage.sql" />
-			<arg value="${success_notify}" />
-			<arg value="${failure_notify}" />
-		</exec>
-	</target>
+    <target name="transformAndLoadData">
+        <echo>Running the main ETL Package</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/transformAndLoadData.sql"/>
+        </exec>
+    </target>
 	
-	<target name="compilePackageEmptyCiDB">
-		<echo>Rebuiling the etl database package and body with the empty_db flag set</echo>
-		<exec executable="sqlplus" failonerror="true">
-			<arg value="${nwis_ws_star_username}/${nwis_ws_star_password}@${instance}" />
-			<arg value="@${basedir}/emptyCiDB.sql" />
-		</exec>
-	</target>
+	<!-- The rest of these are if you want to run the ETL step-by-step manually. --> 
+	
+    <target name="transformStation">
+        <echo>Transform the Station Data</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/transformStation.sql"/>
+        </exec>
+    </target>
+
+    <target name="transformResult">
+        <echo>Transform the Result Data</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/transformResult.sql"/>
+        </exec>
+    </target>
+
+    <target name="createSummaries">
+        <echo>Create the Summary Tables</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/createSummaries.sql"/>
+        </exec>
+    </target>
+
+    <target name="createCodes">
+        <echo>Create the Code Lookup Tables</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/createCodes.sql"/>
+        </exec>
+    </target>
+
+	<target name="buildIndexes">
+        <echo>Build the Indexes</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/buildIndexes.sql"/>
+        </exec>
+    </target>
+	
+    <target name="analyze">
+        <echo>Analyze the New Data</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/analyze.sql"/>
+        </exec>
+    </target>
+
+    <target name="validate">
+        <echo>Validate the ETL Process</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/validate.sql"/>
+        </exec>
+    </target>
+
+    <target name="install">
+        <echo>Install the New Data</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/install.sql"/>
+        </exec>
+    </target>
+
 </project>
