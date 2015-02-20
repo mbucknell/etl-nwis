@@ -15,7 +15,7 @@ truncate table pc_result_swap_nwis;
 insert /*+ append nologging parallel */
   into pc_result_swap_nwis (wqp_id, data_source_id, data_source, station_id, site_id, event_date, analytical_method, p_code, activity,
                             characteristic_name, characteristic_type, sample_media, organization, site_type, huc_12, governmental_unit_code,
-                            geom, organization_name, activity_type_code, activity_media_subdiv_name, activity_start_time,
+                            organization_name, activity_type_code, activity_media_subdiv_name, activity_start_time,
                             act_start_time_zone, activity_stop_date, activity_stop_time, act_stop_time_zone, activity_depth,
                             activity_depth_unit, activity_depth_ref_point, activity_upper_depth, activity_upper_depth_unit,
                             activity_lower_depth, activity_lower_depth_unit, activity_uprlwr_depth_ref_pt, project_id,
@@ -44,7 +44,6 @@ select rownum wqp_id,
        s.site_type,
        s.huc_12,
        s.governmental_unit_code,
-       s.geom,
        s.organization_name,
        case 
          when samp.samp_type_cd = 'A' then 'Not determined'

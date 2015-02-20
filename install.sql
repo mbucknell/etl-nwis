@@ -21,7 +21,7 @@ begin
 	execute immediate 'alter table pc_result_sum exchange partition pc_result_sum_nwis with table pc_result_sum_swap_nwis including indexes';
     
 	dbms_output.put_line('pc_result_ct_sum');
-	execute immediate 'alter table pc_result_ct_sum exchange partition pc_result_ct_sum_nwis with table pc_result_ct_sum_swap_nwis including indexes';
+	execute immediate 'alter table pc_result_ct_sum exchange partition pcrcts_nwis with table pc_result_ct_sum_swap_nwis including indexes';
     
 	dbms_output.put_line('pc_result_nr_sum');
 	execute immediate 'alter table pc_result_nr_sum exchange partition pc_res_nr_sum_nwis with table pc_result_nr_sum_swap_nwis including indexes';
