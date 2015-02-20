@@ -46,6 +46,21 @@ begin
     end if;
     dbms_output.put_line(pass_fail || ': table comparison for station: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999')));
 
+    dbms_output.put_line('... qw_portal_summary');
+    select count(*) into old_rows from qwportal_summary partition (summary_nwis);
+    select count(*) into new_rows from qwportal_summary_swap_nwis;
+    if new_rows > 20000 and new_rows > old_rows - 1000 then
+        pass_fail := 'PASS';
+    else
+        pass_fail := 'FAIL';
+    	end_job := true;
+        $IF $$empty_db $THEN
+            pass_fail := 'PASS empty_db';
+            end_job := false;
+        $END
+    end if;
+    dbms_output.put_line(pass_fail || ': table comparison for qwportal_summary: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999')));
+
   	if end_job then
     	raise_application_error(-20666, 'Failed to pass one or more validation checks.');
   	end if;
