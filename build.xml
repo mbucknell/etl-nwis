@@ -54,6 +54,14 @@
 	
 	<!-- The rest of these are if you want to run the ETL step-by-step manually. --> 
 	
+    <target name="dropRI">
+        <echo>Transform the Station Data</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/dropRI.sql"/>
+        </exec>
+    </target>
+
     <target name="transformStation">
         <echo>Transform the Station Data</echo>
         <exec executable="sqlplus" failonerror="true">
@@ -94,6 +102,14 @@
         </exec>
     </target>
 	
+    <target name="addRI">
+        <echo>Transform the Station Data</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/addRI.sql"/>
+        </exec>
+    </target>
+
     <target name="analyze">
         <echo>Analyze the New Data</echo>
         <exec executable="sqlplus" failonerror="true">

@@ -14,7 +14,7 @@ truncate table station_swap_nwis;
 
 insert /*+ append nologging parallel */
   into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc_12, governmental_unit_code,
-                          geom, station_name, organization_name, description_text, latitude, longitude, map_scale,
+                          geom, station_name, organization_name, description_text, station_type_name, latitude, longitude, map_scale,
                           geopositioning_method, hdatum_id_code, elevation_value, elevation_unit, elevation_method, vdatum_id_code,
                           coordinates, drain_area_value, drain_area_unit, contrib_drain_area_value, contrib_drain_area_unit,
                           geoposition_accy_value, geoposition_accy_unit, vertical_accuracy_value, vertical_accuracy_unit,
@@ -27,11 +27,12 @@ select 2 data_source_id,
        ndcbh.organization_id organization,
        site_tp.primary_site_type site_type,
        case when length(sitefile.huc_cd) = 8 then sitefile.huc_cd else null end huc_12,
-       sitefile.country_cd || ':' || sitefile.state_cd || ':' || sitefile.county_cd governmental_unit_code,
+       country.country_cd || ':' || state.state_cd || ':' || county.county_cd governmental_unit_code,
        mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(round(sitefile.dec_long_va, 7),round(sitefile.dec_lat_va, 7), null), null, null) geom,
        trim(sitefile.station_nm) station_name,
        ndcbh.organization_name,
        trim(sitefile.site_rmks_tx) description_text,
+       site_tp.station_type_name,
        round(sitefile.dec_lat_va , 7) latitude,
        round(sitefile.dec_long_va, 7) longitude,
        trim(sitefile.map_scale_fc) map_scale,
@@ -66,6 +67,15 @@ select 2 data_source_id,
                from nwis_district_cds_by_host) ndcbh
          on sitefile.nwis_host = ndcbh.host_name and    /* host name must exist - no outer join */
             sitefile.district_cd  = ndcbh.district_cd
+       left join (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from nwis_ws_stg_stage_country) country
+         on sitefile.country_cd = country.country_cd
+       left join (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from nwis_ws_stg_stage_state) state
+         on sitefile.country_cd = state.country_cd and
+            sitefile.state_cd = state.state_cd
+       left join (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from nwis_ws_stg_stage_county) county
+         on sitefile.country_cd = county.country_cd and
+            sitefile.state_cd = county.state_cd and
+            sitefile.county_cd = county.county_cd
        left join (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from nwis_ws_stg_stage_state) postal
          on sitefile.country_cd = postal.country_cd and
             sitefile.state_cd = postal.state_cd

@@ -21,11 +21,12 @@ begin
 	select count(*) into new_rows from pc_result_swap_nwis;
 	if new_rows > 70000000 and new_rows > old_rows - 9000000 then
     	pass_fail := 'PASS';
-    	end_job := true;
     else
         pass_fail := 'FAIL';
+    	end_job := true;
         $IF $$empty_db $THEN
-    		pass_fail := 'PASS empty_db';
+            pass_fail := 'PASS empty_db';
+            end_job := false;
         $END
     end if;
     dbms_output.put_line(pass_fail || ': table comparison for pc_result: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999')));
@@ -35,11 +36,12 @@ begin
     select count(*) into new_rows from station_swap_nwis;
     if new_rows > 1400000 and new_rows > old_rows - 100000 then
         pass_fail := 'PASS';
-    	end_job := true;
     else
         pass_fail := 'FAIL';
+    	end_job := true;
         $IF $$empty_db $THEN
-              pass_fail := 'PASS empty_db';
+            pass_fail := 'PASS empty_db';
+            end_job := false;
         $END
     end if;
     dbms_output.put_line(pass_fail || ': table comparison for station: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999')));
