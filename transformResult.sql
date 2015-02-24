@@ -12,7 +12,7 @@ exec etl_helper.drop_indexes('pc_result_swap_nwis');
 prompt populating nwis pc_result
 truncate table pc_result_swap_nwis;
 
-insert /*+ append nologging parallel */
+insert /*+ append parallel(4) */
   into pc_result_swap_nwis (wqp_id, data_source_id, data_source, station_id, site_id, event_date, analytical_method, p_code, activity,
                             characteristic_name, characteristic_type, sample_media, organization, site_type, huc_12, governmental_unit_code,
                             organization_name, activity_type_code, activity_media_subdiv_name, activity_start_time,
@@ -495,7 +495,8 @@ select rownum wqp_id,
     site.state_cd = aqfr.state_cd(+) and
     nvl2(r.meth_cd, 'USGS', null) = nemi.analytical_procedure_source(+) and
     trim(r.meth_cd) = nemi.analytical_procedure_id(+) and
-    site.site_id = s.station_id;
+    site.site_id = s.station_id
+     order by s.station_id;
 
 
 commit;

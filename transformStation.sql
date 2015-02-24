@@ -12,7 +12,7 @@ exec etl_helper.drop_indexes('station_swap_nwis');
 prompt populating nwis station
 truncate table station_swap_nwis;
 
-insert /*+ append nologging parallel */
+insert /*+ append parallel(4) */
   into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc_12, governmental_unit_code,
                           geom, station_name, organization_name, description_text, station_type_name, latitude, longitude, map_scale,
                           geopositioning_method, hdatum_id_code, elevation_value, elevation_unit, elevation_method, vdatum_id_code,
