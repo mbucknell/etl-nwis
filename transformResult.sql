@@ -13,7 +13,7 @@ prompt populating nwis pc_result
 truncate table pc_result_swap_nwis;
 
 insert /*+ append parallel(4) */
-  into pc_result_swap_nwis (wqp_id, data_source_id, data_source, station_id, site_id, event_date, analytical_method, p_code, activity,
+  into pc_result_swap_nwis (data_source_id, data_source, station_id, site_id, event_date, analytical_method, p_code, activity,
                             characteristic_name, characteristic_type, sample_media, organization, site_type, huc_12, governmental_unit_code,
                             organization_name, activity_type_code, activity_media_subdiv_name, activity_start_time,
                             act_start_time_zone, activity_stop_date, activity_stop_time, act_stop_time_zone, activity_depth,
@@ -28,8 +28,7 @@ insert /*+ append parallel(4) */
                             sample_tissue_anatomy_name, analytical_procedure_id, analytical_procedure_source, analytical_method_name,
                             analytical_method_citation, lab_name, analysis_date_time, lab_remark, myql, myqlunits, myqldesc,
                             analysis_prep_date_tx)
-select rownum wqp_id,
-       2 data_source_id,
+select 2 data_source_id,
        cast('NWIS' as varchar2(4000 char)) data_source,
        s.station_id,
        s.site_id,
@@ -497,7 +496,6 @@ select rownum wqp_id,
     trim(r.meth_cd) = nemi.analytical_procedure_id(+) and
     site.site_id = s.station_id
      order by s.station_id;
-
 
 commit;
 
