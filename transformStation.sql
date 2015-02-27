@@ -16,7 +16,7 @@ insert /*+ append parallel(4) */
   into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc_12, governmental_unit_code,
                           geom, station_name, organization_name, description_text, station_type_name, latitude, longitude, map_scale,
                           geopositioning_method, hdatum_id_code, elevation_value, elevation_unit, elevation_method, vdatum_id_code,
-                          coordinates, drain_area_value, drain_area_unit, contrib_drain_area_value, contrib_drain_area_unit,
+                          drain_area_value, drain_area_unit, contrib_drain_area_value, contrib_drain_area_unit,
                           geoposition_accy_value, geoposition_accy_unit, vertical_accuracy_value, vertical_accuracy_unit,
                           nat_aqfr_name, aqfr_name, aqfr_type_name, construction_date, well_depth_value, well_depth_unit,
                           hole_depth_value, hole_depth_unit)
@@ -28,7 +28,7 @@ select 2 data_source_id,
        site_tp.primary_site_type site_type,
        case when length(sitefile.huc_cd) = 8 then sitefile.huc_cd else null end huc_12,
        country.country_cd || ':' || state.state_cd || ':' || county.county_cd governmental_unit_code,
-       mdsys.sdo_geometry(2001,8265,mdsys.sdo_point_type(round(sitefile.dec_long_va, 7),round(sitefile.dec_lat_va, 7), null), null, null) geom,
+       mdsys.sdo_geometry(2001,4269,mdsys.sdo_point_type(round(sitefile.dec_long_va, 7),round(sitefile.dec_lat_va, 7), null), null, null) geom,
        trim(sitefile.station_nm) station_name,
        ndcbh.organization_name,
        trim(sitefile.site_rmks_tx) description_text,
@@ -42,7 +42,6 @@ select 2 data_source_id,
        case when sitefile.alt_va is not null and sitefile.alt_datum_cd is not null then 'feet' else null end elevation_unit,
        vert.vertical_method_name elevation_method,
        case when sitefile.alt_va is not null then sitefile.alt_datum_cd else null end vdatum_id_code,
-       round(sitefile.dec_long_va , 7) || ',' || round(sitefile.dec_lat_va, 7) coordinates,
        to_number(sitefile.drain_area_va) drain_area_value,
        nvl2(sitefile.drain_area_va, 'sq mi', null) drain_area_unit,
        case when sitefile.contrib_drain_area_va = '.' then 0 else to_number(sitefile.contrib_drain_area_va) end contrib_drain_area_value,
@@ -113,7 +112,8 @@ select 2 data_source_id,
        sitefile.site_web_cd  = 'Y'  and
        sitefile.db_no        = '01' and
        sitefile.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP')   and
-       sitefile.nwis_host  not in ('fltlhsr001', 'fltpasr001', 'flalssr003');
+       sitefile.nwis_host  not in ('fltlhsr001', 'fltpasr001', 'flalssr003')
+    order by ndcbh.organization_id;
 
 commit;
 
