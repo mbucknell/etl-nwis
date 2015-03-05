@@ -17,8 +17,8 @@ begin
 --      dbms_output.put_line('analyze series_catalog...');  /* takes about xx minutes */
 --      dbms_stats.gather_table_stats('WQP_CORE', 'SERIES_CATALOG', null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
     
---      dbms_output.put_line('analyze qwportal_summary...');  /* takes about xx minutes */
---      dbms_stats.gather_table_stats('WQP_CORE', 'QWPORTAL_SUMMARY', null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+    dbms_output.put_line('analyze qwportal_summary...');  /* takes about xx minutes */
+    dbms_stats.gather_table_stats('WQP_CORE', 'QWPORTAL_SUMMARY_SWAP_NWIS', null, 100, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
     
     dbms_output.put_line('analyze station_sum...');  /* takes about xx minutes */
     dbms_stats.gather_table_stats('WQP_CORE', 'STATION_SUM_SWAP_NWIS', null, 100, false, 'FOR ALL INDEXED COLUMNS SIZE AUTO', 1, 'ALL', true);
@@ -38,9 +38,6 @@ begin
 --      dbms_output.put_line('analyze nwis_di_org...');  /* takes about xx minutes */
 --      dbms_stats.gather_table_stats('WQP_CORE', 'NWIS_DI_ORG', null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
     
---      dbms_output.put_line('analyze public_srsnames...');  /* takes about xx minutes */
---      dbms_stats.gather_table_stats('WQP_CORE', 'PUBLIC_SRSNAMES', null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
-
     dbms_output.put_line('analyze characteristic_name...');  /* takes about xx minutes */
     dbms_stats.gather_table_stats('WQP_CORE', 'CHAR_NAME_SWAP_NWIS', null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
     

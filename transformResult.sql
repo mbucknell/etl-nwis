@@ -26,8 +26,8 @@ insert /*+ append parallel(4) */
                             temperature_basis_level, particle_size, precision, result_comment, result_depth_meas_value,
                             result_depth_meas_unit_code, result_depth_alt_ref_pt_txt, sample_tissue_taxonomic_name,
                             sample_tissue_anatomy_name, analytical_procedure_id, analytical_procedure_source, analytical_method_name,
-                            analytical_method_citation, lab_name, analysis_date_time, lab_remark, myql, myqlunits, myqldesc,
-                            analysis_prep_date_tx)
+                            analytical_method_citation, lab_name, analysis_date_time, lab_remark, detection_limit, detection_limit_unit,
+                            detection_limit_desc, analysis_prep_date_tx)
 select 2 data_source_id,
        cast('NWIS' as varchar2(4000 char)) data_source,
        s.station_id,
@@ -247,7 +247,7 @@ select 2 data_source_id,
          when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
          when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
          else null
-       end myql,
+       end detection_limit,
        nvl2(case
               when r.remark_cd = '<' and r.rpt_lev_va is null then r.result_va
               when r.remark_cd = '<' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then r.result_va
@@ -259,7 +259,7 @@ select 2 data_source_id,
               else null
             end,
             parm.parm_unt_tx,
-            null) myqlunits,
+            null) detection_limit_unit,
        nvl2(case
               when r.remark_cd = '<' and r.rpt_lev_va is null then r.result_va
               when r.remark_cd = '<' and to_number(r.result_unrnd_va) > to_number(r.rpt_lev_va) then r.result_va
@@ -281,7 +281,7 @@ select 2 data_source_id,
               when r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
               else null
             end,
-            null) myqldesc,
+            null) detection_limit_desc,
        case
          when r.prep_dt is not null then substr(r.prep_dt, 1, 4) || '-' || substr(r.prep_dt, 5, 2) || '-' || substr(r.prep_dt, 7, 2)
          else null
