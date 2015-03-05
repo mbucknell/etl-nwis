@@ -86,7 +86,7 @@ begin
     		pass_fail := 'FAIL';
 		end if;
 		
-		situation := pass_fail || ': table comparison for fa_regular_result: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
+		situation := pass_fail || ': table comparison for public_srsnames: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999'));
       	dbms_output.put_line(situation);
 	end;
 end;

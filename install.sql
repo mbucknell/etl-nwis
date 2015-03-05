@@ -50,6 +50,9 @@ begin
 	dbms_output.put_line('state');
 	execute immediate 'alter table state exchange partition state_nwis with table state_swap_nwis including indexes';
 
+	dbms_output.put_line('qwportal_summary');
+	execute immediate 'alter table qwportal_summary exchange partition qwportal_summary_nwis with table qwportal_summary_swap_nwis including indexes';
+
 end;
 /
 
