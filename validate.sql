@@ -49,7 +49,7 @@ begin
     dbms_output.put_line('... qw_portal_summary');
     select count(*) into old_rows from qwportal_summary partition (summary_nwis);
     select count(*) into new_rows from qwportal_summary_swap_nwis;
-    if new_rows > 20000 and new_rows > old_rows - 1000 then
+    if new_rows > 10000 and new_rows > old_rows - 1000 then
         pass_fail := 'PASS';
     else
         pass_fail := 'FAIL';
