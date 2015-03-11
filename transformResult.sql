@@ -18,7 +18,7 @@ insert /*+ append parallel(4) */
                             organization_name, activity_type_code, activity_media_subdiv_name, activity_start_time,
                             act_start_time_zone, activity_stop_date, activity_stop_time, act_stop_time_zone, activity_depth,
                             activity_depth_unit, activity_depth_ref_point, activity_upper_depth, activity_upper_depth_unit,
-                            activity_lower_depth, activity_lower_depth_unit, activity_uprlwr_depth_ref_pt, project_id,
+                            activity_lower_depth, activity_lower_depth_unit, project_id,
                             activity_conducting_org, activity_comment, sample_aqfr_name, hydrologic_condition_name, hydrologic_event_name,
                             sample_collect_method_id, sample_collect_method_ctx, sample_collect_method_name, sample_collect_equip_name,
                             result_id, result_detection_condition_tx, sample_fraction_type, result_measure_value, result_unit,
@@ -103,12 +103,22 @@ select 2 data_source_id,
             end,
             null) activity_upper_depth_unit,
        case
-         when parameter.V72015 is not null then parameter.V72016
-         when parameter.V82047 is not null then parameter.V82048
-         when parameter.V72016 is not null then parameter.V72016
-         when parameter.V82048 is not null then parameter.V82048
+         when parameter.V00003 is not null or
+              parameter.V00098 is not null
+           then null
+         when parameter.V78890 is not null or 
+              parameter.V78891 is not null
+           then 'Below mean sea level'
+         when parameter.V72015 is not null
+           then 'Below land-surface datum'
+         when parameter.V82047 is not null
+           then null
+         when parameter.V72016 is not null
+           then 'Below land-surface datum'
+         when parameter.V82048 is not null
+           then null
          else null
-       end activity_lower_depth,
+       end activity_depth_ref_point,
        nvl2(case
               when parameter.V72015 is not null then parameter.V72016
               when parameter.V82047 is not null then parameter.V82048
@@ -124,12 +134,6 @@ select 2 data_source_id,
               else null
             end,
             null) activity_lower_depth_unit,
-       case when parameter.V72015 is not null then 'Below land-surface datum'
-         when parameter.V82047 is not null then ''
-         when parameter.V72016 is not null then 'Below land-surface datum'
-         when parameter.V82048 is not null then ''
-         else null
-       end activity_uprlwr_depth_ref_pt,
        coalesce(parameter.v71999_fxd_nm, samp.project_cd, 'USGS') project_id,
        coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) activity_conducting_org,
        trim(samp.sample_lab_cm_tx) activity_comment,
