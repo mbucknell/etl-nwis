@@ -13,7 +13,7 @@ prompt populating nwis station
 truncate table station_swap_nwis;
 
 insert /*+ append parallel(4) */
-  into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc_12, governmental_unit_code,
+  into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc, governmental_unit_code,
                           geom, station_name, organization_name, description_text, station_type_name, latitude, longitude, map_scale,
                           geopositioning_method, hdatum_id_code, elevation_value, elevation_unit, elevation_method, vdatum_id_code,
                           drain_area_value, drain_area_unit, contrib_drain_area_value, contrib_drain_area_unit,
@@ -26,7 +26,7 @@ select 2 data_source_id,
        sitefile.agency_cd || '-' || sitefile.site_no site_id,
        ndcbh.organization_id organization,
        site_tp.primary_site_type site_type,
-       case when length(sitefile.huc_cd) = 8 then sitefile.huc_cd else null end huc_12,
+       sitefile.huc_cd huc,
        country.country_cd || ':' || state.state_cd || ':' || county.county_cd governmental_unit_code,
        mdsys.sdo_geometry(2001,4269,mdsys.sdo_point_type(round(sitefile.dec_long_va, 7),round(sitefile.dec_lat_va, 7), null), null, null) geom,
        trim(sitefile.station_nm) station_name,
