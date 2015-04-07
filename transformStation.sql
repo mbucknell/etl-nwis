@@ -58,24 +58,24 @@ select 2 data_source_id,
        nvl2(sitefile.well_depth_va, 'ft', null) well_depth_unit,
        to_number(case when sitefile.hole_depth_va in ('.', '-') then '0' else sitefile.hole_depth_va end) hole_depth_value,
        nvl2(sitefile.hole_depth_va, 'ft', null) hole_depth_unit
-  from nwis_sitefile sitefile
+  from nwis_ws_star.sitefile
        join (select cast('USGS-' || state_postal_cd as varchar2(7)) organization_id,
                     'USGS ' || STATE_NAME || ' Water Science Center' organization_name,
                     host_name,
                     district_cd
-               from nwis_district_cds_by_host) ndcbh
+               from nwis_ws_star.nwis_district_cds_by_host) ndcbh
          on sitefile.nwis_host = ndcbh.host_name and    /* host name must exist - no outer join */
             sitefile.district_cd  = ndcbh.district_cd
-       left join (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from nwis_ws_stg_stage_country) country
+       left join (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from nwis_ws_star.country) country
          on sitefile.country_cd = country.country_cd
-       left join (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from nwis_ws_stg_stage_state) state
+       left join (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from nwis_ws_star.state) state
          on sitefile.country_cd = state.country_cd and
             sitefile.state_cd = state.state_cd
-       left join (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from nwis_ws_stg_stage_county) county
+       left join (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from nwis_ws_star.county) county
          on sitefile.country_cd = county.country_cd and
             sitefile.state_cd = county.state_cd and
             sitefile.county_cd = county.county_cd
-       left join (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from nwis_ws_stg_stage_state) postal
+       left join (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from nwis_ws_star.state) postal
          on sitefile.country_cd = postal.country_cd and
             sitefile.state_cd = postal.state_cd
        left join (select a.site_tp_cd,
@@ -85,26 +85,26 @@ select 2 data_source_id,
                          case when a.site_tp_prim_fg = 'Y' then a.site_tp_ln
                            else b.site_tp_ln
                          end as primary_site_type
-                    from nwis_ws_stg_site_tp a,
-                         nwis_ws_stg_site_tp b
+                    from nwis_ws_star.site_tp a,
+                         nwis_ws_star.site_tp b
                    where substr(a.site_tp_cd, 1, 2) = b.site_tp_cd and
                          b.site_tp_prim_fg = 'Y') site_tp
          on sitefile.site_tp_cd = site_tp.site_tp_cd
-       left join (select nwis_name as vertical_method_name , nwis_code from nwis_ws_stg_misc_lookups where category = 'Altitude Method') vert
+       left join (select nwis_name as vertical_method_name , nwis_code from nwis_ws_star.nwis_misc_lookups where category = 'Altitude Method') vert
          on sitefile.alt_meth_cd = vert.nwis_code
-       left join (select nwis_name as geopositioning_method, nwis_code from nwis_ws_stg_misc_lookups where category = 'Lat/Long Method') geo_meth
+       left join (select nwis_name as geopositioning_method, nwis_code from nwis_ws_star.nwis_misc_lookups where category = 'Lat/Long Method') geo_meth
          on sitefile.coord_meth_cd= geo_meth.nwis_code
        left join (select inferred_value as geopositioning_accuracy_value,
                          inferred_units as geopositioning_accuracy_units,
                          nwis_code
-                    from nwis_ws_stg_misc_lookups
+                    from nwis_ws_star.nwis_misc_lookups
                    where category = 'Lat-Long Coordinate Accuracy') geo_accuracy
          on sitefile.coord_acy_cd = geo_accuracy.nwis_code
-       left join (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nwis_ws_stg_nat_aqfr group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr
+       left join (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nwis_ws_star.nat_aqfr group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr
          on sitefile.nat_aqfr_cd  = nat_aqfr.nat_aqfr_cd
-       left join (select nwis_name as aqfr_type_name, nwis_code from nwis_ws_stg_misc_lookups where CATEGORY='Aquifer Type Code') aqfr_type
+       left join (select nwis_name as aqfr_type_name, nwis_code from nwis_ws_star.nwis_misc_lookups where CATEGORY='Aquifer Type Code') aqfr_type
          on sitefile.aqfr_type_cd = aqfr_type.nwis_code
-       left join (select aqfr_nm as aqfr_name, trim(state_cd) state_cd, aqfr_cd from nwis_ws_stg_aqfr) aqfr
+       left join (select aqfr_nm as aqfr_name, trim(state_cd) state_cd, aqfr_cd from nwis_ws_star.aqfr) aqfr
          on sitefile.aqfr_cd = aqfr.aqfr_cd and
             sitefile.state_cd     = aqfr.state_cd
  where sitefile.DEC_LAT_VA   <> 0   and

@@ -48,8 +48,8 @@ begin
                        then lu_parm.parm_rev_dt
                      else lu_parm_alias.parm_alias_rev_dt
                    end) over () max_last_rev_dt
-          from nwq_stg_lu_parm lu_parm
-               join nwq_stg_lu_parm_alias lu_parm_alias
+          from nwis_ws_star.lu_parm
+               join nwis_ws_star.lu_parm_alias
                  on lu_parm.parm_cd = lu_parm_alias.parm_cd and
                     'SRSNAME' = lu_parm_alias.parm_alias_cd
          where parm_public_fg = 'Y'

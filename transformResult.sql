@@ -290,16 +290,16 @@ select 2 data_source_id,
          when r.prep_dt is not null then substr(r.prep_dt, 1, 4) || '-' || substr(r.prep_dt, 5, 2) || '-' || substr(r.prep_dt, 7, 2)
          else null
        end analysis_prep_date_tx 
-  from nwis_qw_result r,
-       nwis_qw_sample samp,
+  from nwis_ws_star.qw_result r,
+       nwis_ws_star.qw_sample samp,
        (select tz_cd, tz_utc_offset_tm
-          from nwq_stg_lu_tz
+          from nwis_ws_star.lu_tz
          where tz_cd is not null
         union 
         select tz_dst_cd, tz_dst_utc_offset_tm tz_utc_offset_tm
-          from nwq_stg_lu_tz
+          from nwis_ws_star.lu_tz
         where tz_dst_cd is not null) lu_tz,
-        nwis_sitefile site,
+        nwis_ws_star.sitefile site,
         station_swap_nwis s,
         (select /*+ full(p2) parallel(p2, 4) full(fxd_71999) parallel(fxd_71999, 4) full(fxd_82398) parallel(fxd_82398, 4)
                     full(fxd_84164) parallel(fxd_84164, 4)
@@ -334,13 +334,13 @@ select 2 data_source_id,
                         max(case when parameter_cd = '78891' then result_unrnd_va else null end) AS V78891,
                         max(case when parameter_cd = '82398' then result_unrnd_va else null end) AS V82398,
                         max(case when parameter_cd = '84164' then result_unrnd_va else null end) AS V84164
-                   from nwis_qw_result p1
+                   from nwis_ws_star.qw_result p1
                   where result_web_cd = 'Y' and
                         parameter_cd in ('71999', '50280', '72015', '82047', '72016', '82048', '00003', '00098', '78890', '78891', '82398', '84164')
                      group by sample_id) p2,
-                 (select fxd_nm v71999_fxd_nm, fxd_va from nwis_ws_stg_fxd where parm_cd = '71999') fxd_71999,
-                 (select fxd_tx v82398_fxd_tx, fxd_va from nwis_ws_stg_fxd where parm_cd = '82398') fxd_82398,
-                 (select fxd_tx v84164_fxd_tx, fxd_va from nwis_ws_stg_fxd where parm_cd = '84164') fxd_84164
+                 (select fxd_nm v71999_fxd_nm, fxd_va from nwis_ws_star.fxd where parm_cd = '71999') fxd_71999,
+                 (select fxd_tx v82398_fxd_tx, fxd_va from nwis_ws_star.fxd where parm_cd = '82398') fxd_82398,
+                 (select fxd_tx v84164_fxd_tx, fxd_va from nwis_ws_star.fxd where parm_cd = '84164') fxd_84164
           where p2.v71999 = fxd_71999.fxd_va(+) and
                 p2.v82398 = fxd_82398.fxd_va(+) and
                 p2.v84164 = fxd_84164.fxd_va(+)) parameter,
@@ -352,14 +352,14 @@ select 2 data_source_id,
                   case when trim(tu_3_nm) is not null then ' ' || trim(tu_3_nm) end ||
                   case when trim(tu_4_cd) is not null then ' ' || trim(tu_4_cd) end ||
                   case when trim(tu_4_nm) is not null then ' ' || trim(tu_4_nm) end AS composite_tu_name
-           from nwis_ws_stg_tu) tu,
+           from nwis_ws_star.tu) tu,
         (select trim(wqx_act_med_nm) wqx_act_med_nm,
                 trim(wqx_act_med_sub) wqx_act_med_sub,
                 trim(nwis_medium_cd) medium_cd
-           from nwis_wqx_medium_cd) wqx_medium_cd,
+           from nwis_ws_star.nwis_wqx_medium_cd) wqx_medium_cd,
         (select trim(body_part_nm) body_part_nm,
                 trim(body_part_id) body_part_id
-           from nwis_ws_stg_body_part) body_part,
+           from nwis_ws_star.body_part) body_part,
         (select /*+ full(a) full(b) full(z_parm_meth2) use_hash(a) use_hash(b) use_hash(z_parm_meth2) */
                 a.parm_unt_tx,
                 a.parm_frac_tx,
@@ -375,13 +375,13 @@ select 2 data_source_id,
                 z_parm_alias.srsid,
                 z_parm_alias.casrn,
                 z_parm_meth2.multiplier
-           from nwq_stg_lu_parm a,
-                nwq_stg_lu_parm_seq_grp_cd b,
+           from nwis_ws_star.lu_parm a,
+                nwis_ws_star.lu_parm_seq_grp_cd b,
                 (select parm_cd,
                         max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) AS srsname,
                         max(case when parm_alias_cd = 'SRSID'   then parm_alias_nm else null end) AS srsid  ,
                         max(case when parm_alias_cd = 'CASRN'   then parm_alias_nm else null end) AS casrn
-                   from nwq_stg_lu_parm_alias
+                   from nwis_ws_star.lu_parm_alias
                       group by parm_cd
                       having max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) is not null) z_parm_alias,
                 (select decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
@@ -395,7 +395,7 @@ select 2 data_source_id,
                                8, '10000',
                                9, '100000') multiplier,
                         parm_cd
-                   from nwq_stg_lu_parm_meth
+                   from nwis_ws_star.lu_parm_meth
                   where meth_cd is null) z_parm_meth2
           where a.parm_public_fg = 'Y' and
                 a.parm_seq_grp_cd = b.parm_seq_grp_cd(+) and
@@ -404,19 +404,19 @@ select 2 data_source_id,
         (select fxd_tx,
                 parm_cd,
                 fxd_va
-           from nwis_ws_stg_fxd) fxd,
+           from nwis_ws_star.fxd) fxd,
         (select proto_org_nm,
                 proto_org_cd
-           from nwis_ws_stg_proto_org) proto_org,
+           from nwis_ws_star.proto_org) proto_org,
         (select proto_org_nm,
                 proto_org_cd
-           from nwis_ws_stg_proto_org) proto_org2,
+           from nwis_ws_star.proto_org) proto_org2,
         (select /*+ full(meth1) full(z_cit_meth) use_hash(meth1) use_hash(z_cit_meth) */
                 meth1.meth_cd,
                 meth1.meth_nm,
                 z_cit_meth.cit_nm
-           from nwis_ws_stg_meth meth1,
-                (select meth_cd, min(cit_nm) cit_nm from nwis_ws_stg_z_cit_meth group by meth_cd) z_cit_meth
+           from nwis_ws_star.meth meth1,
+                (select meth_cd, min(cit_nm) cit_nm from nwis_ws_star.z_cit_meth group by meth_cd) z_cit_meth
           where meth1.meth_cd = z_cit_meth.meth_cd(+)) meth,
         (select decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
                        1, '0.001',
@@ -430,17 +430,17 @@ select 2 data_source_id,
                        9, '100000') multiplier,
                 parm_cd,
                 meth_cd
-           from nwq_stg_lu_parm_meth) z_parm_meth,
-        (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_wqx_rpt_lev_cd) nwis_wqx_rpt_lev_cd,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_stg_val_qual_cd) val_qual_cd1,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_stg_val_qual_cd) val_qual_cd2,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_stg_val_qual_cd) val_qual_cd3,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_stg_val_qual_cd) val_qual_cd4,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_stg_val_qual_cd) val_qual_cd5,
-        (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from nwis_ws_stg_hyd_event_cd) hyd_event_cd,
-        (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from nwis_ws_stg_hyd_cond_cd) hyd_cond_cd,
-        (select district_cd, host_name from nwis_district_cds_by_host) dist,
-        (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from nwis_ws_stg_aqfr) aqfr,
+           from nwis_ws_star.lu_parm_meth) z_parm_meth,
+        (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_ws_star.nwis_wqx_rpt_lev_cd) nwis_wqx_rpt_lev_cd,
+        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd1,
+        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd2,
+        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd3,
+        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd4,
+        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd5,
+        (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from nwis_ws_star.hyd_event_cd) hyd_event_cd,
+        (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from nwis_ws_star.hyd_cond_cd) hyd_cond_cd,
+        (select district_cd, host_name from nwis_ws_star.nwis_district_cds_by_host) dist,
+        (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from nwis_ws_star.aqfr) aqfr,
         (select analytical_procedure_source,
                 analytical_procedure_id,
                 case
@@ -455,7 +455,7 @@ select 2 data_source_id,
                    else 
                      null 
                 end nemi_url
-           from wqp_nemi_nwis_crosswalk) nemi
+           from nwis_ws_star.wqp_nemi_nwis_crosswalk) nemi
  where
     r.result_web_cd    = 'Y'                         and
    (r.RESULT_VA        is not null  OR
