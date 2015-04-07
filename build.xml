@@ -47,7 +47,7 @@
     <target name="copyFromStage">
         <echo>Copy NWIS lookups from DBSTAGE</echo>
         <exec executable="sqlplus" failonerror="true">
-            <arg value="nwis_ws_star/${nwis_ws_star_password}@${instance}"/>
+            <arg value="nwis_ws_star/${nwis_ws_star_password}@${stageInstance}"/>
             <arg value="@${basedir}/copyFromStage.sql"/>
         </exec>
     </target>
