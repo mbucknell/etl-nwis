@@ -2,7 +2,7 @@
 
 	<!-- default and it's depends are the normal automated full ETL. -->
 	
-	<target name="default" depends="scpScript, dos2unix, extractData, importData, transformAndLoadData" />
+	<target name="default" depends="scpScript, dos2unix, extractData, importData, copyFromStage, transformAndLoadData" />
 	
 	<target name="scpScript">
 		<echo>Copy the script to ${nwis_host}</echo>
@@ -44,6 +44,14 @@
 			command="bash -e import_data.sh ${instance}" />
 	</target>
 	
+    <target name="copyFromStage">
+        <echo>Copy NWIS lookups from DBSTAGE</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="nwis_ws_star/${nwis_ws_star_password}@${instance}"/>
+            <arg value="@${basedir}/copyFromStage.sql"/>
+        </exec>
+    </target>
+
     <target name="transformAndLoadData">
         <echo>Running the main ETL Package</echo>
         <exec executable="sqlplus" failonerror="true">
