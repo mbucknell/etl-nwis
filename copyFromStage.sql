@@ -6,27 +6,6 @@ whenever sqlerror exit failure rollback;
 whenever oserror exit failure rollback;
 select 'copy from stage start time: ' || systimestamp from dual;
 
-prompt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-prompt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-prompt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-prompt !! TEMPORARY COPY OF DATA FROM PRODUCTION
-drop table fa_station cascade constraints purge;
-drop table fa_result cascade constraints purge;
-truncate table qw_result;
-truncate table qw_sample;
-truncate table series_catalog;
-truncate table sitefile;
-create table fa_station compress pctfree 0 nologging parallel 4 as select /*+ parallel(4) */ * from fa_station@nwis_ws_star_dbdw;
-create table fa_result compress pctfree 0 nologging parallel 4 as select /*+ parallel(4) */ * from fa_regular_result@nwis_ws_star_dbdw;
-insert /*+ append parallel(4) */ into qw_result select /*+ parallel(4) */ * from qw_result@nwis_ws_star_dbdw;
-insert /*+ append parallel(4) */ into qw_sample select /*+ parallel(4) */ * from qw_sample@nwis_ws_star_dbdw;
-insert /*+ append parallel(4) */ into series_catalog select /*+ parallel(4) */ * from series_catalog@nwis_ws_star_dbdw;
-insert /*+ append parallel(4) */ into sitefile select /*+ parallel(4) */ * from sitefile@nwis_ws_star_dbdw;
-prompt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-prompt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-prompt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 prompt aqfr
 truncate table aqfr;
 insert /*+ append parallel(4) */ into aqfr
@@ -111,7 +90,7 @@ insert /*+ append parallel(4) */ into nat_aqfr
 select * from nat_aqfr@nwis_ws_stg.er.usgs.gov;
 commit;
 
-prompt nemi_crosswalk
+prompt wqp_nemi_nwis_crosswalk
 truncate table wqp_nemi_nwis_crosswalk;
 insert /*+ append parallel(4) */ into wqp_nemi_nwis_crosswalk
 select analytical_procedure_source,
