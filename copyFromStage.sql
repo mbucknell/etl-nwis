@@ -99,9 +99,9 @@ select analytical_procedure_source,
        method_id,
        wqp_source,
        method_type
-  from (select nemi_crosswalk.*,
+  from (select wqp_nemi_nwis_crosswalk.*,
                count(*) over (partition by analytical_procedure_source, analytical_procedure_id) cnt
-          from nemi_crosswalk)
+          from wqp_nemi_nwis_crosswalk@nemi.er.usgs.gov)
  where cnt = 1;
 commit;
 
