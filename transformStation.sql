@@ -104,9 +104,9 @@ select 2 data_source_id,
          on sitefile.nat_aqfr_cd  = nat_aqfr.nat_aqfr_cd
        left join (select nwis_name as aqfr_type_name, nwis_code from nwis_ws_star.nwis_misc_lookups where CATEGORY='Aquifer Type Code') aqfr_type
          on sitefile.aqfr_type_cd = aqfr_type.nwis_code
-       left join (select aqfr_nm as aqfr_name, trim(state_cd) state_cd, aqfr_cd from nwis_ws_star.aqfr) aqfr
+       left join nwis_ws_star.aqfr
          on sitefile.aqfr_cd = aqfr.aqfr_cd and
-            sitefile.state_cd     = aqfr.state_cd
+            sitefile.state_cd = aqfr.state_cd
  where sitefile.DEC_LAT_VA   <> 0   and
        sitefile.DEC_LONG_VA  <> 0   and
        sitefile.site_web_cd  = 'Y'  and
