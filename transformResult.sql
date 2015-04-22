@@ -38,7 +38,7 @@ select 2 data_source_id,
        samp.nwis_host || '.' || samp.qw_db_no || '.' || samp.record_no activity,
        parm.srsname characteristic_name,
        parm.parm_seq_grp_nm characteristic_type,
-       wqx_medium_cd.wqx_act_med_nm sample_media,
+       nwis_wqx_medium_cd.wqx_act_med_nm sample_media,
        s.organization,
        s.site_type,
        s.huc,
@@ -59,7 +59,7 @@ select 2 data_source_id,
          when samp.samp_type_cd = '9' then 'Sample-Routine'
          else 'Unknown'
        end activity_type_code,
-       wqx_medium_cd.wqx_act_med_sub activity_media_subdiv_name,
+       nwis_wqx_medium_cd.wqx_act_med_sub activity_media_subdiv_name,
        case 
          when samp.sample_start_sg in ('m', 'h') then to_char(samp.sample_start_dt, 'hh24:mi:ss')
          else null
@@ -134,10 +134,15 @@ select 2 data_source_id,
               else null
             end,
             null) activity_lower_depth_unit,
-       coalesce(parameter.v71999_fxd_nm, samp.project_cd, 'USGS') project_id,
+       nwis_ws_star.determine_project_id(nawqa_sites.site_no,
+                            parameter.v50280,
+                            parameter.v71999,
+                            parameter.v71999_fxd_nm,
+                            samp.sample_start_dt,
+                            samp.project_cd) project_id,
        coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) activity_conducting_org,
        trim(samp.sample_lab_cm_tx) activity_comment,
-       aqfr.sample_aqfr_name,
+       aqfr.aqfr_nm sample_aqfr_name,
        hyd_cond_cd.hyd_cond_nm hydrologic_condition_name,
        hyd_event_cd.hyd_event_nm hydrologic_event_name,
        case
@@ -207,14 +212,21 @@ select 2 data_source_id,
        parm.parm_wt_tx weight_basis_type,
        parm.parm_tm_tx duration_basis,
        parm.parm_temp_tx temperature_basis_level,
-       trim(parm.parm_size_tx) particle_size,
+       parm.parm_size_tx particle_size,
        r.lab_std_va precision,
        trim(r.result_lab_cm_tx) result_comment,
        null result_depth_meas_value,
        null result_depth_meas_unit_code,
        null result_depth_alt_ref_pt_txt,
        case
-         when parm.PARM_MEDIUM_TX = 'Biological Tissue' then tu.composite_tu_name
+         when parm.PARM_MEDIUM_TX = 'Biological Tissue'
+           then tu.tu_1_nm ||
+                  case when tu.tu_2_cd is not null then ' ' || tu.tu_2_cd end ||
+                  case when tu.tu_2_nm is not null then ' ' || tu.tu_2_nm end ||
+                  case when tu.tu_3_cd is not null then ' ' || tu.tu_3_cd end ||
+                  case when tu.tu_3_nm is not null then ' ' || tu.tu_3_nm end ||
+                  case when tu.tu_4_cd is not null then ' ' || tu.tu_4_cd end ||
+                  case when tu.tu_4_nm is not null then ' ' || tu.tu_4_nm end
        end sample_tissue_taxonomic_name,
        case
          when parm.parm_medium_tx = 'Biological Tissue' then body_part.body_part_nm
@@ -290,215 +302,78 @@ select 2 data_source_id,
          when r.prep_dt is not null then substr(r.prep_dt, 1, 4) || '-' || substr(r.prep_dt, 5, 2) || '-' || substr(r.prep_dt, 7, 2)
          else null
        end analysis_prep_date_tx 
-  from nwis_ws_star.qw_result r,
-       nwis_ws_star.qw_sample samp,
-       (select tz_cd, tz_utc_offset_tm
-          from nwis_ws_star.lu_tz
-         where tz_cd is not null
-        union 
-        select tz_dst_cd, tz_dst_utc_offset_tm tz_utc_offset_tm
-          from nwis_ws_star.lu_tz
-        where tz_dst_cd is not null) lu_tz,
-        nwis_ws_star.sitefile site,
-        station_swap_nwis s,
-        (select /*+ full(p2) parallel(p2, 4) full(fxd_71999) parallel(fxd_71999, 4) full(fxd_82398) parallel(fxd_82398, 4)
-                    full(fxd_84164) parallel(fxd_84164, 4)
-                    use_hash(p2) use_hash(fxd_71999) use_hash(82398) use_hash(84164) */
-                sample_id,
-                v71999,
-                v50280,
-                v72015,
-                v82047,
-                v72016,
-                v82048,
-                v00003,
-                v00098,
-                v78890,
-                v78891,
-                v82398,
-                v84164,
-                v71999_fxd_nm,
-                v82398_fxd_tx,
-                v84164_fxd_tx
-           from (select /*+ full(p1) parallel(p1, 4) */
-                        sample_id,
-                        max(case when parameter_cd = '71999' then result_unrnd_va else null end) AS V71999,
-                        max(case when parameter_cd = '50280' then result_unrnd_va else null end) AS V50280,
-                        max(case when parameter_cd = '72015' then result_unrnd_va else null end) AS V72015,
-                        max(case when parameter_cd = '82047' then result_unrnd_va else null end) AS V82047,
-                        max(case when parameter_cd = '72016' then result_unrnd_va else null end) AS V72016,
-                        max(case when parameter_cd = '82048' then result_unrnd_va else null end) AS V82048,
-                        max(case when parameter_cd = '00003' then result_unrnd_va else null end) AS V00003,
-                        max(case when parameter_cd = '00098' then result_unrnd_va else null end) AS V00098,
-                        max(case when parameter_cd = '78890' then result_unrnd_va else null end) AS V78890,
-                        max(case when parameter_cd = '78891' then result_unrnd_va else null end) AS V78891,
-                        max(case when parameter_cd = '82398' then result_unrnd_va else null end) AS V82398,
-                        max(case when parameter_cd = '84164' then result_unrnd_va else null end) AS V84164
-                   from nwis_ws_star.qw_result p1
-                  where result_web_cd = 'Y' and
-                        parameter_cd in ('71999', '50280', '72015', '82047', '72016', '82048', '00003', '00098', '78890', '78891', '82398', '84164')
-                     group by sample_id) p2,
-                 (select fxd_nm v71999_fxd_nm, fxd_va from nwis_ws_star.fxd where parm_cd = '71999') fxd_71999,
-                 (select fxd_tx v82398_fxd_tx, fxd_va from nwis_ws_star.fxd where parm_cd = '82398') fxd_82398,
-                 (select fxd_tx v84164_fxd_tx, fxd_va from nwis_ws_star.fxd where parm_cd = '84164') fxd_84164
-          where p2.v71999 = fxd_71999.fxd_va(+) and
-                p2.v82398 = fxd_82398.fxd_va(+) and
-                p2.v84164 = fxd_84164.fxd_va(+)) parameter,
-        (select tu_id,
-                trim(tu_1_nm) ||
-                  case when trim(tu_2_cd) is not null then ' ' || trim(tu_2_cd) end ||
-                  case when trim(tu_2_nm) is not null then ' ' || trim(tu_2_nm) end ||
-                  case when trim(tu_3_cd) is not null then ' ' || trim(tu_3_cd) end ||
-                  case when trim(tu_3_nm) is not null then ' ' || trim(tu_3_nm) end ||
-                  case when trim(tu_4_cd) is not null then ' ' || trim(tu_4_cd) end ||
-                  case when trim(tu_4_nm) is not null then ' ' || trim(tu_4_nm) end AS composite_tu_name
-           from nwis_ws_star.tu) tu,
-        (select trim(wqx_act_med_nm) wqx_act_med_nm,
-                trim(wqx_act_med_sub) wqx_act_med_sub,
-                trim(nwis_medium_cd) medium_cd
-           from nwis_ws_star.nwis_wqx_medium_cd) wqx_medium_cd,
-        (select trim(body_part_nm) body_part_nm,
-                trim(body_part_id) body_part_id
-           from nwis_ws_star.body_part) body_part,
-        (select /*+ full(a) full(b) full(z_parm_meth2) use_hash(a) use_hash(b) use_hash(z_parm_meth2) */
-                a.parm_unt_tx,
-                a.parm_frac_tx,
-                a.parm_medium_tx,
-                a.parm_stat_tx,
-                a.parm_wt_tx,
-                a.parm_temp_tx,
-                a.parm_tm_tx,
-                a.parm_cd,
-                a.parm_size_tx,
-                b.parm_seq_grp_nm,
-                z_parm_alias.srsname,
-                z_parm_alias.srsid,
-                z_parm_alias.casrn,
-                z_parm_meth2.multiplier
-           from nwis_ws_star.lu_parm a,
-                nwis_ws_star.lu_parm_seq_grp_cd b,
-                (select parm_cd,
-                        max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) AS srsname,
-                        max(case when parm_alias_cd = 'SRSID'   then parm_alias_nm else null end) AS srsid  ,
-                        max(case when parm_alias_cd = 'CASRN'   then parm_alias_nm else null end) AS casrn
-                   from nwis_ws_star.lu_parm_alias
-                      group by parm_cd
-                      having max(case when parm_alias_cd = 'SRSNAME' then parm_alias_nm else null end) is not null) z_parm_alias,
-                (select decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
-                               1, '0.001',
-                               2, '0.01',
-                               3, '0.1',
-                               4, '1.',
-                               5, '10',
-                               6, '100',
-                               7, '1000',
-                               8, '10000',
-                               9, '100000') multiplier,
-                        parm_cd
-                   from nwis_ws_star.lu_parm_meth
-                  where meth_cd is null) z_parm_meth2
-          where a.parm_public_fg = 'Y' and
-                a.parm_seq_grp_cd = b.parm_seq_grp_cd(+) and
-                a.parm_cd = z_parm_alias.parm_cd and
-                a.parm_cd = z_parm_meth2.parm_cd(+)) parm,
-        (select fxd_tx,
-                parm_cd,
-                fxd_va
-           from nwis_ws_star.fxd) fxd,
-        (select proto_org_nm,
-                proto_org_cd
-           from nwis_ws_star.proto_org) proto_org,
-        (select proto_org_nm,
-                proto_org_cd
-           from nwis_ws_star.proto_org) proto_org2,
-        (select /*+ full(meth1) full(z_cit_meth) use_hash(meth1) use_hash(z_cit_meth) */
-                meth1.meth_cd,
-                meth1.meth_nm,
-                z_cit_meth.cit_nm
-           from nwis_ws_star.meth meth1,
-                (select meth_cd, min(cit_nm) cit_nm from nwis_ws_star.z_cit_meth group by meth_cd) z_cit_meth
-          where meth1.meth_cd = z_cit_meth.meth_cd(+)) meth,
-        (select decode(REGEXP_INSTR(PARM_METH_RND_TX, '[1-9]', 1, 1),
-                       1, '0.001',
-                       2, '0.01',
-                       3, '0.1',
-                       4, '1.',
-                       5, '10',
-                       6, '100',
-                       7, '1000',
-                       8, '10000',
-                       9, '100000') multiplier,
-                parm_cd,
-                meth_cd
-           from nwis_ws_star.lu_parm_meth) z_parm_meth,
-        (select rpt_lev_cd, wqx_rpt_lev_nm from nwis_ws_star.nwis_wqx_rpt_lev_cd) nwis_wqx_rpt_lev_cd,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd1,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd2,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd3,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd4,
-        (select val_qual_nm || '. ' val_qual_nm, val_qual_cd from nwis_ws_star.val_qual_cd) val_qual_cd5,
-        (select trim(hyd_event_cd) hyd_event_cd, trim(hyd_event_nm) hyd_event_nm from nwis_ws_star.hyd_event_cd) hyd_event_cd,
-        (select trim(hyd_cond_cd) hyd_cond_cd, trim(hyd_cond_nm) hyd_cond_nm from nwis_ws_star.hyd_cond_cd) hyd_cond_cd,
-        (select district_cd, host_name from nwis_ws_star.nwis_district_cds_by_host) dist,
-        (select aqfr_cd, state_cd, trim(aqfr_nm) as SAMPLE_AQFR_NAME from nwis_ws_star.aqfr) aqfr,
-        (select analytical_procedure_source,
-                analytical_procedure_id,
-                case
-                  when method_id is not null
-                    then
-                      case method_type
-                        when 'analytical'
-                          then 'https://www.nemi.gov/methods/method_summary/' || method_id || '/'
-                        when 'statistical'
-                          then 'https://www.nemi.gov/methods/sams_method_summary/' || method_id || '/'
-                      end
-                   else 
-                     null 
-                end nemi_url
-           from nwis_ws_star.wqp_nemi_nwis_crosswalk) nemi
- where
-    r.result_web_cd    = 'Y'                         and
-   (r.RESULT_VA        is not null  OR
-    r.RPT_LEV_VA       is not null  OR
-    r.REMARK_CD        is not null)                  and
-    r.sample_id        = samp.sample_id              and
-    r.parameter_cd     = parm.parm_cd              and  /* not outer join on z_parm or z_parm_alias */
-    r.parameter_cd     = fxd.parm_cd(+)              and
-    case when r.result_va = '0.0' then '0' else r.result_va end = fxd.fxd_va(+) and
-    r.anl_ent_cd       = proto_org.proto_org_cd(+)   and
-    r.meth_cd          = meth.meth_cd(+)             and
-    r.parameter_cd     = z_parm_meth.parm_cd(+)      and
-    r.meth_cd          = z_parm_meth.meth_cd(+)      and
-    r.rpt_lev_cd       = nwis_wqx_rpt_lev_cd.rpt_lev_cd(+) and
-    substr(r.val_qual_tx, 1, 1) = val_qual_cd1.val_qual_cd(+) and
-    substr(r.val_qual_tx, 2, 1) = val_qual_cd2.val_qual_cd(+) and
-    substr(r.val_qual_tx, 3, 1) = val_qual_cd3.val_qual_cd(+) and
-    substr(r.val_qual_tx, 4, 1) = val_qual_cd4.val_qual_cd(+) and
-    substr(r.val_qual_tx, 5, 1) = val_qual_cd5.val_qual_cd(+) and
-    samp.sample_web_cd = 'Y'                         and
-    samp.qw_db_no      = '01'                        and
-    samp.site_id       = site.site_id                  and
-    samp.sample_id     = parameter.sample_id(+)        and
-    to_number(samp.tu_id) = tu.tu_id(+)                and
-    samp.medium_cd     = wqx_medium_cd.medium_cd(+)    and
-    samp.body_part_id  = body_part.body_part_id(+)     and
-    samp.coll_ent_cd   = proto_org2.proto_org_cd(+)    and
-    samp.hyd_event_cd  = hyd_event_cd.hyd_event_cd(+)  and
-    samp.hyd_cond_cd   = hyd_cond_cd.hyd_cond_cd(+)    and
-    site.dec_lat_va    <> 0                            and
-    site.dec_long_va   <> 0                            and
-    site.db_no         = '01'                        and
-    site.site_web_cd   = 'Y'                         and
-    site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP')  and
-    site.nwis_host  not in ('fltlhsr001', 'fltpasr001', 'flalssr003') and
-    site.district_cd   = dist.district_cd              and
-    site.nwis_host     = dist.host_name and
-    samp.SAMPLE_START_TIME_DATUM_CD = lu_tz.tz_cd(+) and
-    samp.aqfr_cd  = aqfr.aqfr_cd (+) and
-    site.state_cd = aqfr.state_cd(+) and
-    nvl2(r.meth_cd, 'USGS', null) = nemi.analytical_procedure_source(+) and
-    trim(r.meth_cd) = nemi.analytical_procedure_id(+) and
-    site.site_id = s.station_id
+  from nwis_ws_star.qw_result r
+       join nwis_ws_star.qw_sample samp
+         on r.sample_id = samp.sample_id
+       join nwis_ws_star.sitefile site
+         on samp.site_id = site.site_id
+       join station_swap_nwis s
+         on site.site_id = s.station_id
+       left join nwis_ws_star.lu_tz
+         on samp.sample_start_time_datum_cd = lu_tz.tz_cd
+       left join nwis_ws_star.tu
+         on to_number(samp.tu_id) = tu.tu_id
+       left join nwis_ws_star.nwis_wqx_medium_cd
+         on samp.medium_cd = nwis_wqx_medium_cd.nwis_medium_cd
+       left join nwis_ws_star.body_part
+         on samp.body_part_id = body_part.body_part_id
+       join nwis_ws_star.parm
+         on r.parameter_cd = parm.parm_cd
+       left join nwis_ws_star.fxd
+         on r.parameter_cd = fxd.parm_cd and
+            case when r.result_va = '0.0' then '0' else r.result_va end = fxd.fxd_va
+       left join nwis_ws_star.proto_org
+         on r.anl_ent_cd = proto_org.proto_org_cd
+       left join nwis_ws_star.proto_org proto_org2
+         on samp.coll_ent_cd = proto_org2.proto_org_cd
+       left join nwis_ws_star.meth_with_cit meth
+         on r.meth_cd = meth.meth_cd
+       left join nwis_ws_star.z_parm_meth
+         on r.parameter_cd = z_parm_meth.parm_cd and
+            r.meth_cd = z_parm_meth.meth_cd
+       left join nwis_ws_star.nwis_wqx_rpt_lev_cd
+         on r.rpt_lev_cd = nwis_wqx_rpt_lev_cd.rpt_lev_cd
+       left join nwis_ws_star.val_qual_cd val_qual_cd1
+         on substr(r.val_qual_tx, 1, 1) = val_qual_cd1.val_qual_cd
+       left join nwis_ws_star.val_qual_cd val_qual_cd2
+         on substr(r.val_qual_tx, 2, 1) = val_qual_cd2.val_qual_cd
+       left join nwis_ws_star.val_qual_cd val_qual_cd3
+         on substr(r.val_qual_tx, 3, 1) = val_qual_cd3.val_qual_cd
+       left join nwis_ws_star.val_qual_cd val_qual_cd4
+         on substr(r.val_qual_tx, 4, 1) = val_qual_cd4.val_qual_cd
+       left join nwis_ws_star.val_qual_cd val_qual_cd5
+         on substr(r.val_qual_tx, 5, 1) = val_qual_cd5.val_qual_cd
+       left join nwis_ws_star.hyd_event_cd
+         on samp.hyd_event_cd = hyd_event_cd.hyd_event_cd
+       left join nwis_ws_star.hyd_cond_cd
+         on samp.hyd_cond_cd = hyd_cond_cd.hyd_cond_cd
+       join nwis_ws_star.nwis_district_cds_by_host dist
+         on site.district_cd = dist.district_cd and
+            site.nwis_host = dist.host_name
+       left join nwis_ws_star.aqfr
+         on samp.aqfr_cd = aqfr.aqfr_cd and
+            site.state_cd = aqfr.state_cd
+       left join nwis_ws_star.wqp_nemi_nwis_crosswalk nemi
+         on nvl2(r.meth_cd, 'USGS', null) = nemi.analytical_procedure_source and
+            trim(r.meth_cd) = nemi.analytical_procedure_id
+       left join nwis_ws_star.sample_parameter parameter
+         on samp.sample_id = parameter.sample_id
+       left join nwis_ws_star.nawqa_sites
+         on site.site_no = nawqa_sites.site_no and
+            upper(site.nwis_host) = upper(nawqa_sites.nwis_host_nm) and
+            site.db_no = nawqa_sites.db_no
+ where r.result_web_cd = 'Y' and
+       (r.result_va is not null or
+        r.rpt_lev_va is not null or
+        r.remark_cd is not null) and
+       samp.sample_web_cd = 'Y' and
+       samp.qw_db_no = '01' and
+       site.dec_lat_va <> 0 and
+       site.dec_long_va <> 0 and
+       site.db_no = '01' and
+       site.site_web_cd = 'Y' and
+       site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP') and
+       site.nwis_host not in ('fltlhsr001', 'fltpasr001', 'flalssr003')
      order by s.station_id;
 
 commit;
