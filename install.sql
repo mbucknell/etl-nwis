@@ -41,6 +41,9 @@ begin
 	dbms_output.put_line('organization');
 	execute immediate 'alter table organization exchange partition organization_nwis with table organization_swap_nwis including indexes';
     
+	dbms_output.put_line('project');
+	execute immediate 'alter table project exchange partition project_nwis with table project_swap_nwis including indexes';
+    
 	dbms_output.put_line('sample_media');
 	execute immediate 'alter table sample_media exchange partition sample_media_nwis with table sample_media_swap_nwis including indexes';
     
