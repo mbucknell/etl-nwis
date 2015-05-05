@@ -142,4 +142,12 @@
         </exec>
     </target>
 
+    <target name="createPublicSrsnames">
+        <echo>refresh the public srsnames table</echo>
+        <exec executable="sqlplus" failonerror="true">
+            <arg value="wqp_core/${wqp_core_password}@${instance}"/>
+            <arg value="@${basedir}/createPublicSrsnames.sql"/>
+        </exec>
+    </target>
+
 </project>
