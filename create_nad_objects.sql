@@ -723,7 +723,7 @@ create or replace package body create_nad_objects
 
         insert /*+ append nologging parallel */
         into station_sum_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc_12, governmental_unit_code,
-                                    geom, pc_result_count, biological_result_count)
+                                    geom, result_count)
         select station.data_source_id,
                station.data_source,
                station.station_id,

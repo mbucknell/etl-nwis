@@ -55,7 +55,7 @@ begin
          where parm_public_fg = 'Y'
            order by 1!';
 
---      execute immediate 'grant select on public_srsnames' || suffix || ' to nwis_ws_user';
+      	execute immediate 'grant select on public_srsnames' || suffix || ' to wqp_user';
 
       	dbms_output.put_line('analyze public_srsnames...');
       	dbms_stats.gather_table_stats('WQP_CORE', 'PUBLIC_SRSNAMES' || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
