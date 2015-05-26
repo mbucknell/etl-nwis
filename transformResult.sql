@@ -134,12 +134,11 @@ select 2 data_source_id,
               else null
             end,
             null) activity_lower_depth_unit,
-       nwis_ws_star.determine_project_id(nawqa_sites.site_no,
-                            parameter.v50280,
-                            parameter.v71999,
-                            parameter.v71999_fxd_nm,
-                            samp.sample_start_dt,
-                            samp.project_cd) project_id,
+       nwis_ws_star.etl_helper.determine_project_id(nawqa_sites.site_no,
+                                                    parameter.v50280,
+                                                    parameter.v71999,
+                                                    samp.sample_start_dt,
+                                                    samp.project_cd) project_id,
        coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) activity_conducting_org,
        trim(samp.sample_lab_cm_tx) activity_comment,
        aqfr.aqfr_nm sample_aqfr_name,
@@ -372,8 +371,7 @@ select 2 data_source_id,
        site.dec_long_va <> 0 and
        site.db_no = '01' and
        site.site_web_cd = 'Y' and
-       site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP') and
-       site.nwis_host not in ('fltlhsr001', 'fltpasr001', 'flalssr003')
+       site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP')
      order by s.station_id;
 
 commit;
