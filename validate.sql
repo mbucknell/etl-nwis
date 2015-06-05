@@ -16,9 +16,9 @@ begin
 	
 	dbms_output.put_line('validating...');
 
-	dbms_output.put_line('... pc_result');
-	select count(*) into old_rows from pc_result partition (pc_result_nwis);
-	select count(*) into new_rows from pc_result_swap_nwis;
+	dbms_output.put_line('... result');
+	select count(*) into old_rows from result partition (result_nwis);
+	select count(*) into new_rows from result_swap_nwis;
 	if new_rows > 70000000 and new_rows > old_rows - 9000000 then
     	pass_fail := 'PASS';
     else
@@ -29,7 +29,7 @@ begin
             end_job := false;
         $END
     end if;
-    dbms_output.put_line(pass_fail || ': table comparison for pc_result: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999')));
+    dbms_output.put_line(pass_fail || ': table comparison for result: was ' || trim(to_char(old_rows, '999,999,999')) || ', now ' || trim(to_char(new_rows, '999,999,999')));
 
     dbms_output.put_line('... station');
     select count(*) into old_rows from station partition (station_nwis);
