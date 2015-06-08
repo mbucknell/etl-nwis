@@ -7,7 +7,8 @@ whenever oserror exit failure rollback;
 select 'analyze dw tables start time: ' || systimestamp from dual;
 
 begin
-
-exec etl_helper.analyze_tables('stewards');
+	etl_helper.analyze_tables('nwis');
+end;
+/
 
 select 'analyze dw tables end time: ' || systimestamp from dual;
