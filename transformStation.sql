@@ -20,7 +20,8 @@ insert /*+ append parallel(4) */
                           geoposition_accy_value, geoposition_accy_unit, vertical_accuracy_value, vertical_accuracy_unit,
                           nat_aqfr_name, aqfr_name, aqfr_type_name, construction_date, well_depth_value, well_depth_unit,
                           hole_depth_value, hole_depth_unit)
-select 2 data_source_id,
+select /*+ parallel(4) */ 
+       2 data_source_id,
        'NWIS' data_source,
        sitefile.site_id station_id,
        sitefile.agency_cd || '-' || sitefile.site_no site_id,
