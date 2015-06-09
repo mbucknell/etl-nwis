@@ -279,13 +279,13 @@ select a.parm_unt_tx,
   from lu_parm a
        left join lu_parm_seq_grp_cd b
          on a.parm_seq_grp_cd = b.parm_seq_grp_cd
-       left join (select *
-                    from (select parm_cd, parm_alias_cd, parm_alias_nm
-                            from lu_parm_alias
-                           where parm_alias_cd in ('SRSNAME', 'SRSID', 'CASRN'))
-                         pivot (max(parm_alias_nm)
-                                for parm_alias_cd in ('SRSNAME' srsname, 'SRSID' srsid, 'CASRN' casrn))
-                   where srsname is not null) z_parm_alias
+       join (select *
+               from (select parm_cd, parm_alias_cd, parm_alias_nm
+                       from lu_parm_alias
+                      where parm_alias_cd in ('SRSNAME', 'SRSID', 'CASRN'))
+                     pivot (max(parm_alias_nm)
+                            for parm_alias_cd in ('SRSNAME' srsname, 'SRSID' srsid, 'CASRN' casrn))
+               where srsname is not null) z_parm_alias
          on a.parm_cd = z_parm_alias.parm_cd
        left join z_parm_meth
          on a.parm_cd = z_parm_meth.parm_cd
