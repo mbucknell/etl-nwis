@@ -235,11 +235,12 @@ insert /*+ append parallel(4) */ into z_cit_meth
 select * from z_cit_meth@nwis_ws_stg.er.usgs.gov;
 commit;
 
-prompt nawqa_sites
-truncate table nawqa_sites;
-insert /*+ append parallel(4) */ into nawqa_sites
-select * from nawqa_sites@nwq_data_checks.er.usgs.gov;
-commit;
+--reactivate when nawqa_sites@nwq_data_checks.er.usgs.gov is pointing at a production database!!
+--prompt nawqa_sites
+--truncate table nawqa_sites;
+--insert /*+ append parallel(4) */ into nawqa_sites
+--select * from nawqa_sites@nwq_data_checks.er.usgs.gov;
+--commit;
 
 prompt z_parm_meth
 truncate table z_parm_meth;
