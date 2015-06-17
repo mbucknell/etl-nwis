@@ -118,4 +118,7 @@ select /*+ parallel(4) */
 
 commit;
 
+prompt building nwis station indexes
+exec etl_helper.create_station_indexes('nwis');
+
 select 'transform station end time: ' || systimestamp from dual;
