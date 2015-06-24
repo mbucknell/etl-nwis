@@ -235,12 +235,20 @@ insert /*+ append parallel(4) */ into z_cit_meth
 select * from z_cit_meth@nwis_ws_stg.er.usgs.gov;
 commit;
 
---reactivate when nawqa_sites@nwq_data_checks.er.usgs.gov is pointing at a production database!!
---prompt nawqa_sites
---truncate table nawqa_sites;
---insert /*+ append parallel(4) */ into nawqa_sites
---select * from nawqa_sites@nwq_data_checks.er.usgs.gov;
---commit;
+prompt nawqa_sites
+begin
+  execute immediate 'drop table nawqa_sites cascade constraints purge';
+exception
+  when others then
+    if sqlcode != -00942 then
+      raise;
+    end if;
+end;
+/
+
+create table nawqa_sites as
+select * from nawqa_sites@nwq_data_checks.er.usgs.gov;
+grant select on nawqa_sites to wqp_core;
 
 prompt z_parm_meth
 truncate table z_parm_meth;
