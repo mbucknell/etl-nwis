@@ -10,7 +10,17 @@ prompt dropping nwis result indexes
 exec etl_helper.drop_indexes('result_swap_nwis');
 
 prompt building nwis_sample 
-drop table nwis_sample cascade constraints purge;
+
+begin
+  execute immediate 'drop table nwis_sample cascade constraints purge';
+exception
+  when others then
+    if sqlcode != -00942 then
+      raise;
+    end if;
+end;
+/
+
 create table nwis_sample compress pctfree 0 nologging as
 select /*+ parallel(4) */
        samp.sample_id,
@@ -184,8 +194,7 @@ select /*+ parallel(4) */
          on samp.sample_id = parameter.sample_id
        left join nwis_ws_star.nawqa_sites
          on site.site_no = nawqa_sites.site_no and
-            upper(site.nwis_host) = upper(nawqa_sites.nwis_host_nm) and
-            site.db_no = nawqa_sites.db_no
+            site.agency_cd = nawqa_sites.agency_cd
  where samp.sample_web_cd = 'Y' and
        samp.qw_db_no = '01' and
        site.dec_lat_va <> 0 and
