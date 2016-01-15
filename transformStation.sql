@@ -14,7 +14,7 @@ truncate table station_swap_nwis;
 
 insert /*+ append parallel(4) */
   into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc, governmental_unit_code,
-                          geom, station_name, organization_name, description_text, station_type_name, latitude, longitude, map_scale,
+                          geom, station_name, organization_name, station_type_name, latitude, longitude, map_scale,
                           geopositioning_method, hdatum_id_code, elevation_value, elevation_unit, elevation_method, vdatum_id_code,
                           drain_area_value, drain_area_unit, contrib_drain_area_value, contrib_drain_area_unit,
                           geoposition_accy_value, geoposition_accy_unit, vertical_accuracy_value, vertical_accuracy_unit,
@@ -32,7 +32,6 @@ select /*+ parallel(4) */
        mdsys.sdo_geometry(2001,4269,mdsys.sdo_point_type(round(sitefile.dec_long_va, 7),round(sitefile.dec_lat_va, 7), null), null, null) geom,
        trim(sitefile.station_nm) station_name,
        ndcbh.organization_name,
-       trim(sitefile.site_rmks_tx) description_text,
        site_tp.station_type_name,
        round(sitefile.dec_lat_va , 7) latitude,
        round(sitefile.dec_long_va, 7) longitude,
