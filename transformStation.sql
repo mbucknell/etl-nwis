@@ -7,7 +7,7 @@ whenever oserror exit failure rollback;
 select 'transform station start time: ' || systimestamp from dual;
 
 prompt dropping nwis station indexes
-exec etl_helper.drop_indexes('station_swap_nwis');
+exec etl_helper_station.drop_indexes('nwis');
         
 prompt populating nwis station
 truncate table station_swap_nwis;
@@ -118,6 +118,6 @@ select /*+ parallel(4) */
 commit;
 
 prompt building nwis station indexes
-exec etl_helper.create_station_indexes('nwis');
+exec etl_helper_station.create_indexes('nwis');
 
 select 'transform station end time: ' || systimestamp from dual;

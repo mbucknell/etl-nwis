@@ -7,7 +7,7 @@ whenever oserror exit failure rollback;
 select 'transform result start time: ' || systimestamp from dual;
 
 prompt dropping nwis result indexes
-exec etl_helper.drop_indexes('result_swap_nwis');
+exec etl_helper_result.drop_indexes('nwis');
 
 prompt building nwis_sample 
 
@@ -429,6 +429,6 @@ select /*+ parallel(4) */
 commit;
 
 prompt building nwis result indexes
-exec etl_helper.create_result_indexes('nwis');
+exec etl_helper_result.create_indexes('nwis');
 
 select 'transform result end time: ' || systimestamp from dual;

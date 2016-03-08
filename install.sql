@@ -7,8 +7,8 @@ whenever oserror exit failure rollback;
 select 'install dw new data start time: ' || systimestamp from dual;
 
 begin
-	etl_helper.install('nwis');
-	etl_helper.update_last_etl(2);
+	etl_helper_main.install('nwis');
+	etl_helper_main.update_last_etl(2);
 end;
 /
 
