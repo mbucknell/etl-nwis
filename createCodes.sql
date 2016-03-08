@@ -7,7 +7,7 @@ whenever oserror exit failure rollback;
 select 'build lookups start time: ' || systimestamp from dual;
 
 begin
-	etl_helper.create_code_tables('nwis');
+	etl_helper_code.create_tables('nwis');
 end;
 /
 
