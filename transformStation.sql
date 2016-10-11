@@ -36,23 +36,23 @@ select /*+ parallel(4) */
        round(sitefile.dec_lat_va , 7) latitude,
        round(sitefile.dec_long_va, 7) longitude,
        trim(sitefile.map_scale_fc) map_scale,
-       nvl(geo_meth.geopositioning_method, 'Unknown') geopositioning_method,
+       nvl(lat_long_method.name, 'Unknown') geopositioning_method,
        nvl(sitefile.dec_coord_datum_cd, 'Unknown') hdatum_id_code,
        case when sitefile.alt_datum_cd is not null then case when sitefile.alt_va = '.' then '0' else trim(sitefile.alt_va) end else null end elevation_value,
        case when sitefile.alt_va is not null and sitefile.alt_datum_cd is not null then 'feet' else null end elevation_unit,
-       vert.vertical_method_name elevation_method,
+       altitude_method.name elevation_method,
        case when sitefile.alt_va is not null then sitefile.alt_datum_cd else null end vdatum_id_code,
        to_number(sitefile.drain_area_va) drain_area_value,
        nvl2(sitefile.drain_area_va, 'sq mi', null) drain_area_unit,
        case when sitefile.contrib_drain_area_va = '.' then 0 else to_number(sitefile.contrib_drain_area_va) end contrib_drain_area_value,
        nvl2(sitefile.contrib_drain_area_va, 'sq mi', null) contrib_drain_area_unit,
-       geo_accuracy.geopositioning_accuracy_value geoposition_accy_value,
-       geo_accuracy.geopositioning_accuracy_units geoposition_accy_unit,
+       lat_long_accuracy.accuracy geoposition_accy_value,
+       lat_long_accuracy.unit geoposition_accy_unit,
        case when sitefile.alt_va is not null and sitefile.alt_datum_cd is not null then trim(sitefile.alt_acy_va) else null end vertical_accuracy_value,
        case when sitefile.alt_va is not null and sitefile.alt_datum_cd is not null and sitefile.alt_acy_va is not null then 'feet' else null end vertical_accuracy_unit,
        nat_aqfr.nat_aqfr_name,
        aqfr.aqfr_nm,
-       aqfr_type.aqfr_type_name,
+       aquifer_type.name,
        sitefile.construction_dt construction_date,
        to_number(case when sitefile.well_depth_va in ('.', '-') then '0' else sitefile.well_depth_va end) well_depth_value,
        nvl2(sitefile.well_depth_va, 'ft', null) well_depth_unit,
@@ -90,20 +90,16 @@ select /*+ parallel(4) */
                    where substr(a.site_tp_cd, 1, 2) = b.site_tp_cd and
                          b.site_tp_prim_fg = 'Y') site_tp
          on sitefile.site_tp_cd = site_tp.site_tp_cd
-       left join (select nwis_name as vertical_method_name , nwis_code from nwis_ws_star.nwis_misc_lookups where category = 'Altitude Method') vert
-         on sitefile.alt_meth_cd = vert.nwis_code
-       left join (select nwis_name as geopositioning_method, nwis_code from nwis_ws_star.nwis_misc_lookups where category = 'Lat/Long Method') geo_meth
-         on sitefile.coord_meth_cd= geo_meth.nwis_code
-       left join (select inferred_value as geopositioning_accuracy_value,
-                         inferred_units as geopositioning_accuracy_units,
-                         nwis_code
-                    from nwis_ws_star.nwis_misc_lookups
-                   where category = 'Lat-Long Coordinate Accuracy') geo_accuracy
-         on sitefile.coord_acy_cd = geo_accuracy.nwis_code
+       left join nwis_ws_star.altitude_method
+         on sitefile.alt_meth_cd = altitude_method.code
+       left join nwis_ws_star.lat_long_method
+         on sitefile.coord_meth_cd= lat_long_method.code
+       left join nwis_ws_star.lat_long_accuracy
+         on sitefile.coord_acy_cd = lat_long_accuracy.code
        left join (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nwis_ws_star.nat_aqfr group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr
          on sitefile.nat_aqfr_cd  = nat_aqfr.nat_aqfr_cd
-       left join (select nwis_name as aqfr_type_name, nwis_code from nwis_ws_star.nwis_misc_lookups where CATEGORY='Aquifer Type Code') aqfr_type
-         on sitefile.aqfr_type_cd = aqfr_type.nwis_code
+       left join nwis_ws_star.aquifer_type
+         on sitefile.aqfr_type_cd = aquifer_type.code
        left join nwis_ws_star.aqfr
          on sitefile.aqfr_cd = aqfr.aqfr_cd and
             sitefile.state_cd = aqfr.state_cd
