@@ -170,8 +170,6 @@ select /*+ parallel(4) */
          on samp.site_id = site.site_id
        join station_swap_nwis s
          on site.site_id = s.station_id
-       left join nwis_ws_star.lu_tz
-         on samp.sample_start_time_datum_cd = lu_tz.tz_cd
        left join nwis_ws_star.tu
          on to_number(samp.tu_id) = tu.tu_id
        left join nwis_ws_star.nwis_wqx_medium_cd
@@ -348,7 +346,7 @@ select /*+ parallel(4) */
          when r.remark_cd = '>' then r.result_va
          when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
          when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-         when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
+         when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(parm_meth.multiplier, parm.multiplier)
          when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
          else null
        end detection_limit,
@@ -358,7 +356,7 @@ select /*+ parallel(4) */
               when r.remark_cd = '>' then r.result_va
               when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
               when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-              when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
+              when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(parm_meth.multiplier, parm.multiplier)
               when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
               else null
             end,
@@ -370,7 +368,7 @@ select /*+ parallel(4) */
               when r.remark_cd = '>' then r.result_va
               when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
               when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-              when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(z_parm_meth.multiplier, parm.multiplier)
+              when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then nvl(parm_meth.multiplier, parm.multiplier)
               when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
               else null
             end,
@@ -402,9 +400,9 @@ select /*+ parallel(4) */
          on r.anl_ent_cd = proto_org.proto_org_cd
        left join nwis_ws_star.meth_with_cit meth
          on r.meth_cd = meth.meth_cd
-       left join nwis_ws_star.z_parm_meth
-         on r.parameter_cd = z_parm_meth.parm_cd and
-            r.meth_cd = z_parm_meth.meth_cd
+       left join nwis_ws_star.parm_meth
+         on r.parameter_cd = parm_meth.parm_cd and
+            r.meth_cd = parm_meth.meth_cd
        left join nwis_ws_star.nwis_wqx_rpt_lev_cd
          on r.rpt_lev_cd = nwis_wqx_rpt_lev_cd.rpt_lev_cd
        left join nwis_ws_star.val_qual_cd val_qual_cd1
