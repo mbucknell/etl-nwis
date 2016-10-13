@@ -2,6 +2,8 @@
 
 cd /home/nwis_user/copy_sitefile
 
+password=$1
+
 export date_suffix=`date +%Y%m%d_%H%M`
 
 export DIR=/srv/mysql-data/spool
@@ -15,12 +17,12 @@ export TNS_ADMIN=/usr/local/etc
 tries=0
 while [ $tries -lt 6 ] ; do
 
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < capture_counts.sql | grep -v "count(" > capture1.txt
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < QW_RESULT.sql      | sed 's/\\\\/\//' > $DIR/QW_RESULT.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < QW_SAMPLE.sql      | sed 's/\\\\/\//' > $DIR/QW_SAMPLE.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < SITEFILE.sql       | sed 's/\\\\/\//' | sed  's/'`echo -e "\\0342\\0200\\0231"`'/'`echo -e "\\047"`'/g' > $DIR/SITEFILE.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < SERIES_CATALOG.sql | sed 's/\\\\/\//' > $DIR/SERIES_CATALOG.out
-   time mysql --quick nwisweb --user=nwis_user --password=***REMOVED*** < capture_counts.sql | grep -v "count(" > capture2.txt
+   time mysql --quick nwisweb --user=nwis_user --password=${password} < capture_counts.sql | grep -v "count(" > capture1.txt
+   time mysql --quick nwisweb --user=nwis_user --password=${password} < QW_RESULT.sql      | sed 's/\\\\/\//' > $DIR/QW_RESULT.out
+   time mysql --quick nwisweb --user=nwis_user --password=${password} < QW_SAMPLE.sql      | sed 's/\\\\/\//' > $DIR/QW_SAMPLE.out
+   time mysql --quick nwisweb --user=nwis_user --password=${password} < SITEFILE.sql       | sed 's/\\\\/\//' | sed  's/'`echo -e "\\0342\\0200\\0231"`'/'`echo -e "\\047"`'/g' > $DIR/SITEFILE.out
+   time mysql --quick nwisweb --user=nwis_user --password=${password} < SERIES_CATALOG.sql | sed 's/\\\\/\//' > $DIR/SERIES_CATALOG.out
+   time mysql --quick nwisweb --user=nwis_user --password=${password} < capture_counts.sql | grep -v "count(" > capture2.txt
    
    diffs=`diff capture1.txt capture2.txt | wc -l`
 

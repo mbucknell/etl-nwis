@@ -31,7 +31,7 @@
 			failonerror="true"
 			username="nwis_user"
 			password="${nwis_user_password}"
-			command="bash -e capture_data.sh " />
+			command="bash -e capture_data.sh ${nwis_user_password}" />
 	</target>
 
 	<target name="importData">
