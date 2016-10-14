@@ -28,7 +28,7 @@ select /*+ parallel(4) */
        ndcbh.organization_id organization,
        site_tp.primary_site_type site_type,
        sitefile.huc_cd huc,
-       country.country_cd || ':' || state.state_cd || ':' || county.county_cd governmental_unit_code,
+       sitefile.country_cd || ':' || sitefile.state_cd || ':' || sitefile.county_cd governmental_unit_code,
        mdsys.sdo_geometry(2001,4269,mdsys.sdo_point_type(round(sitefile.dec_long_va, 7),round(sitefile.dec_lat_va, 7), null), null, null) geom,
        trim(sitefile.station_nm) station_name,
        ndcbh.organization_name,
@@ -36,11 +36,11 @@ select /*+ parallel(4) */
        round(sitefile.dec_lat_va , 7) latitude,
        round(sitefile.dec_long_va, 7) longitude,
        trim(sitefile.map_scale_fc) map_scale,
-       nvl(lat_long_method.name, 'Unknown') geopositioning_method,
+       nvl(lat_long_method.description, 'Unknown') geopositioning_method,
        nvl(sitefile.dec_coord_datum_cd, 'Unknown') hdatum_id_code,
        case when sitefile.alt_datum_cd is not null then case when sitefile.alt_va = '.' then '0' else trim(sitefile.alt_va) end else null end elevation_value,
        case when sitefile.alt_va is not null and sitefile.alt_datum_cd is not null then 'feet' else null end elevation_unit,
-       altitude_method.name elevation_method,
+       altitude_method.description elevation_method,
        case when sitefile.alt_va is not null then sitefile.alt_datum_cd else null end vdatum_id_code,
        to_number(sitefile.drain_area_va) drain_area_value,
        nvl2(sitefile.drain_area_va, 'sq mi', null) drain_area_unit,
@@ -52,7 +52,7 @@ select /*+ parallel(4) */
        case when sitefile.alt_va is not null and sitefile.alt_datum_cd is not null and sitefile.alt_acy_va is not null then 'feet' else null end vertical_accuracy_unit,
        nat_aqfr.nat_aqfr_name,
        aqfr.aqfr_nm,
-       aquifer_type.name,
+       aquifer_type.description,
        sitefile.construction_dt construction_date,
        to_number(case when sitefile.well_depth_va in ('.', '-') then '0' else sitefile.well_depth_va end) well_depth_value,
        nvl2(sitefile.well_depth_va, 'ft', null) well_depth_unit,
@@ -60,24 +60,12 @@ select /*+ parallel(4) */
        nvl2(sitefile.hole_depth_va, 'ft', null) hole_depth_unit
   from nwis_ws_star.sitefile
        join (select cast('USGS-' || state_postal_cd as varchar2(7)) organization_id,
-                    'USGS ' || STATE_NAME || ' Water Science Center' organization_name,
+                    'USGS ' || state_name || ' Water Science Center' organization_name,
                     host_name,
                     district_cd
                from nwis_ws_star.nwis_district_cds_by_host) ndcbh
          on sitefile.nwis_host = ndcbh.host_name and    /* host name must exist - no outer join */
             sitefile.district_cd  = ndcbh.district_cd
-       left join (select cast(country_cd as varchar2(2)) as country_cd, country_nm as country_name from nwis_ws_star.country) country
-         on sitefile.country_cd = country.country_cd
-       left join (select cast(state_cd as varchar2(2)) as state_cd, state_nm as state_name, country_cd from nwis_ws_star.state) state
-         on sitefile.country_cd = state.country_cd and
-            sitefile.state_cd = state.state_cd
-       left join (select cast(county_cd as varchar2(3)) as county_cd, state_cd, country_cd, county_nm as county_name from nwis_ws_star.county) county
-         on sitefile.country_cd = county.country_cd and
-            sitefile.state_cd = county.state_cd and
-            sitefile.county_cd = county.county_cd
-       left join (select cast(state_post_cd as varchar2(2)) as state_postal_cd, state_cd, country_cd from nwis_ws_star.state) postal
-         on sitefile.country_cd = postal.country_cd and
-            sitefile.state_cd = postal.state_cd
        left join (select a.site_tp_cd,
                          case when a.site_tp_prim_fg = 'Y' then a.site_tp_ln
                            else b.site_tp_ln || ': ' || a.site_tp_ln
@@ -107,8 +95,9 @@ select /*+ parallel(4) */
        sitefile.DEC_LONG_VA  <> 0   and
        sitefile.site_web_cd  = 'Y'  and
        sitefile.db_no        = '01' and
-       sitefile.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP')   and
-       sitefile.nwis_host  not in ('fltlhsr001', 'fltpasr001', 'flalssr003')
+       sitefile.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP') and
+       sitefile.nwis_host  not in ('fltlhsr001', 'fltpasr001', 'flalssr003') and
+       sitefile.country_cd != 'CN'
     order by ndcbh.organization_id;
 
 commit;

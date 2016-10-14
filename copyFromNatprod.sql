@@ -78,12 +78,13 @@ select cit_meth_id,
   from natdb.cit_meth@natdb.er.usgs.gov;
 commit;
 
-prompt country
+prompt country - STORET still has CN as Canada, all but a few NWIS sites have been migrated, and we never expect data for China, so do not include any CN in NWIS data
 truncate table country;
 insert /*+ append parallel(4) */ into country
 select trim(country_cd),
        trim(country_nm)
-  from natdb.country@natdb.er.usgs.gov;
+  from natdb.country@natdb.er.usgs.gov
+ where trim(country_cd) != 'CN';
 commit;
 
 prompt county
