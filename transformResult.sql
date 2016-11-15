@@ -9,198 +9,6 @@ select 'transform result start time: ' || systimestamp from dual;
 prompt dropping nwis result indexes
 exec etl_helper_result.drop_indexes('nwis');
 
-prompt building nwis_sample 
-
-begin
-  execute immediate 'drop table nwis_sample cascade constraints purge';
-exception
-  when others then
-    if sqlcode != -00942 then
-      raise;
-    end if;
-end;
-/
-
-create table nwis_sample compress pctfree 0 nologging as
-select /*+ parallel(4) */
-       samp.sample_id,
-       s.station_id,
-       s.site_id,
-       trunc(samp.sample_start_dt) event_date,
-       samp.nwis_host || '.' || samp.qw_db_no || '.' || samp.record_no activity,
-       nwis_wqx_medium_cd.wqx_act_med_nm sample_media,
-       s.organization,
-       s.site_type,
-       s.huc,
-       s.governmental_unit_code,
-       s.organization_name,
-       case 
-         when samp.samp_type_cd = 'A' then 'Not determined'
-         when samp.samp_type_cd = 'B' then 'Quality Control Sample-Other'
-         when samp.samp_type_cd = 'H' then 'Sample-Composite Without Parents'
-         when samp.samp_type_cd = '1' then 'Quality Control Sample-Field Spike'
-         when samp.samp_type_cd = '2' then 'Quality Control Sample-Field Blank'
-         when samp.samp_type_cd = '3' then 'Quality Control Sample-Reference Sample'
-         when samp.samp_type_cd = '4' then 'Quality Control Sample-Blind'
-         when samp.samp_type_cd = '5' then 'Quality Control Sample-Field Replicate'
-         when samp.samp_type_cd = '6' then 'Quality Control Sample-Reference Material'
-         when samp.samp_type_cd = '7' then 'Quality Control Sample-Field Replicate'
-         when samp.samp_type_cd = '8' then 'Quality Control Sample-Spike Solution'
-         when samp.samp_type_cd = '9' then 'Sample-Routine'
-         else 'Unknown'
-       end activity_type_code,
-       nwis_wqx_medium_cd.wqx_act_med_sub activity_media_subdiv_name,
-       case 
-         when samp.sample_start_sg in ('m', 'h') then to_char(samp.sample_start_dt, 'hh24:mi:ss')
-         else null
-       end activity_start_time,
-       case
-         when samp.sample_start_dt is not null and samp.sample_start_sg in ('h','m') then samp.sample_start_time_datum_cd
-         else null
-       end act_start_time_zone,
-       case
-         when samp.sample_end_sg in ('m', 'h', 'D') then substr(samp.sample_end_dt, 1, 10)
-         when samp.sample_end_sg = 'M' then substr(samp.sample_end_dt, 1, 7)
-         when samp.sample_end_sg = 'Y' then substr(samp.sample_end_dt, 1, 4)
-         else null
-       end activity_stop_date,
-       case when samp.sample_end_sg in ('m', 'h') then substr(samp.sample_end_dt,12) else null end activity_stop_time,
-       case 
-         when samp.sample_end_dt is not null and samp.sample_end_sg in ('h', 'm') then samp.sample_start_time_datum_cd
-         else null
-       end act_stop_time_zone,
-       coalesce(parameter.V00003, parameter.V00098, parameter.V78890, parameter.V78891) activity_depth,
-       case
-         when parameter.V00003 is not null then 'feet'
-         when parameter.V00098 is not null then 'meters'
-         when parameter.V78890 is not null then 'feet'
-         when parameter.V78891 is not null then 'meters'
-         else null
-       end activity_depth_unit,
-       case
-         when parameter.V00003 is not null or
-              parameter.V00098 is not null
-           then null
-         when parameter.V78890 is not null or 
-              parameter.V78891 is not null
-           then 'Below mean sea level'
-         when parameter.V72015 is not null
-           then 'Below land-surface datum'
-         when parameter.V82047 is not null
-           then null
-         when parameter.V72016 is not null
-           then 'Below land-surface datum'
-         when parameter.V82048 is not null
-           then null
-         else null
-       end activity_depth_ref_point,
-       coalesce(parameter.V72015, parameter.V82047) activity_upper_depth,
-       nvl2(coalesce(parameter.V72015, parameter.V82047),
-            case
-              when parameter.V72015 is not null then 'feet'
-              when parameter.V82047 is not null then 'meters'
-              when parameter.V72016 is not null then 'feet'
-              when parameter.V82048 is not null then 'meters'
-              else null
-            end,
-            null) activity_upper_depth_unit,
-       case
-         when parameter.V72015 is not null then parameter.V72016
-         when parameter.V82047 is not null then parameter.V82048
-         when parameter.V72016 is not null then parameter.V72016
-         when parameter.V82048 is not null then parameter.V82048
-         else null
-       end activity_lower_depth,
-       nvl2(case
-              when parameter.V72015 is not null then parameter.V72016
-              when parameter.V82047 is not null then parameter.V82048
-              when parameter.V72016 is not null then parameter.V72016
-              when parameter.V82048 is not null then parameter.V82048
-              else null
-            end,
-            case
-              when parameter.V72015 is not null then 'feet'
-              when parameter.V82047 is not null then 'meters'
-              when parameter.V72016 is not null then 'feet'
-              when parameter.V82048 is not null then 'meters'
-              else null
-            end,
-            null) activity_lower_depth_unit,
-       nwis_ws_star.etl_helper.determine_project_id(nawqa_sites.site_no,
-                                                    parameter.v50280,
-                                                    parameter.v71999,
-                                                    samp.sample_start_dt,
-                                                    samp.project_cd) project_id,
-       coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) activity_conducting_org,
-       trim(samp.sample_lab_cm_tx) activity_comment,
-       aqfr.aqfr_nm sample_aqfr_name,
-       hyd_cond_cd.hyd_cond_nm hydrologic_condition_name,
-       hyd_event_cd.hyd_event_nm hydrologic_event_name,
-       case
-         when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-           then parameter.V82398
-         else 'USGS'
-       end sample_collect_method_id,
-       case
-         when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-           then cast('USGS parameter code 82398' as varchar2(25))
-         else 'USGS'
-       end sample_collect_method_ctx,
-       case
-         when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-           then parameter.v82398_fxd_tx
-         else 'USGS'
-       end sample_collect_method_name,
-       case
-         when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-           then parameter.v84164_fxd_tx
-         else 'Unknown'
-       end sample_collect_equip_name,
-       tu.tu_1_nm ||
-         case when tu.tu_2_cd is not null then ' ' || tu.tu_2_cd end ||
-         case when tu.tu_2_nm is not null then ' ' || tu.tu_2_nm end ||
-         case when tu.tu_3_cd is not null then ' ' || tu.tu_3_cd end ||
-         case when tu.tu_3_nm is not null then ' ' || tu.tu_3_nm end ||
-         case when tu.tu_4_cd is not null then ' ' || tu.tu_4_cd end ||
-         case when tu.tu_4_nm is not null then ' ' || tu.tu_4_nm end
-           sample_tissue_taxonomic_name,
-       body_part.body_part_nm
-  from nwis_ws_star.qw_sample samp
-       join nwis_ws_star.sitefile site
-         on samp.site_id = site.site_id
-       join station_swap_nwis s
-         on site.site_id = s.station_id
-       left join nwis_ws_star.tu
-         on to_number(samp.tu_id) = tu.tu_id
-       left join nwis_ws_star.nwis_wqx_medium_cd
-         on samp.medium_cd = nwis_wqx_medium_cd.nwis_medium_cd
-       left join nwis_ws_star.body_part
-         on samp.body_part_id = body_part.body_part_id
-       left join nwis_ws_star.proto_org proto_org2
-         on samp.coll_ent_cd = proto_org2.proto_org_cd
-       left join nwis_ws_star.hyd_event_cd
-         on samp.hyd_event_cd = hyd_event_cd.hyd_event_cd
-       left join nwis_ws_star.hyd_cond_cd
-         on samp.hyd_cond_cd = hyd_cond_cd.hyd_cond_cd
-       join nwis_ws_star.nwis_district_cds_by_host dist
-         on site.district_cd = dist.district_cd and
-            site.nwis_host = dist.host_name
-       left join nwis_ws_star.aqfr
-         on samp.aqfr_cd = aqfr.aqfr_cd and
-            site.state_cd = aqfr.state_cd
-       left join nwis_ws_star.sample_parameter parameter
-         on samp.sample_id = parameter.sample_id
-       left join nwis_ws_star.nawqa_sites
-         on site.site_no = nawqa_sites.site_no and
-            site.agency_cd = nawqa_sites.agency_cd
- where samp.sample_web_cd = 'Y' and
-       samp.qw_db_no = '01' and
-       site.dec_lat_va <> 0 and
-       site.dec_long_va <> 0 and
-       site.db_no = '01' and
-       site.site_web_cd = 'Y' and
-       site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP');
-
 prompt populating nwis result
 truncate table result_swap_nwis;
 
@@ -220,46 +28,46 @@ insert /*+ append parallel(4) */
                          analytical_method_citation, lab_name, analysis_start_date, lab_remark, detection_limit, detection_limit_unit,
                          detection_limit_desc, analysis_prep_date_tx)
 select /*+ parallel(4) */
-       2 data_source_id,
-       'NWIS' data_source,
-       nwis_sample.station_id,
-       nwis_sample.site_id,
-       nwis_sample.event_date,
+       activity_swap_nwis.data_source_id,
+       activity_swap_nwis.data_source,
+       activity_swap_nwis.station_id,
+       activity_swap_nwis.site_id,
+       activity_swap_nwis.event_date,
        nemi.nemi_url analytical_method,
        r.parameter_cd p_code,
-       nwis_sample.activity,
+       activity_swap_nwis.activity,
        parm.srsname characteristic_name,
        parm.parm_seq_grp_nm characteristic_type,
-       nwis_sample.sample_media,
-       nwis_sample.organization,
-       nwis_sample.site_type,
-       nwis_sample.huc,
-       nwis_sample.governmental_unit_code,
-       nwis_sample.organization_name,
-       nwis_sample.activity_type_code,
-       nwis_sample.activity_media_subdiv_name,
-       nwis_sample.activity_start_time,
-       nwis_sample.act_start_time_zone,
-       nwis_sample.activity_stop_date,
-       nwis_sample.activity_stop_time,
-       nwis_sample.act_stop_time_zone,
-       nwis_sample.activity_depth,
-       nwis_sample.activity_depth_unit,
-       nwis_sample.activity_depth_ref_point,
-       nwis_sample.activity_upper_depth,
-       nwis_sample.activity_upper_depth_unit,
-       nwis_sample.activity_lower_depth,
-       nwis_sample.activity_lower_depth_unit,
-       nwis_sample.project_id,
-       nwis_sample.activity_conducting_org,
-       nwis_sample.activity_comment,
-       nwis_sample.sample_aqfr_name,
-       nwis_sample.hydrologic_condition_name,
-       nwis_sample.hydrologic_event_name,
-       nwis_sample.sample_collect_method_id,
-       nwis_sample.sample_collect_method_ctx,
-       nwis_sample.sample_collect_method_name,
-       nwis_sample.sample_collect_equip_name,
+       activity_swap_nwis.sample_media,
+       activity_swap_nwis.organization,
+       activity_swap_nwis.site_type,
+       activity_swap_nwis.huc,
+       activity_swap_nwis.governmental_unit_code,
+       activity_swap_nwis.organization_name,
+       activity_swap_nwis.activity_type_code,
+       activity_swap_nwis.activity_media_subdiv_name,
+       activity_swap_nwis.activity_start_time,
+       activity_swap_nwis.act_start_time_zone,
+       activity_swap_nwis.activity_stop_date,
+       activity_swap_nwis.activity_stop_time,
+       activity_swap_nwis.act_stop_time_zone,
+       activity_swap_nwis.activity_depth,
+       activity_swap_nwis.activity_depth_unit,
+       activity_swap_nwis.activity_depth_ref_point,
+       activity_swap_nwis.activity_upper_depth,
+       activity_swap_nwis.activity_upper_depth_unit,
+       activity_swap_nwis.activity_lower_depth,
+       activity_swap_nwis.activity_lower_depth_unit,
+       activity_swap_nwis.project_id,
+       activity_swap_nwis.activity_conducting_org,
+       activity_swap_nwis.activity_comment,
+       activity_swap_nwis.sample_aqfr_name,
+       activity_swap_nwis.hydrologic_condition_name,
+       activity_swap_nwis.hydrologic_event_name,
+       activity_swap_nwis.sample_collect_method_id,
+       activity_swap_nwis.sample_collect_method_ctx,
+       activity_swap_nwis.sample_collect_method_name,
+       activity_swap_nwis.sample_collect_equip_name,
        rownum result_id,
        case
          when r.remark_cd = 'U' then 'Not Detected'
@@ -309,15 +117,19 @@ select /*+ parallel(4) */
        parm.parm_size_tx particle_size,
        r.lab_std_va precision,
        trim(r.result_lab_cm_tx) result_comment,
-       case
-         when parm.PARM_MEDIUM_TX = 'Biological Tissue'
-           then nwis_sample.sample_tissue_taxonomic_name
-         else null
-       end sample_tissue_taxonomic_name,
-       case
-         when parm.parm_medium_tx = 'Biological Tissue' then nwis_sample.body_part_nm
-         else null
-       end sample_tissue_anatomy_name,
+--  NO field in new activity table
+--       case
+--         when parm.PARM_MEDIUM_TX = 'Biological Tissue'
+--           then activity_swap_nwis.sample_tissue_taxonomic_name
+--         else null
+--       end sample_tissue_taxonomic_name,
+       null sample_tissue_taxonomic_name,
+--  NO field in new activity table
+--       case
+--         when parm.parm_medium_tx = 'Biological Tissue' then activity_swap_nwis.body_part_nm
+--         else null
+--       end sample_tissue_anatomy_name,
+       null sample_tissue_anatomy_name,
        r.meth_cd analytical_procedure_id,
        case
          when r.meth_cd is not null then 'USGS'
@@ -389,8 +201,8 @@ select /*+ parallel(4) */
          else null
        end analysis_prep_date_tx 
   from nwis_ws_star.qw_result r
-       join nwis_sample
-         on r.sample_id = nwis_sample.sample_id
+       join activity_swap_nwis
+         on r.sample_id = activity_swap_nwis.sample_id
        join nwis_ws_star.parm
          on r.parameter_cd = parm.parm_cd
        left join nwis_ws_star.fxd
@@ -422,7 +234,7 @@ select /*+ parallel(4) */
        (r.result_va is not null or
         r.rpt_lev_va is not null or
         r.remark_cd is not null)
-    order by nwis_sample.station_id;
+    order by activity_swap_nwis.station_id;
 
 commit;
 
