@@ -6,10 +6,12 @@ whenever sqlerror exit failure rollback;
 whenever oserror exit failure rollback;
 select 'transform activity start time: ' || systimestamp from dual;
 
-set define off;
-
 prompt building activity_swap_nwis 
 
+prompt dropping biodata activity indexes
+exec etl_helper_activity.drop_indexes('nwis');
+
+set define off;
 truncate table activity_swap_nwis;
 insert /*+ append parallel(4) */
   into activity_swap_nwis (data_source_id, data_source, station_id, site_id, event_date, activity, sample_media,
@@ -244,5 +246,8 @@ select 2 data_source_id,
        site.db_no = '01' and
        site.site_web_cd = 'Y' and
        site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP');
+
+prompt building nwis activity indexes
+exec etl_helper_activity.create_indexes('nwis');
 
 select 'transform activity end time: ' || systimestamp from dual;
