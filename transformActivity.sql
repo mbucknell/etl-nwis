@@ -8,7 +8,7 @@ select 'transform activity start time: ' || systimestamp from dual;
 
 prompt building activity_swap_nwis 
 
-prompt dropping biodata activity indexes
+prompt dropping nwis activity indexes
 exec etl_helper_activity.drop_indexes('nwis');
 
 set define off;
