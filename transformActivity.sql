@@ -200,7 +200,7 @@ select 2 data_source_id,
            then parameter.v84164_fxd_tx
          else 'Unknown'
        end sample_collect_equip_name,
-       null act_sam_collect_equip_comments
+       null act_sam_collect_equip_comments,
        null act_sam_prep_meth_id,
        null act_sam_prep_meth_context,
        null act_sam_prep_meth_name,
