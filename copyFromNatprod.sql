@@ -267,9 +267,9 @@ select trim(parm.parm_cd),
        join (select *
                from (select parm_cd, parm_alias_cd, parm_alias_nm
                        from natdb.parm_alias@natdb.er.usgs.gov
-                      where parm_alias_cd in ('SRSNAME', 'SRSID', 'CASRN'))
+                      where parm_alias_cd in ('WQPCROSSWALK', 'SRSID', 'CASRN'))
                      pivot (max(parm_alias_nm)
-                            for parm_alias_cd in ('SRSNAME' srsname, 'SRSID' srsid, 'CASRN' casrn))
+                            for parm_alias_cd in ('WQPCROSSWALK' srsname, 'SRSID' srsid, 'CASRN' casrn))
                where srsname is not null) parm_alias
          on trim(parm.parm_cd) = trim(parm_alias.parm_cd)
        left join parm_meth
