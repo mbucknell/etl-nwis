@@ -51,7 +51,7 @@ begin
           from nwis_ws_star.parm
                join nwis_ws_star.parm_alias
                  on parm.parm_cd = parm_alias.parm_cd and
-                    'SRSNAME' = parm_alias.parm_alias_cd
+                    'WQPCROSSWALK' = parm_alias.parm_alias_cd
          where parm_public_fg = 'Y'
            order by 1!';
 
