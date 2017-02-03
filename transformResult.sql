@@ -118,19 +118,22 @@ select /*+ parallel(4) */
        parm.parm_size_tx particle_size,
        r.lab_std_va precision,
        trim(r.result_lab_cm_tx) result_comment,
---  NO field in new activity table
---       case
---         when parm.PARM_MEDIUM_TX = 'Biological Tissue'
---           then activity_swap_nwis.sample_tissue_taxonomic_name
---         else null
---       end sample_tissue_taxonomic_name,
-       null sample_tissue_taxonomic_name,
---  NO field in new activity table
---       case
---         when parm.parm_medium_tx = 'Biological Tissue' then activity_swap_nwis.body_part_nm
---         else null
---       end sample_tissue_anatomy_name,
-       null sample_tissue_anatomy_name,
+       case
+         when parm.parm_medium_tx = 'Biological Tissue'
+           then tu.tu_1_nm ||
+                case when tu.tu_2_cd is not null then ' ' || tu.tu_2_cd end ||
+                case when tu.tu_2_nm is not null then ' ' || tu.tu_2_nm end ||
+                case when tu.tu_3_cd is not null then ' ' || tu.tu_3_cd end ||
+                case when tu.tu_3_nm is not null then ' ' || tu.tu_3_nm end ||
+                case when tu.tu_4_cd is not null then ' ' || tu.tu_4_cd end ||
+                case when tu.tu_4_nm is not null then ' ' || tu.tu_4_nm end
+         else null
+       end sample_tissue_taxonomic_name,
+       case
+         when parm.parm_medium_tx = 'Biological Tissue'
+           then body_part_nm
+         else null
+       end sample_tissue_anatomy_name,
        r.meth_cd analytical_procedure_id,
        case
          when r.meth_cd is not null then 'USGS'
@@ -231,11 +234,13 @@ select /*+ parallel(4) */
        left join nwis_ws_star.wqp_nemi_nwis_crosswalk nemi
          on nvl2(r.meth_cd, 'USGS', null) = nemi.analytical_procedure_source and
             trim(r.meth_cd) = nemi.analytical_procedure_id
- where r.result_web_cd = 'Y' and
-       (r.result_va is not null or
-        r.rpt_lev_va is not null or
-        r.remark_cd is not null)
-    order by activity_swap_nwis.station_id;
+       left join nwis_ws_star.qw_sample
+         on r.sample_id = qw_sample.sample_id and
+            parm.parm_medium_tx = 'Biological Tissue'
+       left join nwis_ws_star.tu
+         on to_number(qw_sample.tu_id) = tu.tu_id
+       left join nwis_ws_star.body_part
+         on qw_sample.body_part_id = body_part.body_part_id
 
 commit;
 
