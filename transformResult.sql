@@ -240,7 +240,11 @@ select /*+ parallel(4) */
             trim(r.meth_cd) = nemi.analytical_procedure_id
        left join nwis_ws_star.qw_sample
          on r.sample_id = qw_sample.sample_id and
-            parm.parm_medium_tx = 'Biological Tissue';
+            parm.parm_medium_tx = 'Biological Tissue'
+ where r.result_web_cd = 'Y' and
+       (r.result_va is not null or
+        r.rpt_lev_va is not null or
+        r.remark_cd is not null);
 
 commit;
 
