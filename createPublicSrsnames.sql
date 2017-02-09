@@ -49,9 +49,14 @@ begin
                      else parm_alias.parm_alias_rev_dt
                    end) over () max_last_rev_dt
           from nwis_ws_star.parm
-               join nwis_ws_star.parm_alias
-                 on parm.parm_cd = parm_alias.parm_cd and
-                    'WQPCROSSWALK' = parm_alias.parm_alias_cd
+               join (select parm_cd, nvl(wqpcrosswalk_nm, srsname_nm) parm_alias_nm, nvl(wqpcrosswalk_dt, srsname_dt) parm_alias_rev_dt
+                       from (select parm_cd, parm_alias_cd, parm_alias_nm, parm_alias_rev_dt
+                               from nwis_ws_star.parm_alias
+                              where parm_alias_cd in ('WQPCROSSWALK', 'SRSNAME'))
+                              pivot (max(parm_alias_nm) as nm, max(parm_alias_rev_dt) as dt
+                                for parm_alias_cd in ('WQPCROSSWALK' wqpcrosswalk, 'SRSNAME' srsname))
+                      where nvl(wqpcrosswalk_nm, srsname_nm) is not null) parm_alias
+                 on parm.parm_cd = parm_alias.parm_cd
          where parm_public_fg = 'Y'
            order by 1!';
 

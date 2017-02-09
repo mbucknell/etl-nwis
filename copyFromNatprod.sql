@@ -257,9 +257,8 @@ select trim(parm.parm_cd),
        trim(parm.parm_rev_dt),
        trim(parm.parm_rev_nm),
        parm_seq_grp_cd.parm_seq_grp_nm,
+       parm_alias.wqpcrosswalk,
        parm_alias.srsname,
-       parm_alias.srsid,
-       parm_alias.casrn,
        parm_meth.multiplier
   from natdb.parm@natdb.er.usgs.gov
        left join natdb.parm_seq_grp_cd@natdb.er.usgs.gov
@@ -267,10 +266,10 @@ select trim(parm.parm_cd),
        join (select *
                from (select parm_cd, parm_alias_cd, parm_alias_nm
                        from natdb.parm_alias@natdb.er.usgs.gov
-                      where parm_alias_cd in ('WQPCROSSWALK', 'SRSID', 'CASRN'))
+                      where parm_alias_cd in ('WQPCROSSWALK', 'SRSNAME'))
                      pivot (max(parm_alias_nm)
-                            for parm_alias_cd in ('WQPCROSSWALK' srsname, 'SRSID' srsid, 'CASRN' casrn))
-               where srsname is not null) parm_alias
+                            for parm_alias_cd in ('WQPCROSSWALK' wqpcrosswalk, 'SRSNAME' srsname))
+               where nvl(wqpcrosswalk, srsname) is not null) parm_alias
          on trim(parm.parm_cd) = trim(parm_alias.parm_cd)
        left join parm_meth
          on trim(parm.parm_cd) = parm_meth.parm_cd and
