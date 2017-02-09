@@ -36,7 +36,7 @@ select /*+ parallel(4) */
        nemi.nemi_url analytical_method,
        r.parameter_cd p_code,
        activity_swap_nwis.activity,
-       parm.srsname characteristic_name,
+       nvl(parm.wqpcrosswalk, parm.srsname) characteristic_name,
        parm.parm_seq_grp_nm characteristic_type,
        activity_swap_nwis.sample_media,
        activity_swap_nwis.organization,
