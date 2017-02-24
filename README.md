@@ -5,6 +5,7 @@ ETL Water Quality Data from the NWIS System
 These scripts are run by the OWI Jenkins Job Runners. The job name is WQP\_nwis\_ETL. They follow the general OWI ETL pattern using ant to control the execution of PL/SQL scripts.
 
 The basic flow is:
+
 * Copy the mysql extract and oracle load scripts to the mysql server.
 
 * Make sure they have the correct end-of-line characters.
