@@ -31,6 +31,8 @@ The basic flow is:
 
 * Drop the indexes on the nwis result swap table, populate with transformed data, and rebuild the indexes. (transformResult.sql)
 
+* Drop the indexes on the nwis r\_detect\_qnt\_int swap table, populate with transformed data, and rebuild the indexes. (transformResDetectQntLmt.sql)
+
 * Drop the indexes on the nwis summary swap tables, populate with transformed data, and rebuild the indexes. (createSummaries.sql)
 
 * Drop the indexes on the nwis code lookup swap tables, populate with transformed data, and rebuild the indexes. (createCodes.sql)
