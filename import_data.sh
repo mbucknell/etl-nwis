@@ -32,11 +32,8 @@ EOT
 time sqlldr userid=NWIS_WS_STAR@${instance} control=SITEFILE.ctl  data=$DIR/SITEFILE.out direct=true skip=1 << EOT
 $nwis_ws_star_pass
 EOT
-time sqlldr userid=NWIS_WS_STAR@${instance} control=SERIES_CATALOG.ctl  data=$DIR/SERIES_CATALOG.out direct=true skip=1 << EOT
-$nwis_ws_star_pass
-EOT
 
-if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad -o -f SERIES_CATALOG.bad ] ; then
+if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad ] ; then
    echo ".bad files found - exit"
    ( echo "nad load has failed. .bad files found:"
      echo
@@ -45,8 +42,8 @@ if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad -o -f SERIES_CATALO
    exit 1
 fi
 
-success=`grep "successfully loaded" QW_RESULT.log QW_SAMPLE.log SITEFILE.log SERIES_CATALOG.log | wc -l`
-if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad -o -f SERIES_CATALOG.bad ] ; then
+success=`grep "successfully loaded" QW_RESULT.log QW_SAMPLE.log SITEFILE.log | wc -l`
+if [ -f QW_RESULT.bad -o -f QW_SAMPLE.bad -o -f SITEFILE.bad ] ; then
    echo ".bad files found - exit"
    ( echo "nad load has failed. .bad files found:"
      echo

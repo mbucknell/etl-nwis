@@ -6,18 +6,6 @@ whenever sqlerror exit failure rollback;
 whenever oserror exit failure rollback;
 select 'copy from natprod start time: ' || systimestamp from dual;
 
-prompt altitude_datum
-truncate table altitude_datum;
-insert /*+ append parallel(4) */ into altitude_datum
-select trim(gw_ref_cd),
-       trim(gw_ref_nm),
-       gw_sort_nu,
-       trim(gw_ref_ds),
-       trim(gw_valid_fg)
-  from natdb.gw_reflist@natdb.er.usgs.gov
- where gw_ed_tbl_nm = 'saltdm';
-commit;
-
 prompt altitude_method
 truncate table altitude_method;
 insert /*+ append parallel(4) */ into altitude_method
