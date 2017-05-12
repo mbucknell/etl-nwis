@@ -21,7 +21,6 @@ while [ $tries -lt 6 ] ; do
    time mysql --quick nwisweb --user=nwis_user --password=${password} < QW_RESULT.sql      | sed 's/\\\\/\//' > $DIR/QW_RESULT.out
    time mysql --quick nwisweb --user=nwis_user --password=${password} < QW_SAMPLE.sql      | sed 's/\\\\/\//' > $DIR/QW_SAMPLE.out
    time mysql --quick nwisweb --user=nwis_user --password=${password} < SITEFILE.sql       | sed 's/\\\\/\//' | sed  's/'`echo -e "\\0342\\0200\\0231"`'/'`echo -e "\\047"`'/g' > $DIR/SITEFILE.out
-   time mysql --quick nwisweb --user=nwis_user --password=${password} < SERIES_CATALOG.sql | sed 's/\\\\/\//' > $DIR/SERIES_CATALOG.out
    time mysql --quick nwisweb --user=nwis_user --password=${password} < capture_counts.sql | grep -v "count(" > capture2.txt
    
    diffs=`diff capture1.txt capture2.txt | wc -l`
@@ -38,16 +37,12 @@ while [ $tries -lt 6 ] ; do
    res3a=`expr $res3 - 1`
    res3b=`head -3 capture1.txt | tail -1`
 
-   res4=`wc -l $DIR/SERIES_CATALOG.out | awk '{print $1}'`
-   res4a=`expr $res4 - 1`
-   res4b=`tail -1 capture1.txt`
-
-   if [ $diffs -eq 0 -a $res1a -eq $res1b -a $res2a -eq $res2b -a $res3a -eq $res3b -a $res4a -eq $res4b ] ; then
+   if [ $diffs -eq 0 -a $res1a -eq $res1b -a $res2a -eq $res2b -a $res3a -eq $res3b ] ; then
       break;
    else
       echo diffs found `date`
       diff capture1.txt capture2.txt || [ $? -le 2 ]
-      echo $res1a $res1b $res2a $res2b $res3a $res3b $res4a $res4b
+      echo $res1a $res1b $res2a $res2b $res3a $res3b
    fi
 
    if [ $tries -ge 5 ] ; then
@@ -61,7 +56,7 @@ while [ $tries -lt 6 ] ; do
         echo after:
         echo 
         cat capture2.txt
-        echo "verifications: "$res1a" "$res1b" "$res2a" "$res2b" "$res3a" "$res3b" "$res4a" "$res4b ) | 
+        echo "verifications: "$res1a" "$res1b" "$res2a" "$res2b" "$res3a" "$res3b" ) | 
       mail -s "nad load failed in extract" $failure_notify
       exit 1
    fi
