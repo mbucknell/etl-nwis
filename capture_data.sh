@@ -56,7 +56,7 @@ while [ $tries -lt 6 ] ; do
         echo after:
         echo 
         cat capture2.txt
-        echo "verifications: "$res1a" "$res1b" "$res2a" "$res2b" "$res3a" "$res3b" ) | 
+        echo "verifications: "$res1a" "$res1b" "$res2a" "$res2b" "$res3a" "$res3b ) | 
       mail -s "nad load failed in extract" $failure_notify
       exit 1
    fi
