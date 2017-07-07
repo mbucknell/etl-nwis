@@ -63,7 +63,7 @@ begin
           execute immediate 'grant select on public_srsnames' || suffix || ' to wqp_user';
 
           dbms_output.put_line('analyze public_srsnames...');
-          dbms_stats.gather_table_stats('WQP_CORE', 'PUBLIC_SRSNAMES' || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
+          dbms_stats.gather_table_stats(user, 'PUBLIC_SRSNAMES' || suffix, null, 10, false, 'FOR ALL COLUMNS SIZE AUTO', 1, 'ALL', true);
 
         select count(*) into old_rows from public_srsnames;
           query := 'select count(*) from public_srsnames' || suffix;

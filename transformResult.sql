@@ -23,7 +23,7 @@ insert /*+ append parallel(4) */
                          sample_collect_method_id, sample_collect_method_ctx, sample_collect_method_name, sample_collect_equip_name,
                          result_id, result_detection_condition_tx, sample_fraction_type, result_measure_value, result_unit,
                          result_value_status, statistic_type, result_value_type, weight_basis_type, duration_basis,
-                         temperature_basis_level, particle_size, precision, result_comment,  sample_tissue_taxonomic_name,
+                         temperature_basis_level, particle_size, precision, result_comment, sample_tissue_taxonomic_name,
                          sample_tissue_anatomy_name, analytical_procedure_id, analytical_procedure_source, analytical_method_name,
                          analytical_method_citation, lab_name, analysis_start_date, lab_remark, detection_limit, detection_limit_unit,
                          detection_limit_desc, analysis_prep_date_tx)
