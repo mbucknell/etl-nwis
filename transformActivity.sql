@@ -34,7 +34,7 @@ insert /*+ append parallel(4) */
                            act_sam_prep_meth_id, act_sam_prep_meth_context, act_sam_prep_meth_name,
                            act_sam_prep_meth_qual_type, act_sam_prep_meth_desc, sample_container_type,
                            sample_container_color, act_sam_chemical_preservative, thermal_preservative_name,
-                           act_sam_transport_storage_desc)
+                           act_sam_transport_storage_desc, result_count)
 select 2 data_source_id,
        'NWIS' data_source,
        s.station_id,
