@@ -209,8 +209,6 @@ select /*+ parallel(4) */
          else null
        end analysis_prep_date_tx 
   from nwis_ws_star.qw_result r
-       join nwis_ws_star.qw_result
-         on r.sample_id = samp.sample_id
        join activity_swap_nwis
          on r.sample_id = activity_swap_nwis.activity_id
        join nwis_ws_star.parm
