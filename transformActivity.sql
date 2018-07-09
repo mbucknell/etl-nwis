@@ -34,7 +34,7 @@ insert /*+ append parallel(4) */
                            act_sam_prep_meth_id, act_sam_prep_meth_context, act_sam_prep_meth_name,
                            act_sam_prep_meth_qual_type, act_sam_prep_meth_desc, sample_container_type,
                            sample_container_color, act_sam_chemical_preservative, thermal_preservative_name,
-                           act_sam_transport_storage_desc, result_count)
+                           act_sam_transport_storage_desc)
 select 2 data_source_id,
        'NWIS' data_source,
        s.station_id,
@@ -211,7 +211,6 @@ select 2 data_source_id,
        null act_sam_chemical_preservative,
        null thermal_preservative_name,
        null act_sam_transport_storage_desc
-       (select count(*) from nwis_ws_star.qw_result where qw_result.sample_id = samp.sample_id) result_count
   from nwis_ws_star.qw_sample samp
        join nwis_ws_star.sitefile site
          on samp.site_id = site.site_id
