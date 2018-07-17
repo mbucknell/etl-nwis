@@ -60,22 +60,3 @@ select DISTINCT /* parallel(4) */
   from nwis_ws_star.nwis_district_cds_by_host
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
