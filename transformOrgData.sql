@@ -15,7 +15,7 @@ set define off;
 prompt populating org_data_swap_nwis
 truncate table org_data_swap_nwis;
 insert /*+ append parallel(4) */
-  into org_data_swap_nwis (data_source_id, data_source,organization, organization_name)
+  into org_data_swap_nwis (data_source_id, data_source, organization, organization_name)
 select DISTINCT /* parallel(4) */
        2 data_source_id,
 	   'NWIS' data_source,
