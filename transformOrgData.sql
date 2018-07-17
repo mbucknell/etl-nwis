@@ -15,14 +15,7 @@ set define off;
 prompt populating org_data_swap_nwis
 truncate table org_swap_nwis;
 insert /*+ append parallel(4) */
-  into org_data_swap_nwis (data_source_id, data_source, organization_id, organization, organization_name,
-                             organization_description, organization_type, tribal_code, electronic_address, telephonic, address_type_1,
-                             address_text_1, supplemental_address_text_1, locality_name_1, postal_code_1,
-                             country_code_1, state_code_1, county_code_1, address_type_2, address_text_2,
-                             supplemental_address_text_2, locality_name_2, postal_code_2, country_code_2,
-                             state_code_2, county_code_2, address_type_3, address_text_3,
-                             supplemental_address_text_3, locality_name_3, postal_code_3, country_code_3,
-                             state_code_3, county_code_3)
+  into org_data_swap_nwis (data_source_id, data_source,organization, organization_name)
 select DISTINCT /* parallel(4) */
        2 data_source_id,
 	   'NWIS' data_source,
