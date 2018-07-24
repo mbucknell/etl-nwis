@@ -22,3 +22,8 @@ select DISTINCT /* parallel(4) */
 	   cast('USGS-' || state_postal_cd as varchar2(7)) organization,
        'USGS ' || state_name || ' Water Science Center' organization_name
   from nwis_ws_star.nwis_district_cds_by_host
+  
+prompt building nwis orgData indexes
+exec etl_helper_org_data.create_indexes('nwis');
+
+select 'transform orgData end time: ' || systimestamp from dual;
