@@ -43,12 +43,12 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		JobParameters parameters = new JobParametersBuilder(jobExplorer)
-				.addDate(JOB_ID, new Date(), true)
-				.addString("wqpDataSource", DATA_SOURCE)
-				.addString("schemaName", "wqp") // TODO: Should come from command line?
-				.toJobParameters();
-		jobLauncher.run(nwisEtl, parameters);
+//		JobParameters parameters = new JobParametersBuilder(jobExplorer)
+//				.addDate(JOB_ID, new Date(), true)
+//				.addString("wqpDataSource", DATA_SOURCE)
+//				.addString("schemaName", "wqp") // TODO: Should come from command line?
+//				.toJobParameters();
+//		jobLauncher.run(nwisEtl, parameters);
 
 	}
 }

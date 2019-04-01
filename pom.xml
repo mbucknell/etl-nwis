@@ -69,7 +69,7 @@
             <version>1.3.0</version>
             <scope>test</scope>
         </dependency>
-        <!-- 
+         
         <dependency>
             <groupId>gov.acwi</groupId>
             <artifactId>wqp-etl-core</artifactId>
@@ -78,7 +78,6 @@
             <version>0.1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-        -->
     </dependencies>
 
 </project>

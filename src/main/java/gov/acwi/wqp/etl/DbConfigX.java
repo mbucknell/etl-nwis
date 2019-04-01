@@ -13,38 +13,38 @@ public class DbConfigX {
 
 	@Bean
 	@Primary
-	@ConfigurationProperties("app.datasource.wqp")
+	@ConfigurationProperties("spring.datasource-wqp")
 	public DataSourceProperties wqpDataSourceProperties() {
 		return new DataSourceProperties();
 	}
 	
 	@Bean
 	@Primary
-	@ConfigurationProperties("app.datasource.wqp")
+	@ConfigurationProperties("spring.datasource-wqp")
 	public DataSource wqpDataSource() {
 		return wqpDataSourceProperties().initializeDataSourceBuilder().build();
 	}
 	
 	@Bean
-	@ConfigurationProperties("app.datasource.nwis")
+	@ConfigurationProperties("spring.datasource-nwis")
 	public DataSourceProperties nwisDataSourceProperties() {
 		return new DataSourceProperties();
 	}
 	
 	@Bean
-	@ConfigurationProperties("app.datasource.nwis")
+	@ConfigurationProperties("spring.datasource-nwis")
 	public DataSource nwisDataSource() {
 		return nwisDataSourceProperties().initializeDataSourceBuilder().build();
 	}
 
 	@Bean
-	@ConfigurationProperties("app.datasource.mysqlnwis")
+	@ConfigurationProperties("spring.datasource-mysqlnwis")
 	public DataSourceProperties mysqlnwisDataSourceProperties() {
 		return new DataSourceProperties();
 	}
 	
 	@Bean
-	@ConfigurationProperties("app.datasource.mysqlnwis")
+	@ConfigurationProperties("spring.datasource-mysqlnwis")
 	public DataSource mysqlnwisDataSource() {
 		return mysqlnwisDataSourceProperties().initializeDataSourceBuilder().build();
 	}
