@@ -15,6 +15,7 @@ import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 @TestConfiguration
 public class NwisDBTestConfig {
 	
+	
 	@Autowired
 	@Qualifier("nwisDataSource")
 	private DataSource nwisDataSource;
