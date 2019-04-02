@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 public class DbConfigX {
@@ -26,6 +27,12 @@ public class DbConfigX {
 	}
 	
 	@Bean
+	@Primary
+	public JdbcTemplate jdbcTemplateWqp() {
+		return new JdbcTemplate(wqpDataSource());
+	}
+	
+	@Bean
 	@ConfigurationProperties("spring.datasource-nwis")
 	public DataSourceProperties nwisDataSourceProperties() {
 		return new DataSourceProperties();
@@ -35,6 +42,11 @@ public class DbConfigX {
 	@ConfigurationProperties("spring.datasource-nwis")
 	public DataSource nwisDataSource() {
 		return nwisDataSourceProperties().initializeDataSourceBuilder().build();
+	}
+	
+	@Bean
+	public JdbcTemplate jdbcTemplateNwis() {
+		return new JdbcTemplate(nwisDataSource());
 	}
 
 	@Bean
