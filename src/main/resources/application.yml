@@ -3,20 +3,17 @@ spring:
     job:
       enabled: false
     initialize-schema: always
-    
-app:
-  datasource:
-    wqp:
-      url: jdbc:postgresql://${WQP_CORE_HOST}:${WQP_CORE_PORT}/${WQP_CORE_DB}
-      username: ${WQP_CORE_USERNAME}
-      password: ${WQP_CORE_PASSWORD}
-      
-    nwis:
-      url: jdbc:postgresql://${NWIS_WS_STAR_HOST}:${NWIS_WS_STAR_PORT}/${NWIS_WS_STAR_DB}
-      username: ${NWIS_WS_STAR_USERNAME}
-      password: ${NWIS_WS_STAR_PASSWORD}  
-      
-    mysqlnwis:
-       url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}
-       username: ${MYSQL_USERNAME}
-       password: ${MYSQL_PASSWORD}    
+  datasource-wqp:
+    url: jdbc:postgresql://${WQP_CORE_HOST}:${WQP_CORE_PORT}/${WQP_CORE_DB}
+    username: ${WQP_CORE_USERNAME}
+    password: ${WQP_CORE_PASSWORD}
+   
+  datasource-nwis:
+    url: jdbc:postgresql://${NWIS_WS_STAR_HOST}:${NWIS_WS_STAR_PORT}/${NWIS_WS_STAR_DB}?currentSchema=${NWIS_WS_STAR_SCHEMA_NAME}
+    username: ${NWIS_WS_STAR_USERNAME}
+    password: ${NWIS_WS_STAR_PASSWORD}  
+   
+  datasource-mysqlnwis:
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}?serverTimezone=CST6CDT
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}     
