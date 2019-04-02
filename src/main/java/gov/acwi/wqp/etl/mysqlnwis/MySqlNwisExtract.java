@@ -15,10 +15,15 @@ public class MySqlNwisExtract {
 	@Qualifier("qwSampleFlow")
 	private Flow qwSampleFlow;
 	
+	@Autowired
+	@Qualifier("sitefileFlow")
+	private Flow sitefileFlow;
+	
 	@Bean
 	public Flow mySqlNwisExtractFlow() {
 		return new FlowBuilder<SimpleFlow>("mySqlNwisExtractFlow")
 				.start(qwSampleFlow)
+				.next(sitefileFlow)
 				.build();
 	}
 }
