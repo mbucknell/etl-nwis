@@ -3,6 +3,7 @@ spring:
     job:
       enabled: false
     initialize-schema: always
+  
   datasource-wqp:
     url: jdbc:postgresql://${WQP_CORE_HOST}:${WQP_CORE_PORT}/${WQP_CORE_DB}
     username: ${WQP_CORE_USERNAME}

@@ -2,12 +2,17 @@ package gov.acwi.wqp.etl;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
 public class DbConfigX {
@@ -38,7 +43,7 @@ public class DbConfigX {
 		return new DataSourceProperties();
 	}
 	
-	@Bean
+	@Bean	
 	@ConfigurationProperties("spring.datasource-nwis")
 	public DataSource nwisDataSource() {
 		return nwisDataSourceProperties().initializeDataSourceBuilder().build();
