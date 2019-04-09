@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
@@ -47,8 +48,20 @@ public class TransformMonitoringLocation {
 	@Qualifier("buildMonitoringLocationIndexesFlow")
 	private Flow buildMonitoringLocationIndexesFlow;
 	
+	@Autowired
+	@Qualifier("taskNwisStationLocalUpsert")
+	private Tasklet taskNwisStationLocalUpsert;
+	
 	@Value("classpath:sql/nwisMonitoringLocation.sql")
 	private Resource sqlResource;
+	
+	@Bean
+	public Step upsertNwisStationLocalStep() {
+		return stepBuilderFactory
+				.get("upsertNwisStationLocalStep")
+				.tasklet(taskNwisStationLocalUpsert)
+				.build();
+	}
 
 
 	@Bean
@@ -101,6 +114,7 @@ public class TransformMonitoringLocation {
 	public Flow monitoringLocationFlow() throws Exception {
 		return new FlowBuilder<SimpleFlow>("monitoringLocationFlow")
 				.start(setupMonitoringLocationSwapTableFlow)
+				.next(upsertNwisStationLocalStep())
 				.next(transformMonitoringLocationStep())
 				.next(buildMonitoringLocationIndexesFlow)
 				.build();
