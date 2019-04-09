@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<dataset>
+    <aquifer_type code="X" name="Mixed Multiple"
+        sort_order="5"
+        description="Mixed (confined and unconfined) multiple aquifers"
+        valid_flag="true"></aquifer_type>
+    <aquifer_type code="C" name="Confined Single"
+        sort_order="3" description="Confined single aquifer"
+        valid_flag="true"></aquifer_type>
+    <aquifer_type code="M" name="Conf Multiple"
+        sort_order="4" description="Confined multiple aquifers"
+        valid_flag="true"></aquifer_type>
+    <aquifer_type code="N" name="Unconf Multiple"
+        sort_order="2" description="Unconfined multiple aquifer"
+        valid_flag="true"></aquifer_type>
+    <aquifer_type code="U" name="Unconf Single"
+        sort_order="1" description="Unconfined single aquifer"
+        valid_flag="true"></aquifer_type>
+</dataset>

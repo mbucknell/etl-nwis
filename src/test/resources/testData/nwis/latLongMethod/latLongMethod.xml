@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<dataset>
+    <lat_long_method code="Z" name="GNSS4-Qual Lvl 4"
+        sort_order="14"
+        description="GNSS4 - Level 4 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="W" name="GNSS1-Qual Lvl 1"
+        sort_order="11"
+        description="GNSS1 - Level 1 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="X" name="GNSS2-Qual Lvl 2"
+        sort_order="12"
+        description="GNSS2 - Level 2 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="Y" name="GNSS3-Qual Lvl 3"
+        sort_order="13"
+        description="GNSS3 - Level 3 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="C" name="Land Net"
+        sort_order="1" description="Calculated from land net"
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="D" name="DGPS" sort_order="2"
+        description="Differentially corrected Global Positioning System."
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="U" name="Unknown"
+        sort_order="10" description="Unknown." valid_flag="true"></lat_long_method>
+    <lat_long_method code="G" name="GPS" sort_order="4"
+        description="Mapping grade GPS unit (handheld accuracy range 12 to 40 ft)"
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="L" name="Loran"
+        sort_order="5" description="Long range navigation system."
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="M" name="Map" sort_order="6"
+        description="Interpolated from MAP." valid_flag="true"></lat_long_method>
+    <lat_long_method code="N" name="Digital Map"
+        sort_order="7" description="Interpolated from Digital MAP."
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="R" name="Reported"
+        sort_order="8" description="Reported." valid_flag="true"></lat_long_method>
+    <lat_long_method code="S" name="Survey"
+        sort_order="9"
+        description="Transit, theodolite, or other surveying method."
+        valid_flag="true"></lat_long_method>
+    <lat_long_method code="F" name="SGPS" sort_order="3"
+        description="Survey-grade GPSF" valid_flag="true"></lat_long_method>
+</dataset>

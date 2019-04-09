@@ -27,6 +27,7 @@ public class NwisMonitoringLocation {
 	private String decCoordDatumCd;
 	private String altDatumCd;
 	private String altVa;
+	private String altAcyVa;
 	private String altitudeMethodDescription;
 	private String drainAreaVa;
 	private String contribDrainAreaVa;
@@ -35,7 +36,7 @@ public class NwisMonitoringLocation {
 	private String natAqfrName;
 	private String aqfrNm;
 	private String aquiferTypeDescription;
-	private String constructionDate;
+	private String constructionDt;
 	private String wellDepthVa;
 	private String holeDepthVa;
 	
@@ -165,6 +166,12 @@ public class NwisMonitoringLocation {
 	public void setAltVa(String altVa) {
 		this.altVa = altVa;
 	}
+	public String getAltAcyVa() {
+		return altAcyVa;
+	}
+	public void setAltAcyVa(String altAcyVa) {
+		this.altAcyVa = altAcyVa;
+	}
 	public String getAltitudeMethodDescription() {
 		return altitudeMethodDescription;
 	}
@@ -213,11 +220,11 @@ public class NwisMonitoringLocation {
 	public void setAquiferTypeDescription(String aquiferTypeDescription) {
 		this.aquiferTypeDescription = aquiferTypeDescription;
 	}
-	public String getConstructionDate() {
-		return constructionDate;
+	public String getConstructionDt() {
+		return constructionDt;
 	}
-	public void setConstructionDate(String constructionDate) {
-		this.constructionDate = constructionDate;
+	public void setConstructionDate(String constructionDt) {
+		this.constructionDt = constructionDt;
 	}
 	public String getWellDepthVa() {
 		return wellDepthVa;

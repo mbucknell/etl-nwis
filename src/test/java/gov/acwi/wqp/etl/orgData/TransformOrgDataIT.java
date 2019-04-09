@@ -51,7 +51,10 @@ public class TransformOrgDataIT extends NwisBaseFlowIT {
 
 	@Before
 	public void setup() {
-		testJob = jobBuilderFactory.get("orgDataFlowTest").start(orgDataFlow).build().build();
+		testJob = jobBuilderFactory
+				.get("orgDataFlowTest")
+				.start(orgDataFlow)
+				.build().build();
 		jobLauncherTestUtils.setJob(testJob);
 	}
 
