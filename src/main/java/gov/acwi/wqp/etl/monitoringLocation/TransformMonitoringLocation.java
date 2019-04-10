@@ -48,21 +48,8 @@ public class TransformMonitoringLocation {
 	@Qualifier("buildMonitoringLocationIndexesFlow")
 	private Flow buildMonitoringLocationIndexesFlow;
 	
-	@Autowired
-	@Qualifier("taskNwisStationLocalUpsert")
-	private Tasklet taskNwisStationLocalUpsert;
-	
 	@Value("classpath:sql/nwisMonitoringLocation.sql")
 	private Resource sqlResource;
-	
-	@Bean
-	public Step upsertNwisStationLocalStep() {
-		return stepBuilderFactory
-				.get("upsertNwisStationLocalStep")
-				.tasklet(taskNwisStationLocalUpsert)
-				.build();
-	}
-
 
 	@Bean
 	public JdbcCursorItemReader<NwisMonitoringLocation> monitoringLocationReader() throws Exception {
@@ -114,7 +101,6 @@ public class TransformMonitoringLocation {
 	public Flow monitoringLocationFlow() throws Exception {
 		return new FlowBuilder<SimpleFlow>("monitoringLocationFlow")
 				.start(setupMonitoringLocationSwapTableFlow)
-				.next(upsertNwisStationLocalStep())
 				.next(transformMonitoringLocationStep())
 				.next(buildMonitoringLocationIndexesFlow)
 				.build();

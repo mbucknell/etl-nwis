@@ -3,12 +3,12 @@ select sitefile.site_id site_id,
 	sitefile.site_no,
 	ndcbh.organization_id organization_id,
 	site_tp.primary_site_type primary_site_type,
-	/* nwis_station_local.calculated_huc_12*/ null calculated_huc_12,
+	nwis_station_local.calculated_huc_12 calculated_huc_12,
 	sitefile.huc_cd huc_cd,
 	sitefile.country_cd country_cd,
 	sitefile.state_cd state_cd,
 	sitefile.county_cd county_cd,
-	/*nwis_station_local.geom */ null geom,
+	nwis_station_local.geom geom,
 	sitefile.station_nm station_nm,
 	ndcbh.organization_name organization_name,
 	site_tp.station_type_name station_type_name,
@@ -32,7 +32,7 @@ select sitefile.site_id site_id,
  	sitefile.well_depth_va well_depth_va,
  	sitefile.hole_depth_va hole_depth_va
 from sitefile
-	/* Add when nwis_station_local is available join nwis_station_local on sitefile.site_id = nwis_station_local.station_id */
+	join nwis_station_local on sitefile.site_id = nwis_station_local.station_id
 	join (select'USGS-' || state_postal_cd organization_id,
                 'USGS ' || state_name || ' Water Science Center' organization_name,
                 host_name,

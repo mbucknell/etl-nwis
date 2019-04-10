@@ -82,38 +82,11 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	}
 	
 	@Test
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/empty.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sitefile/sitefile.xml")
-	@ExpectedDatabase(connection = "nwis", value="classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
-	public void insertNwisStationLocalStepTest() {
-		try {
-			JobExecution jobExecution = jobLauncherTestUtils.launchStep("upsertNwisStationLocalStep", testJobParameters);
-			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
-		}
-	}
-	
-	@Test
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sitefile/sitefileUpdate.xml")
-	@ExpectedDatabase(connection = "nwis", value="classpath:/testResult/nwis/nwisStationLocal/nwisStationLocalUpdate.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
-	public void updateNwisStationLocalStepTest() {
-		try {
-			JobExecution jobExecution = jobLauncherTestUtils.launchStep("upsertNwisStationLocalStep", testJobParameters);
-			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getLocalizedMessage());
-		}
-	}
-
-	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/empty.xml")
 	@DatabaseSetup(value = "classpath:/testData/wqp/monitoringLocation/monitoringLocationOld.xml")
 	@DatabaseSetup(connection = "nwis", 
 		value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
+	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aqfr/aqfr.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
