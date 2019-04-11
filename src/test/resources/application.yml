@@ -17,3 +17,8 @@ spring:
     url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}  
+
+  liquibase:
+    parameters:
+      WQP_SCHEMA_NAME: ${WQP_SCHEMA_NAME}
+      ETL_OWNER_USERNAME: ${ETL_OWNER_USERNAME} 

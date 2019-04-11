@@ -19,8 +19,8 @@ public abstract class BaseDeleteTable implements Tasklet {
 	private String tableName;
 	
 	@Autowired
-	@Qualifier("nwisDataSource")
-	private DataSource nwisDataSource;
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 	
 	public static final String FUNCTION_NAME = "truncate_table";
 	public static final String SCHEMA_NAME = "nwis_ws_star";
@@ -33,7 +33,7 @@ public abstract class BaseDeleteTable implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		this.jdbcTemplate.setDataSource(nwisDataSource);
+		this.jdbcTemplate.setDataSource(dataSourceNwis);
 		SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withSchemaName(SCHEMA_NAME).withFunctionName(FUNCTION_NAME);
 		
 		HashMap<String, Object> params = new HashMap<String, Object>();

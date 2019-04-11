@@ -10,11 +10,16 @@ spring:
     password: ${WQP_CORE_PASSWORD}
    
   datasource-nwis:
-    url: jdbc:postgresql://${NWIS_WS_STAR_HOST}:${NWIS_WS_STAR_PORT}/${NWIS_WS_STAR_DB}?currentSchema=${NWIS_WS_STAR_SCHEMA_NAME}
+    url: jdbc:postgresql://${NWIS_WS_STAR_HOST}:${NWIS_WS_STAR_PORT}/${NWIS_WS_STAR_DB}
     username: ${NWIS_WS_STAR_USERNAME}
     password: ${NWIS_WS_STAR_PASSWORD}  
    
   datasource-mysqlnwis:
     url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}?serverTimezone=CST6CDT
     username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}     
+    password: ${MYSQL_PASSWORD}
+    
+  liquibase:
+    parameters:
+      WQP_SCHEMA_NAME: ${WQP_SCHEMA_NAME}
+      ETL_OWNER_USERNAME: ${ETL_OWNER_USERNAME}  

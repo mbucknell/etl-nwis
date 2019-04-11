@@ -18,12 +18,12 @@ import org.springframework.stereotype.Component;
 public class TransformQwSample {
 
 	@Autowired
-	@Qualifier("mysqlnwisDataSource")
-	private DataSource mysqlnwisDataSource;
+	@Qualifier("dataSourceMysqlnwis")
+	private DataSource dataSourceMysqlnwis;
 
 	@Autowired
-	@Qualifier("nwisDataSource")
-	private DataSource nwisDataSource;
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
@@ -31,7 +31,7 @@ public class TransformQwSample {
 	@Bean
 	public JdbcCursorItemReader<QwSample> qwSampleReader() {
 		return new JdbcCursorItemReaderBuilder<QwSample>()
-				.dataSource(mysqlnwisDataSource)
+				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwSampleReader")
 				.sql("select * from QW_SAMPLE limit 2000") //TODO remove limit
 				.rowMapper(new QwSampleRowMapper())
@@ -66,7 +66,7 @@ public class TransformQwSample {
 						+ ":sampleFieldCmTx, :collEntCd, :anlStatCd, :anlSrcCd, "
 						+ ":anlTypeTx, :hydCondCd, :hydEventCd, :tmDatumRlbtyCd, "
 						+ ":sampleMd, :qwSampleMd)")
-				.dataSource(nwisDataSource)
+				.dataSource(dataSourceNwis)
 				.build();
 						
 	}

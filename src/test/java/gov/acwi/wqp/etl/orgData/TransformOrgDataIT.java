@@ -30,9 +30,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.acwi.wqp.etl.DBTestConfig;
 import gov.acwi.wqp.etl.NwisBaseFlowIT;
-import gov.acwi.wqp.etl.NwisDBTestConfig;
-import gov.acwi.wqp.etl.orgData.index.BuildOrgDataIndexesFlowIT;
-import gov.acwi.wqp.etl.orgData.table.SetupOrgDataSwapTableFlowIT;
 
 @SpringBatchTest
 @SpringBootTest
@@ -40,7 +37,7 @@ import gov.acwi.wqp.etl.orgData.table.SetupOrgDataSwapTableFlowIT;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, StepScopeTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@Import({ DBTestConfig.class, NwisDBTestConfig.class })
+@Import({ DBTestConfig.class })
 @DbUnitConfiguration(databaseConnection = { "wqp", "pg", "nwis" })
 @DirtiesContext
 public class TransformOrgDataIT extends NwisBaseFlowIT {

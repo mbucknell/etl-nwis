@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 public class TaskNwisStationLocalUpsert implements Tasklet {
 	
 	@Autowired
-	@Qualifier("nwisDataSource")
-	private DataSource nwisDataSource;
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 	
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(nwisDataSource);
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
 		
 		String sql = "insert into nwis_station_local (station_id, site_id, latitude, longitude, huc, geom) " 
 				+ "select sitefile.site_id station_id, sitefile.agency_cd || '-' || sitefile.site_no site_id, "

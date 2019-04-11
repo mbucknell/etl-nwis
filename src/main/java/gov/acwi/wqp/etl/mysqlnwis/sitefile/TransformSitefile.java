@@ -17,12 +17,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransformSitefile {
 	@Autowired
-	@Qualifier("mysqlnwisDataSource")
-	private DataSource mysqlnwisDataSource;
+	@Qualifier("dataSourceMysqlnwis")
+	private DataSource dataSourceMysqlnwis;
 
 	@Autowired
-	@Qualifier("nwisDataSource")
-	private DataSource nwisDataSource;
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
@@ -30,7 +30,7 @@ public class TransformSitefile {
 	@Bean
 	public JdbcCursorItemReader<Sitefile> sitefileReader() {
 		return new JdbcCursorItemReaderBuilder<Sitefile>()
-				.dataSource(mysqlnwisDataSource)
+				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwSampleReader")
 				.sql("select * from SITEFILE limit 2000") //TODO remove limit
 				.rowMapper(new SitefileRowMapper())
@@ -63,7 +63,7 @@ public class TransformSitefile {
 						+ ":constructionDt, :aqfrTypeCd, :aqfrCd, :natAqfrCd, :wellDepthVa, "
 						+ ":holeDepthVa, :siteWebCd, :decCoordDatumCd, :siteCn, "
 						+ ":siteCr, :siteMn, :siteMd)")
-				.dataSource(nwisDataSource)
+				.dataSource(dataSourceNwis)
 				.build();
 	}
 }

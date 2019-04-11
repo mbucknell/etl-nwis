@@ -47,8 +47,8 @@ from sitefile
                       case when a.site_tp_prim_fg = 'Y' then a.site_tp_ln
                         else b.site_tp_ln
                       end as primary_site_type
-               from nwis_ws_star.site_tp a,
-                    nwis_ws_star.site_tp b
+               from site_tp a,
+                    site_tp b
                where substr(a.site_tp_cd, 1, 2) = b.site_tp_cd and
                      b.site_tp_prim_fg = 'Y') site_tp
 	  on sitefile.site_tp_cd = site_tp.site_tp_cd
@@ -58,7 +58,7 @@ left join altitude_method
          on sitefile.coord_meth_cd= lat_long_method.code
        left join lat_long_accuracy
          on sitefile.coord_acy_cd = lat_long_accuracy.code
-       left join (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nwis_ws_star.nat_aqfr group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr
+       left join (select nat_aqfr_nm as nat_aqfr_name, nat_aqfr_cd from nat_aqfr group by nat_aqfr_nm, nat_aqfr_cd) nat_aqfr
          on sitefile.nat_aqfr_cd  = nat_aqfr.nat_aqfr_cd
        left join aquifer_type
          on sitefile.aqfr_type_cd = aquifer_type.code

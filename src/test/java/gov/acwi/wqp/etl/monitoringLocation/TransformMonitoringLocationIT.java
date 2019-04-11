@@ -41,7 +41,6 @@ import gov.acwi.wqp.etl.monitoringLocation.table.SetupMonitoringLocationSwapTabl
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, StepScopeTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@Import({ DBTestConfig.class, NwisDBTestConfig.class })
 @DbUnitConfiguration(databaseConnection = { "wqp", "pg", "nwis" })
 @DirtiesContext
 public class TransformMonitoringLocationIT extends NwisBaseFlowIT {

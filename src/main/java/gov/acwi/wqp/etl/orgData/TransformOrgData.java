@@ -28,12 +28,12 @@ public class TransformOrgData {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	@Qualifier("wqpDataSource")
-	private DataSource wqpDataSource;
+	@Qualifier("dataSourceWqp")
+	private DataSource dataSourceWqp;
 	
 	@Autowired
-	@Qualifier("nwisDataSource")
-	private DataSource nwisDataSource;
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 	
 	@Autowired
 	@Qualifier("setupOrgDataSwapTableFlow")
@@ -46,7 +46,7 @@ public class TransformOrgData {
 	@Bean
 	public JdbcCursorItemReader<NwisDistrictCdsByHost> nwisOrgReader() {
 		return new JdbcCursorItemReaderBuilder<NwisDistrictCdsByHost>()
-				.dataSource(nwisDataSource)
+				.dataSource(dataSourceNwis)
 				.name("organizationReader")
 				.sql("select * from nwis_district_cds_by_host")
 				.rowMapper(new NwisDistrictCdsByHostRowMapper())
@@ -56,7 +56,7 @@ public class TransformOrgData {
 	@Bean
 	public ItemWriter<OrgData> orgDataWriter() {
 		JdbcBatchItemWriter<OrgData> itemWriter = new JdbcBatchItemWriter<OrgData>();
-		itemWriter.setDataSource(wqpDataSource);
+		itemWriter.setDataSource(dataSourceWqp);
 		itemWriter.setSql("insert into org_data_swap_nwis (data_source_id, data_source, organization_id, organization, organization_name)"
 				+ " values (:dataSourceId, :dataSource, :organizationId, :organization, :organizationName)");
 

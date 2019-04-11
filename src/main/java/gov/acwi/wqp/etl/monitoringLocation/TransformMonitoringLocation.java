@@ -33,12 +33,12 @@ public class TransformMonitoringLocation {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	@Qualifier("wqpDataSource")
-	private DataSource wqpDataSource;
+	@Qualifier("dataSourceWqp")
+	private DataSource dataSourceWqp;
 
 	@Autowired
-	@Qualifier("nwisDataSource")
-	private DataSource nwisDataSource;
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 
 	@Autowired
 	@Qualifier("setupMonitoringLocationSwapTableFlow")
@@ -54,7 +54,7 @@ public class TransformMonitoringLocation {
 	@Bean
 	public JdbcCursorItemReader<NwisMonitoringLocation> monitoringLocationReader() throws Exception {
 		return new JdbcCursorItemReaderBuilder<NwisMonitoringLocation>()
-		.dataSource(nwisDataSource)
+		.dataSource(dataSourceNwis)
 		.name("monitoringLocationReader")
 		.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
 		.rowMapper(new NwisMonitoringLocationRowMapper())
@@ -64,7 +64,7 @@ public class TransformMonitoringLocation {
 	@Bean
 	public ItemWriter<MonitoringLocation> monitoringLocationWriter() {
 		JdbcBatchItemWriter<MonitoringLocation> itemWriter = new JdbcBatchItemWriter<MonitoringLocation>();
-		itemWriter.setDataSource(wqpDataSource);
+		itemWriter.setDataSource(dataSourceWqp);
 		itemWriter.setSql("insert"
 				+ " into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc, governmental_unit_code,"
 				+ " geom, station_name, organization_name, station_type_name, latitude, longitude, map_scale,"

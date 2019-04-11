@@ -21,12 +21,12 @@ import gov.acwi.wqp.etl.mysqlnwis.qwSample.QwSampleRowMapper;
 public class TransformQwResult {
 
 	@Autowired
-	@Qualifier("mysqlnwisDataSource")
-	private DataSource mysqlnwisDataSource;
+	@Qualifier("dataSourceMysqlnwis")
+	private DataSource dataSourceMysqlnwis;
 
 	@Autowired
-	@Qualifier("nwisDataSource")
-	private DataSource nwisDataSource;
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
@@ -34,7 +34,7 @@ public class TransformQwResult {
 	@Bean
 	public JdbcCursorItemReader<QwResult> qwResultReader() {
 		return new JdbcCursorItemReaderBuilder<QwResult>()
-				.dataSource(mysqlnwisDataSource)
+				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwResultReader")
 				.sql("select * from QW_RESULT limit 2000") //TODO remove limit
 				.rowMapper(new QwResultRowMapper())
@@ -63,7 +63,7 @@ public class TransformQwResult {
 						+ ":qaCd, :dqiCd, :anlEntCd, :anlSetNo, :anlDt, :prepSetNo, "
 						+ ":prepDt, :resultFieldCmTx, :resultLabCmTx, :resultMd, "
 						+ ":qwResultMd)")
-				.dataSource(nwisDataSource)
+				.dataSource(dataSourceNwis)
 				.build();
 	}
 						
