@@ -1,12 +1,13 @@
 package gov.acwi.wqp.etl.nwis;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class NwisActivity {
 	
 	private Integer stationId;
 	private String siteId;
-	private LocalDate sampleStartDt;
+	private LocalDateTime sampleStartDt;
 	private String nwisHost;
 	private String qwDbNo;
 	private String recordNo;
@@ -19,9 +20,9 @@ public class NwisActivity {
 	private Integer sampleId;
 	private String sampTypeCd;
 	private String wqxActMedSub;
-	private char sampleStartSg;
+	private String sampleStartSg;
 	private String sampleStartTimeDatumCd;
-	private char sampleEndSg;
+	private String sampleEndSg;
 	private String sampleEndDt;
 	private String v00003;
 	private String v00098;
@@ -56,10 +57,10 @@ public class NwisActivity {
 	public void setSiteId(String siteId) {
 		this.siteId = siteId;
 	}
-	public LocalDate getSampleStartDt() {
+	public LocalDateTime getSampleStartDt() {
 		return sampleStartDt;
 	}
-	public void setSampleStartDt(LocalDate sampleStartDt) {
+	public void setSampleStartDt(LocalDateTime sampleStartDt) {
 		this.sampleStartDt = sampleStartDt;
 	}
 	public String getNwisHost() {
@@ -134,10 +135,10 @@ public class NwisActivity {
 	public void setWqxActMedSub(String wqxActMedSub) {
 		this.wqxActMedSub = wqxActMedSub;
 	}
-	public char getSampleStartSg() {
+	public String getSampleStartSg() {
 		return sampleStartSg;
 	}
-	public void setSampleStartSg(char sampleStartSg) {
+	public void setSampleStartSg(String sampleStartSg) {
 		this.sampleStartSg = sampleStartSg;
 	}
 	public String getSampleStartTimeDatumCd() {
@@ -146,10 +147,10 @@ public class NwisActivity {
 	public void setSampleStartTimeDatumCd(String sampleStartTimeDatumCd) {
 		this.sampleStartTimeDatumCd = sampleStartTimeDatumCd;
 	}
-	public char getSampleEndSg() {
+	public String getSampleEndSg() {
 		return sampleEndSg;
 	}
-	public void setSampleEndSg(char sampleEndSg) {
+	public void setSampleEndSg(String sampleEndSg) {
 		this.sampleEndSg = sampleEndSg;
 	}
 	public String getSampleEndDt() {

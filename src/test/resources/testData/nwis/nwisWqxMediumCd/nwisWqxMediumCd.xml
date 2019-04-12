@@ -3,259 +3,259 @@
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="$"
         nwis_medium_cd="WT" nwis_medium_nm="Treated water supply"
         wqx_act_med_nm="Water" wqx_act_med_sub="Finished Water"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="%"
         nwis_medium_cd="WE" nwis_medium_nm="Effluent, not landfill"
         wqx_act_med_nm="Water" wqx_act_med_sub="Effluent"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="&amp;"
         nwis_medium_cd="AS" nwis_medium_nm="Soil gas"
         wqx_act_med_nm="Air" wqx_act_med_sub="Soil Gas"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="("
         nwis_medium_cd="SLQ" nwis_medium_nm="QC sample - Sludge"
         wqx_act_med_nm="Other" wqx_act_med_sub="Sludge"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="*"
         nwis_medium_cd="AA" nwis_medium_nm="Air" wqx_act_med_nm="Air"
-        wqx_act_med_sub="Ambient Air" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Ambient Air" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="0"
         nwis_medium_cd="ON" nwis_medium_nm="Not Determined"
         wqx_act_med_nm="Other" wqx_act_med_sub="Other"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="1"
         nwis_medium_cd="SS" nwis_medium_nm="Suspended sediment"
         wqx_act_med_nm="Sediment" wqx_act_med_sub="Suspended"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="2"
         nwis_medium_cd="WL" nwis_medium_nm="Leachate"
         wqx_act_med_nm="Water" wqx_act_med_sub="Leachate"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="3"
         nwis_medium_cd="SD" nwis_medium_nm="Dry deposition"
         wqx_act_med_nm="Other" wqx_act_med_sub="Dry Fall Material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="4"
         nwis_medium_cd="WF" nwis_medium_nm="Landfill effluent"
         wqx_act_med_nm="Water" wqx_act_med_sub="Landfill effluent"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="5"
         nwis_medium_cd="WU" nwis_medium_nm="Elutriation"
         wqx_act_med_nm="Water" wqx_act_med_sub="Elutriation"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="6"
         nwis_medium_cd="WG" nwis_medium_nm="Ground water"
         wqx_act_med_nm="Water" wqx_act_med_sub="Groundwater"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="7"
         nwis_medium_cd="WW" nwis_medium_nm="Wet deposition"
         wqx_act_med_nm="Water" wqx_act_med_sub="Wet Fall Material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="8"
         nwis_medium_cd="OB" nwis_medium_nm="Bulk deposition"
         wqx_act_med_nm="Water" wqx_act_med_sub="Bulk deposition"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="9"
         nwis_medium_cd="WS" nwis_medium_nm="Surface water"
         wqx_act_med_nm="Water" wqx_act_med_sub="Surface Water"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="&lt;"
         nwis_medium_cd="SOQ" nwis_medium_nm="QC sample - Soil"
-        wqx_act_med_nm="Soil" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Soil" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="="
         nwis_medium_cd="WLQ" nwis_medium_nm="QC sample - Leachate"
         wqx_act_med_nm="Water" wqx_act_med_sub="Leachate"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="&gt;"
         nwis_medium_cd="WHQ" nwis_medium_nm="QC sample - Hyporheic zone"
         wqx_act_med_nm="Water" wqx_act_med_sub="Hyporheic zone"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="@"
         nwis_medium_cd="SCQ" nwis_medium_nm="QC sample - Core material"
         wqx_act_med_nm="Other" wqx_act_med_sub="Core material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="A"
         nwis_medium_cd="OA" nwis_medium_nm="Artificial"
         wqx_act_med_nm="Other" wqx_act_med_sub="Artificial"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="B"
         nwis_medium_cd="ST"
         nwis_medium_nm="Solids (street sweepings, etc)"
         wqx_act_med_nm="Other" wqx_act_med_sub="Street sweepings, etc"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="C"
         nwis_medium_cd="BA" nwis_medium_nm="Animal tissue"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="D"
         nwis_medium_cd="BP" nwis_medium_nm="Plant tissue"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="E"
         nwis_medium_cd="SC" nwis_medium_nm="Core material"
         wqx_act_med_nm="Other" wqx_act_med_sub="Core material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="F"
         nwis_medium_cd="WI" nwis_medium_nm="Interstitial water"
         wqx_act_med_nm="Water" wqx_act_med_sub="Interstitial"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="G"
         nwis_medium_cd="SO" nwis_medium_nm="Soil" wqx_act_med_nm="Soil"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="H"
         nwis_medium_cd="SB" nwis_medium_nm="Bottom material"
         wqx_act_med_nm="Sediment" wqx_act_med_sub="Bottom material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="J"
         nwis_medium_cd="SL" nwis_medium_nm="Sludge"
         wqx_act_med_nm="Other" wqx_act_med_sub="Sludge"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="K"
         nwis_medium_cd="WM" nwis_medium_nm="Soil moisture"
         wqx_act_med_nm="Water" wqx_act_med_sub="Soil moisture"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="L"
         nwis_medium_cd="BH"
         nwis_medium_nm="Phytoplanktonic species composition and enumeration (quantitative)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="M"
         nwis_medium_cd="BY"
         nwis_medium_nm="Phytoplanktonic species composition (qualitative)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="N"
         nwis_medium_cd="BE"
         nwis_medium_nm="Periphytic species composition (qualitative)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="O"
         nwis_medium_cd="BI"
         nwis_medium_nm="Benthic invertebrates species composition and enumeration (quantitative)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="P"
         nwis_medium_cd="BD"
         nwis_medium_nm="Periphytic diatoms species composition and enumeration"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="Q"
         nwis_medium_cd="OAQ" nwis_medium_nm="QC sample - Artificial"
         wqx_act_med_nm="Other" wqx_act_med_sub="Artificial"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="R"
         nwis_medium_cd="WSQ" nwis_medium_nm="QC sample - Surface water"
         wqx_act_med_nm="Water" wqx_act_med_sub="Surface Water"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="S"
         nwis_medium_cd="WGQ" nwis_medium_nm="QC sample - Ground water"
         wqx_act_med_nm="Water" wqx_act_med_sub="Groundwater"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="T"
         nwis_medium_cd="WWQ" nwis_medium_nm="QC sample - Wet deposition"
         wqx_act_med_nm="Water" wqx_act_med_sub="Wet Fall Material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="U"
         nwis_medium_cd="OBQ"
         nwis_medium_nm="QC sample - Bulk deposition"
         wqx_act_med_nm="Water" wqx_act_med_sub="Bulk deposition"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="V"
         nwis_medium_cd="SSQ"
         nwis_medium_nm="QC sample - Suspended sediment"
         wqx_act_med_nm="Sediment" wqx_act_med_sub="Suspended"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="W"
         nwis_medium_cd="SBQ"
         nwis_medium_nm="QC sample - Bottom material"
         wqx_act_med_nm="Sediment" wqx_act_med_sub="Bottom material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="X"
         nwis_medium_cd="BAQ" nwis_medium_nm="QC sample - Animal tissue"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="Y"
         nwis_medium_cd="BPQ" nwis_medium_nm="QC sample - Plant tissue"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="Z"
         nwis_medium_cd="WIQ"
         nwis_medium_nm="QC sample - Interstitial water"
         wqx_act_med_nm="Water" wqx_act_med_sub="Interstitial"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="["
         nwis_medium_cd="AAQ" nwis_medium_nm="QC sample - Air"
         wqx_act_med_nm="Air" wqx_act_med_sub="Ambient Air"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WC"
         nwis_medium_nm="Canopy water" wqx_act_med_nm="Water"
-        wqx_act_med_sub="Canopy" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Canopy" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="]"
         nwis_medium_cd="ASQ" nwis_medium_nm="QC sample - Soil gas"
         wqx_act_med_nm="Air" wqx_act_med_sub="Soil Gas"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="{"
         nwis_medium_cd="WTQ"
         nwis_medium_nm="QC sample - Treated water supply"
         wqx_act_med_nm="Water" wqx_act_med_sub="Finished Water"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="}"
         nwis_medium_cd="WEQ"
         nwis_medium_nm="QC sample - Effluent, not landfill"
         wqx_act_med_nm="Water" wqx_act_med_sub="Effluent"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd legacy_nwis_medium_cd="~"
         nwis_medium_cd="WH" nwis_medium_nm="Hyporheic zone"
         wqx_act_med_nm="Water" wqx_act_med_sub="Hyporheic zone"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="BDQ"
         nwis_medium_nm="QC sample - Periphyton (quan)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WUQ"
         nwis_medium_nm="QC sample - Elutriation" wqx_act_med_nm="Water"
-        wqx_act_med_sub="Elutriation" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Elutriation" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="BYQ"
         nwis_medium_nm="QC sample - Phytoplankton (qual)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="STQ"
         nwis_medium_nm="QC sample - Solids" wqx_act_med_nm="Other"
-        wqx_act_med_sub="Street sweepings, etc" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Street sweepings, etc" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="SU"
         nwis_medium_nm="Borehole cuttings" wqx_act_med_nm="Other"
-        wqx_act_med_sub="Borehole cuttings" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Borehole cuttings" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WA"
         nwis_medium_nm="Air moisture" wqx_act_med_nm="Water"
-        wqx_act_med_sub="Ambient Air" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Ambient Air" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="BEQ"
         nwis_medium_nm="QC sample - Periphyton (qual)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="SUQ"
         nwis_medium_nm="QC sample - Borehole cuttings"
         wqx_act_med_nm="Other" wqx_act_med_sub="Borehole cuttings"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WAQ"
         nwis_medium_nm="QC sample - Air moisture" wqx_act_med_nm="Water"
-        wqx_act_med_sub="Ambient Air" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Ambient Air" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WB"
         nwis_medium_nm="Untreated water supply" wqx_act_med_nm="Water"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WBQ"
         nwis_medium_nm="QC samp - Untreated water supply"
-        wqx_act_med_nm="Water" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Water" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WCQ"
         nwis_medium_nm="QC sample - Canopy water" wqx_act_med_nm="Water"
-        wqx_act_med_sub="Canopy" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_sub="Canopy" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="BHQ"
         nwis_medium_nm="QC sample - Phytoplankton (quan)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="ONQ"
         nwis_medium_nm="QC sample - Not determined"
         wqx_act_med_nm="Other" wqx_act_med_sub="Other"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WFQ"
         nwis_medium_nm="QC sample - Landfill effluent"
         wqx_act_med_nm="Water" wqx_act_med_sub="Landfill effluent"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="BIQ"
         nwis_medium_nm="QC samp - Benthic invert (quan)"
-        wqx_act_med_nm="Biological Tissue" load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        wqx_act_med_nm="Biological Tissue" load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="SDQ"
         nwis_medium_nm="QC sample - Dry deposition"
         wqx_act_med_nm="Other" wqx_act_med_sub="Dry Fall Material"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
     <nwis_wqx_medium_cd nwis_medium_cd="WMQ"
         nwis_medium_nm="QC sample - Soil moisture"
         wqx_act_med_nm="Water" wqx_act_med_sub="Soil moisture"
-        load_date="17-FEB-09"></nwis_wqx_medium_cd>
+        load_date="2009-02-17"></nwis_wqx_medium_cd>
 </dataset>

@@ -31,6 +31,11 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("monitoringLocationFlow")
 	private Flow monitoringLocationFlow;
+	
+	@Autowired
+	@Qualifier("activityFlow")
+	private Flow activityFlow;
+
 
 	@Bean
 	public Job nwisEtl() {
@@ -39,6 +44,7 @@ public class BatchConfiguration {
 				.start(orgDataFlow)
 				.next(upsertNwisStationLocalFlow)
 				.next(monitoringLocationFlow)
+				.next(activityFlow)
 				.build()
 				.build();
 	}

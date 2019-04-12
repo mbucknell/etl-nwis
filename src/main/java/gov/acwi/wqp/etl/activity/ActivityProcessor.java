@@ -1,6 +1,7 @@
 package gov.acwi.wqp.etl.activity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.Map;
@@ -37,12 +38,12 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 	public Activity process(NwisActivity nwisActivity) throws Exception {
 		Activity activity = new Activity();
 		
-		char nwisSampleStartSg = nwisActivity.getSampleStartSg();
-		boolean isSampleStartInMorH = nwisSampleStartSg == 'm' || nwisSampleStartSg == 'h';
-		LocalDate nwisSampleStartDt = nwisActivity.getSampleStartDt();
+		String nwisSampleStartSg = nwisActivity.getSampleStartSg();
+		boolean isSampleStartInMorH = nwisSampleStartSg == null ? false : nwisSampleStartSg.contentEquals("m") || nwisSampleStartSg.contentEquals("h");
+		LocalDateTime nwisSampleStartDt = nwisActivity.getSampleStartDt();
 		
-		char nwisSampleEndSg = nwisActivity.getSampleEndSg();
-		boolean isSampleEndInMorH = nwisSampleEndSg == 'm' || nwisSampleEndSg == 'h';
+		String nwisSampleEndSg = nwisActivity.getSampleEndSg();
+		boolean isSampleEndInMorH = nwisSampleEndSg == null ? false : nwisSampleEndSg.contentEquals("m") || nwisSampleEndSg.contentEquals("h");
 		String nwisSampleEndDt = nwisActivity.getSampleEndDt();
 		
 		boolean isSampleCollectMethod = 
@@ -63,7 +64,7 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 		activity.setDataSource(Application.DATA_SOURCE);
 		activity.setStationId(nwisActivity.getStationId());
 		activity.setSiteId(nwisActivity.getSiteId());
-		activity.setEventDate(nwisSampleStartDt);
+		activity.setEventDate(nwisSampleStartDt.toLocalDate());
 		activity.setActivity(
 				nwisActivity.getNwisHost() + '.' + nwisActivity.getQwDbNo() + '.'
 				+ nwisActivity.getRecordNo());
@@ -91,7 +92,7 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 		activity.setActivityLowerDepth(getActivityLowerDepth(nwisV72015, nwisV72016, nwisV82047, nwisV82048));
 		activity.setActivityLowerDepthUnit(getActivityLowerDepthUnit(nwisV72016, nwisV82048));
 		activity.setProjectId(
-				getProjectId(nwisActivity.getNawqaSiteNo(), nwisActivity.getV50280(), nwisActivity.getV71999(), nwisSampleStartDt));
+				getProjectId(nwisActivity.getNawqaSiteNo(), nwisActivity.getV50280(), nwisActivity.getV71999(), nwisSampleStartDt.toLocalDate()));
 		activity.setActivityConductionOrg(getActivityConductingOrg(nwisActivity.getProtoOrgNm(), nwisActivity.getCollEntCd()));
 		activity.setActivityComment(StringUtils.trimToNull(nwisActivity.getSampleLabCmTx()));
 		activity.setSampleAqfrName(nwisActivity.getAqfrNm());
@@ -105,18 +106,22 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 		return activity;
 	}
 	
-	private String getActivityStopDate(char sampleEndSg, String sampleEndDt) {
-		switch(sampleEndSg) {
-			case 'm':
-			case 'h':
-			case 'D':
-				return StringUtils.substring(sampleEndDt, 0, 10);
-			case 'M':
-				return StringUtils.substring(sampleEndDt, 0, 7);
-			case 'Y':
-				return StringUtils.substring(sampleEndDt, 0, 4);
-			default:
-				return null;
+	private String getActivityStopDate(String sampleEndSg, String sampleEndDt) {
+		if (sampleEndSg == null) {
+			return null;
+		} else {
+			switch(sampleEndSg) {
+				case "m":
+				case "h":
+				case "D":
+					return StringUtils.substring(sampleEndDt, 0, 10);
+				case "M":
+					return StringUtils.substring(sampleEndDt, 0, 7);
+				case "Y":
+					return StringUtils.substring(sampleEndDt, 0, 4);
+				default:
+					return null;
+			}
 		}
 	}
 	

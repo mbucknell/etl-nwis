@@ -22,3 +22,6 @@ spring:
     parameters:
       WQP_SCHEMA_NAME: ${WQP_SCHEMA_NAME}
       ETL_OWNER_USERNAME: ${ETL_OWNER_USERNAME} 
+
+spring.profiles.active: it
+      

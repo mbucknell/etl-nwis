@@ -18,7 +18,7 @@ select
 	qw_sample.sample_start_time_datum_cd,
 	qw_sample.sample_end_sg,
 	qw_sample.sample_end_dt,
-	parameter.V00003,
+	sample_parameter.V00003,
 	sample_parameter.V00098,
 	sample_parameter.V50280,
 	sample_parameter.V71999,
@@ -34,15 +34,16 @@ select
 	nawqa_sites.site_no nawqa_site_no,
 	proto_org.proto_org_nm,
 	qw_sample.coll_ent_cd,
-	qw_sample.aqfr_nm,
+	qw_sample.sample_lab_cm_tx,
+	aqfr.aqfr_nm,
 	hyd_cond_cd.hyd_cond_nm,
 	hyd_event_cd.hyd_event_nm
 from qw_sample
 	join sitefile on qw_sample.site_id = sitefile.site_id
 	join station_swap_nwis station on sitefile.site_id = station.station_id
-	left join tu on cast()qw_sample.tu_id as integer) = tu.tu_id
+	left join tu on cast(qw_sample.tu_id as integer) = tu.tu_id
 	left join nwis_wqx_medium_cd on qw_sample.medium_cd = nwis_wqx_medium_cd.nwis_medium_cd
-	left join body_part on qw_sample.body_part_id = body_part.body_part_id
+	left join body_part on cast(qw_sample.body_part_id as integer) = body_part.body_part_id
 	left join proto_org on qw_sample.coll_ent_cd = proto_org.proto_org_cd
 	left join hyd_event_cd on qw_sample.hyd_event_cd = hyd_event_cd.hyd_event_cd
 	left join hyd_cond_cd on qw_sample.hyd_cond_cd = hyd_cond_cd.hyd_cond_cd
