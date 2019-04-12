@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<dataset>
+    <hyd_event_cd HYD_EVENT_CD="1" HYD_EVENT_SRT_NU="1"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Drought"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="2" HYD_EVENT_SRT_NU="2"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Spill"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="3" HYD_EVENT_SRT_NU="3"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Regulated flow"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="4" HYD_EVENT_SRT_NU="4"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Snowmelt"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="5" HYD_EVENT_SRT_NU="5"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Earthquake"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="6" HYD_EVENT_SRT_NU="6"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Hurricane"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="7" HYD_EVENT_SRT_NU="7"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Flood"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="8" HYD_EVENT_SRT_NU="8"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Volcanic action"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="9" HYD_EVENT_SRT_NU="9"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Routine sample"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="A" HYD_EVENT_SRT_NU="10"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Spring breakup"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="B" HYD_EVENT_SRT_NU="11"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Under ice cover"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="C" HYD_EVENT_SRT_NU="12"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Glacial lake outbreak"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="D" HYD_EVENT_SRT_NU="13"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Mudflow"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="E" HYD_EVENT_SRT_NU="14"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Tidal action"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="F" HYD_EVENT_SRT_NU="15"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Affected by fire"
+        HYD_EVENT_DS="Drainage basin for sample was affected by fire prior to sampling"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="H" HYD_EVENT_SRT_NU="16"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Dambreak"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="J" HYD_EVENT_SRT_NU="17"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Storm"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="K" HYD_EVENT_SRT_NU="18"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Backwater"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="L" HYD_EVENT_SRT_NU="19"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Algal bloom"
+        HYD_EVENT_DS="Sample potentially affected by the excessive presence of algae"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="X" HYD_EVENT_SRT_NU="20"
+        HYD_EVENT_VLD_FG="Y" HYD_EVENT_NM="Not applicable"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+    <hyd_event_cd HYD_EVENT_CD="Z" HYD_EVENT_SRT_NU="21"
+        HYD_EVENT_VLD_FG="N" HYD_EVENT_NM="Not Determined (historical)"
+        HYD_EVENT_DS="Description"></hyd_event_cd>
+</dataset>

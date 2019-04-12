@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <tables
+        table_catalog="wqp_db"
+        table_schema="wqp"
+        table_name="activity_swap_nwis"
+        table_type="BASE TABLE"
+    />
+</dataset>

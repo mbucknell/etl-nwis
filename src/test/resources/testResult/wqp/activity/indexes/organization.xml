@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <pg_indexes
+        tablename="activity_swap_stewards"
+        indexname="activity_swap_stewards_organization"
+        indexdef="CREATE INDEX activity_swap_stewards_organization ON wqp.activity_swap_stewards USING btree (organization) WITH (fillfactor='100')"
+     />
+</dataset>

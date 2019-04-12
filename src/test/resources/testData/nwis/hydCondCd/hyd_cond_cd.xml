@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<dataset>
+    <hyd_cond_cd hyd_cond_cd="A" hyd_cond_srt_nu="1"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Not determined"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+    <hyd_cond_cd hyd_cond_cd="4" hyd_cond_srt_nu="2"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Stable, low stage"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+    <hyd_cond_cd hyd_cond_cd="5" hyd_cond_srt_nu="3"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Falling stage"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+    <hyd_cond_cd hyd_cond_cd="6" hyd_cond_srt_nu="4"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Stable, high stage"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+    <hyd_cond_cd hyd_cond_cd="7" hyd_cond_srt_nu="5"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Peak stage"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+    <hyd_cond_cd hyd_cond_cd="8" hyd_cond_srt_nu="6"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Rising stage"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+    <hyd_cond_cd hyd_cond_cd="9" hyd_cond_srt_nu="7"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Stable, normal stage"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+    <hyd_cond_cd hyd_cond_cd="X" hyd_cond_srt_nu="8"
+        hyd_cond_vld_fg="Y" hyd_cond_nm="Not applicable"
+        hyd_cond_ds="Description"></hyd_cond_cd>
+</dataset>

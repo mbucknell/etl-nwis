@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Import;
 
 @Import({DBTestConfig.class, NwisDBTestConfig.class})
 public abstract class NwisBaseFlowIT extends BaseFlowIT{
-	
-	
+		
 	@Before
 	@Override
 	public void baseSetup() {
