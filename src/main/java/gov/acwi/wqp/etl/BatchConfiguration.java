@@ -36,20 +36,25 @@ public class BatchConfiguration {
 	@Qualifier("activityFlow")
 	private Flow activityFlow;
 	
-//	@Autowired
-//	@Qualifier("resultFlow")
-//	private Flow resultFlow;
+	@Autowired
+	@Qualifier("resultFlow")
+	private Flow resultFlow;
+	
+	@Autowired
+	@Qualifier("resDetectQntLimitFlow")
+	private Flow resDetectQntLimitFlow;
 
 
 	@Bean
 	public Job nwisEtl() {
 		return jobBuilderFactory.get("WQP_NWIS_ETL")
-//				.start(mySqlNwisExtractFlow)
+				.start(mySqlNwisExtractFlow)
 				.start(orgDataFlow)
 				.next(upsertNwisStationLocalFlow)
 				.next(monitoringLocationFlow)
 				.next(activityFlow)
-				//.next(resultFlow)
+				.next(resultFlow)
+				.next(resDetectQntLimitFlow)
 				.build()
 				.build();
 	}

@@ -41,16 +41,16 @@ from sitefile
       on sitefile.nwis_host = ndcbh.host_name and    /* host name must exist - no outer join */
          sitefile.district_cd  = ndcbh.district_cd
     left join (select a.site_tp_cd,
-                      case when a.site_tp_prim_fg = 'Y' then a.site_tp_ln
+                      case when a.site_tp_prim_fg then a.site_tp_ln
                         else b.site_tp_ln || ': ' || a.site_tp_ln
                       end as station_type_name,
-                      case when a.site_tp_prim_fg = 'Y' then a.site_tp_ln
+                      case when a.site_tp_prim_fg then a.site_tp_ln
                         else b.site_tp_ln
                       end as primary_site_type
                from site_tp a,
                     site_tp b
                where substr(a.site_tp_cd, 1, 2) = b.site_tp_cd and
-                     b.site_tp_prim_fg = 'Y') site_tp
+                     b.site_tp_prim_fg) site_tp
 	  on sitefile.site_tp_cd = site_tp.site_tp_cd
 left join altitude_method
          on sitefile.alt_meth_cd = altitude_method.code

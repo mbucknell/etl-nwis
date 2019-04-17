@@ -30,6 +30,7 @@
         result_unit="deg C"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="1"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -64,6 +65,7 @@
         detection_limit="3.0"
         detection_limit_unit="code"
         detection_limit_desc="Interim reporting level"
+        result_id="2"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -99,6 +101,7 @@
         detection_limit="4.0"
         detection_limit_unit="JTU"
         detection_limit_desc="Laboratory reporting level"
+        result_id="3"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -138,6 +141,7 @@
         detection_limit="5.0"
         detection_limit_unit="mg/l"
         detection_limit_desc="Minimum reporting level"
+        result_id="4"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -170,6 +174,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="5"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -202,6 +207,7 @@
         result_unit="% saturatn"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="6"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -234,6 +240,7 @@
         result_unit="std units"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="7"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -267,6 +274,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="25 deg C"
+        result_id="8"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -298,6 +306,7 @@
         result_unit="deg C"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="9"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -329,6 +338,7 @@
         result_unit="deg C"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="10"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -360,6 +370,7 @@
         result_unit="mg/l CaCO3"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="11"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -392,6 +403,7 @@
         result_unit="mg/l CaCO3"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="12"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -424,6 +436,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="13"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -457,6 +470,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="105 deg C"
+        result_id="14"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -489,6 +503,7 @@
         result_unit="tons/ac ft"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="15"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -522,6 +537,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="180 deg C"
+        result_id="16"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -554,6 +570,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="17"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -590,6 +607,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="18"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -622,6 +640,7 @@
         result_unit="mg/l as N"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="19"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -654,6 +673,7 @@
         result_unit="mg/l as N"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="20"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -686,6 +706,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="21"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -718,6 +739,7 @@
         result_unit="mg/l as P"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="22"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -750,6 +772,7 @@
         result_unit="mg/l as P"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="23"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -786,6 +809,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="24"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -813,13 +837,14 @@
         sample_collect_method_ctx="USGS"
         sample_collect_method_name="USGS"
         sample_collect_equip_name="Unknown"
-         sample_fraction_type="Total"
+        sample_fraction_type="Total"
         result_measure_value="3.6"
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
         duration_basis="5 Day"
         temperature_basis_level="20 deg C"
+        result_id="25"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -852,6 +877,7 @@
         result_unit="cfu/100ml"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="26"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -884,6 +910,7 @@
         result_unit="ug/l"
         result_value_status="Historical"
         result_value_type="Estimated"
+        result_id="27"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -916,6 +943,7 @@
         result_unit="ug/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="28"
         activity_id="12590529"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -947,6 +975,7 @@
         result_unit="code"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="29"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -979,6 +1008,7 @@
         result_unit="JTU"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="30"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1006,7 +1036,7 @@
         sample_collect_method_ctx="USGS"
         sample_collect_method_name="USGS"
         sample_collect_equip_name="Unknown"
-       sample_fraction_type="Total"
+        sample_fraction_type="Total"
         result_measure_value="12"
         result_unit="mg/l"
         result_value_status="Historical"
@@ -1015,6 +1045,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="31"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1047,6 +1078,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="32"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1079,6 +1111,7 @@
         result_unit="% saturatn"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="33"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1111,6 +1144,7 @@
         result_unit="std units"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="34"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1144,6 +1178,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="25 deg C"
+        result_id="35"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1175,6 +1210,7 @@
         result_unit="deg C"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="36"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1206,6 +1242,7 @@
         result_unit="mg/l CaCO3"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="37"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1238,6 +1275,7 @@
         result_unit="mg/l CaCO3"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="38"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1270,6 +1308,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="39"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1303,6 +1342,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="105 deg C"
+        result_id="40"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1335,6 +1375,7 @@
         result_unit="tons/ac ft"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="41"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1368,6 +1409,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="180 deg C"
+        result_id="42"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1400,6 +1442,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="43"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1436,6 +1479,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="44"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1468,6 +1512,7 @@
         result_unit="mg/l as N"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="45"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1500,6 +1545,7 @@
         result_unit="mg/l as N"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="46"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1532,6 +1578,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="47"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1564,6 +1611,7 @@
         result_unit="mg/l as P"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="48"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1596,6 +1644,7 @@
         result_unit="mg/l as P"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="49"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1632,6 +1681,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="50"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1666,6 +1716,7 @@
         result_value_type="Actual"
         duration_basis="5 Day"
         temperature_basis_level="20 deg C"
+        result_id="51"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1698,6 +1749,7 @@
         result_unit="cfu/100ml"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="52"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1730,6 +1782,7 @@
         result_unit="ug/l"
         result_value_status="Historical"
         result_value_type="Estimated"
+        result_id="53"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1762,6 +1815,7 @@
         result_unit="ug/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="54"
         activity_id="12590531"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1793,6 +1847,7 @@
         result_unit="code"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="55"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1825,6 +1880,7 @@
         result_unit="JTU"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="56"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1861,6 +1917,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="57"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1893,6 +1950,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="58"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1925,6 +1983,7 @@
         result_unit="% saturatn"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="59"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1957,6 +2016,7 @@
         result_unit="std units"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="60"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -1990,6 +2050,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="25 deg C"
+        result_id="61"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2021,6 +2082,7 @@
         result_unit="deg C"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="62"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2052,6 +2114,7 @@
         result_unit="mg/l CaCO3"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="67"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2084,6 +2147,7 @@
         result_unit="mg/l CaCO3"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="68"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2116,6 +2180,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="69"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2149,6 +2214,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="105 deg C"
+        result_id="70"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2181,6 +2247,7 @@
         result_unit="tons/ac ft"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="71"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2214,6 +2281,7 @@
         result_value_status="Historical"
         result_value_type="Actual"
         temperature_basis_level="180 deg C"
+        result_id="72"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2246,6 +2314,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="73"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2282,6 +2351,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="74"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2314,6 +2384,7 @@
         result_unit="mg/l as N"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="75"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2346,6 +2417,7 @@
         result_unit="mg/l as N"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="76"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2378,6 +2450,7 @@
         result_unit="mg/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="77"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2410,6 +2483,7 @@
         result_unit="mg/l as P"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="78"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2442,6 +2516,7 @@
         result_unit="mg/l as P"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="79"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2478,6 +2553,7 @@
         analytical_procedure_source="USGS"
         analytical_method_name="Computation by NWIS algorithm"
         analytical_method_citation="NWIS User&apos;s Manual, QW System, Section 3.6.7"
+        result_id="80"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2512,6 +2588,7 @@
         result_value_type="Actual"
         duration_basis="5 Day"
         temperature_basis_level="20 deg C"
+        result_id="81"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2544,6 +2621,7 @@
         result_unit="cfu/100ml"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="82"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2576,6 +2654,7 @@
         result_unit="ug/l"
         result_value_status="Historical"
         result_value_type="Estimated"
+        result_id="83"
         activity_id="12590530"></result_swap_nwis>
     <result_swap_nwis
         data_source_id="2"
@@ -2608,5 +2687,6 @@
         result_unit="ug/l"
         result_value_status="Historical"
         result_value_type="Actual"
+        result_id="84"
         activity_id="12590530"></result_swap_nwis>
 </dataset>
