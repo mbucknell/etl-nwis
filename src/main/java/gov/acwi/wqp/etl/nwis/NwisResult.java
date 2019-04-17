@@ -35,7 +35,7 @@ public class NwisResult {
 	private String activityLowerDepth;
 	private String activityLowerDepthUnit;
 	private String projectId;
-	private String activityConductionOrg;
+	private String activityConductingOrg;
 	private String activityComment;
 	private String sampleAqfrName;
 	private String hydrologicConditionName;
@@ -60,7 +60,7 @@ public class NwisResult {
 	private String labStdVa;
 	private String resultLabCmTx;
 	private String parmMediumTx;
-	private String sampleTissueTaxonmicName;
+	private String sampleTissueTaxonomicName;
 	private String sampleTissueAnatomyName;
 	private String methCd;
 	private String methNm;
@@ -77,7 +77,7 @@ public class NwisResult {
 	private String parmMethMultiplier;
 	private String parmMultiplier;
 	private String rptLevCd;
-	private String wqxRptLevNm;
+	private String rptLevNm;
 	private String prepDt;
 	
 	public int getStationId() {
@@ -266,11 +266,11 @@ public class NwisResult {
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
-	public String getActivityConductionOrg() {
-		return activityConductionOrg;
+	public String getActivityConductingOrg() {
+		return activityConductingOrg;
 	}
-	public void setActivityConductionOrg(String activityConductionOrg) {
-		this.activityConductionOrg = activityConductionOrg;
+	public void setActivityConductingOrg(String activityConductingOrg) {
+		this.activityConductingOrg = activityConductingOrg;
 	}
 	public String getActivityComment() {
 		return activityComment;
@@ -416,11 +416,11 @@ public class NwisResult {
 	public void setParmMediumTx(String parmMediumTx) {
 		this.parmMediumTx = parmMediumTx;
 	}
-	public String getSampleTissueTaxonmicName() {
-		return sampleTissueTaxonmicName;
+	public String getSampleTissueTaxonomicName() {
+		return sampleTissueTaxonomicName;
 	}
-	public void setSampleTissueTaxonmicName(String sampleTissueTaxonmicName) {
-		this.sampleTissueTaxonmicName = sampleTissueTaxonmicName;
+	public void setSampleTissueTaxonomicName(String sampleTissueTaxonomicName) {
+		this.sampleTissueTaxonomicName = sampleTissueTaxonomicName;
 	}
 	public String getSampleTissueAnatomyName() {
 		return sampleTissueAnatomyName;
@@ -518,11 +518,11 @@ public class NwisResult {
 	public void setRptLevCd(String rptLevCd) {
 		this.rptLevCd = rptLevCd;
 	}
-	public String getWqxRptLevNm() {
-		return wqxRptLevNm;
+	public String getRptLevNm() {
+		return rptLevNm;
 	}
-	public void setWqxRptLevNm(String wqxRptLevNm) {
-		this.wqxRptLevNm = wqxRptLevNm;
+	public void setRptLevNm(String rptLevNm) {
+		this.rptLevNm = rptLevNm;
 	}
 	public String getPrepDt() {
 		return prepDt;

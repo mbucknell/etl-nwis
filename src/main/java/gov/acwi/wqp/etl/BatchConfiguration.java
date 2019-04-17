@@ -35,6 +35,10 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("activityFlow")
 	private Flow activityFlow;
+	
+//	@Autowired
+//	@Qualifier("resultFlow")
+//	private Flow resultFlow;
 
 
 	@Bean
@@ -45,6 +49,7 @@ public class BatchConfiguration {
 				.next(upsertNwisStationLocalFlow)
 				.next(monitoringLocationFlow)
 				.next(activityFlow)
+				//.next(resultFlow)
 				.build()
 				.build();
 	}

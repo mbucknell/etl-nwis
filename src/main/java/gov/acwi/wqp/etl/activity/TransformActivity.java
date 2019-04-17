@@ -80,7 +80,7 @@ public class TransformActivity {
 				+ ":activityStopDate, :activityStopTime, :actStopTimeZone, "
 				+ ":activityDepth, :activityDepthUnit, :activityDepthRefPoint, :activityUpperDepth, "
 				+ ":activityUpperDepthUnit, :activityLowerDepth, :activityLowerDepthUnit, :projectId, "
-				+ ":activityConductionOrg, :activityComment, :sampleAqfrName, :hydrologicConditionName, "
+				+ ":activityConductingOrg, :activityComment, :sampleAqfrName, :hydrologicConditionName, "
 				+ ":hydrologicEventName, :sampleCollectMethodId, "
 				+ ":sampleCollectMethodCtx, :sampleCollectMethodName, :sampleCollectEquipName)");
 		ItemSqlParameterSourceProvider<Activity> paramProvider = new BeanPropertyItemSqlParameterSourceProvider<>();

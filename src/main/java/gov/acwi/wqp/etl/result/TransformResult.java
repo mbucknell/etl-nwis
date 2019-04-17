@@ -1,0 +1,128 @@
+package gov.acwi.wqp.etl.result;
+
+import javax.sql.DataSource;
+
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.FlowBuilder;
+import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.job.flow.support.SimpleFlow;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
+import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.util.FileCopyUtils;
+
+import gov.acwi.wqp.etl.nwis.NwisResult;
+import gov.acwi.wqp.etl.nwis.NwisResultRowMapper;
+
+@Configuration
+public class TransformResult {
+	
+	@Autowired
+	private StepBuilderFactory stepBuilderFactory;
+
+	@Autowired
+	@Qualifier("dataSourceWqp")
+	private DataSource dataSourceWqp;
+
+	@Autowired
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
+
+	@Autowired
+	@Qualifier("setupResultSwapTableFlow")
+	private Flow setupResultSwapTableFlow;
+
+	@Autowired
+	@Qualifier("buildResultIndexesFlow")
+	private Flow buildResultIndexesFlow;
+	
+	@Value("classpath:sql/nwisResult.sql")
+	private Resource sqlResource;
+	
+	@Bean
+	public JdbcCursorItemReader<NwisResult> resultReader() throws Exception {
+		return new JdbcCursorItemReaderBuilder<NwisResult>()
+		.dataSource(dataSourceNwis)
+		.name("resultReader")
+		.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
+		.rowMapper(new NwisResultRowMapper())
+		.build();
+	}
+	
+	@Bean
+	public ItemWriter<Result> resultWriter() {
+		JdbcBatchItemWriter<Result> itemWriter = new JdbcBatchItemWriter<Result>();
+		itemWriter.setDataSource(dataSourceWqp);
+		itemWriter.setSql("insert into result_swap_nwis ("
+				+ "data_source_id, data_source, station_id, site_id, event_date, "
+				+ "analytical_method, p_code, activity, characteristic_name, characteristic_type, "
+				+ "sample_media, organization, site_type, huc, governmental_unit_code, "
+				+ "organization_name, activity_id, activity_type_code, activity_media_subdiv_name, "
+				+ "activity_start_time, act_start_time_zone, activity_stop_date, "
+				+ "activity_stop_time, act_stop_time_zone, activity_depth, activity_depth_unit, "
+				+ "activity_depth_ref_point, activity_upper_depth, activity_upper_depth_unit, " 
+				+ "activity_lower_depth, activity_lower_depth_unit, project_id, activity_conducting_org, "
+				+ "activity_comment, sample_aqfr_name, hydrologic_condition_name, "
+				+ "hydrologic_event_name, sample_collect_method_id, sample_collect_method_ctx, "
+				+ "sample_collect_method_name, sample_collect_equip_name, result_id, "
+				+ "result_detection_condition_tx, sample_fraction_type, result_measure_value, "
+				+ "result_unit, result_value_status, statistic_type, result_value_type, "
+				+ "weight_basis_type, duration_basis, temperature_basis_level, particle_size, "
+				+ "precision, result_comment, sample_tissue_taxonomic_name, sample_tissue_anatomy_name, "
+				+ "analytical_procedure_id, analytical_procedure_source, analytical_method_name, "
+				+ "analytical_method_citation, lab_name, analysis_start_date, lab_remark, "
+				+ "detection_limit, detection_limit_unit, detection_limit_desc, analysis_prep_date_tx) "
+				+ "values (:dataSourceId, :dataSource, :stationId, :siteId, :eventDate, "
+				+ ":analyticalMethod, :pCode, :activity, :characteristicName, :characteristicType, "
+				+ ":sampleMedia, :organization, :siteType, :huc, :governmentalUnitCode, "
+				+ ":organizationName, :activityId, :activityTypeCode, :activityMediaSubdivName, "
+				+ ":activityStartTime, :actStartTimeZone, :activityStopDate, "
+				+ ":activityStopTime, :actStopTimeZone, :activityDepth, :activityDepthUnit, "
+				+ ":activityDepthRefPoint, :activityUpperDepth, :activityUpperDepthUnit, "
+				+ ":activityLowerDepth, :activityLowerDepthUnit, :projectId, :activityConductingOrg, "
+				+ ":activityComment, :sampleAqfrName, :hydrologicConditionName, "
+				+ ":hydrologicEventName, :sampleCollectMethodId, :sampleCollectMethodCtx, "
+				+ ":sampleCollectMethodName, :sampleCollectEquipName, :resultId, "
+				+ ":resultDetectionConditionTx, :sampleFractionType, :resultMeasureValue, "
+				+ ":resultUnit, :resultValueStatus, :statisticType, :resultValueType, "
+				+ ":weightBasisType, :durationBasis, :temperatureBasisLevel, :particleSize, "
+				+ ":precision, :resultComment, :sampleTissueTaxonomicName, :sampleTissueAnatomyName, "
+				+ ":analyticalProcedureId, :analyticalProcedureSource, :analyticalMethodName, "
+				+ ":analyticalMethodCitation, :labName, :analysisStartDate, :labRemark, "
+				+ ":detectionLimit, :detectionLimitUnit, :detectionLimitDesc, :analysisPrepDateTx)"
+				);
+		ItemSqlParameterSourceProvider<Result> paramProvider = new BeanPropertyItemSqlParameterSourceProvider<>();
+		itemWriter.setItemSqlParameterSourceProvider(paramProvider);
+		return itemWriter;
+	}
+	
+	@Bean
+	public Step transformResultStep() throws Exception{
+		return stepBuilderFactory
+				.get("transformResultStep")
+				.<NwisResult, Result>chunk(10)
+				.reader(resultReader())
+				.processor(new ResultProcessor())
+				.writer(resultWriter())
+				.build();
+	}
+
+	@Bean
+	public Flow resultFlow() throws Exception {
+		return new FlowBuilder<SimpleFlow>("resultFlow")
+				.start(setupResultSwapTableFlow)
+				.next(transformResultStep())
+				.next(buildResultIndexesFlow)
+				.build();
+	}
+}

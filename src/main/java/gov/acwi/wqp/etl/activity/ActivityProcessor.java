@@ -93,7 +93,7 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 		activity.setActivityLowerDepthUnit(getActivityLowerDepthUnit(nwisV72016, nwisV82048));
 		activity.setProjectId(
 				getProjectId(nwisActivity.getNawqaSiteNo(), nwisActivity.getV50280(), nwisActivity.getV71999(), nwisSampleStartDt.toLocalDate()));
-		activity.setActivityConductionOrg(getActivityConductingOrg(nwisActivity.getProtoOrgNm(), nwisActivity.getCollEntCd()));
+		activity.setActivityConductingOrg(getActivityConductingOrg(nwisActivity.getProtoOrgNm(), nwisActivity.getCollEntCd()));
 		activity.setActivityComment(StringUtils.trimToNull(nwisActivity.getSampleLabCmTx()));
 		activity.setSampleAqfrName(nwisActivity.getAqfrNm());
 		activity.setHydrologicConditionName(nwisActivity.getHydCondNm());

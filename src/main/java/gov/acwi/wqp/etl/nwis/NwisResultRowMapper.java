@@ -32,14 +32,14 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 	public static final String ACTIVITY_STOP_TIME_COLUMN_NAME = "activity_stop_time";
 	public static final String ACT_STOP_TIME_ZONE_COLUMN_NAME = "act_stop_time_zone";
 	public static final String ACTIVITY_DEPTH_COLUMN_NAME = "activity_depth";
-	public static final String ACTIVITY_DEPTH_UNIT_COLUMN_NAME = "activity_depth_uni";
+	public static final String ACTIVITY_DEPTH_UNIT_COLUMN_NAME = "activity_depth_unit";
 	public static final String ACTIVITY_DEPTH_REF_POINT_COLUMN_NAME = "activity_depth_ref_point";
 	public static final String ACTIVITY_UPPER_DEPTH_COLUMN_NAME = "activity_upper_depth";
 	public static final String ACTIVITY_UPPER_DEPTH_UNIT_COLUMN_NAME = "activity_upper_depth_unit";
 	public static final String ACTIVITY_LOWER_DEPTH_COLUMN_NAME = "activity_lower_depth";
 	public static final String ACTIVITY_LOWER_DEPTH_UNIT_COLUMN_NAME = "activity_lower_depth_unit";
 	public static final String PROJECT_ID_COLUMN_NAME = "project_id";
-	public static final String ACTIVITY_CONDUCTION_ORG_COLUMN_NAME = "activity_conduction_org";
+	public static final String ACTIVITY_CONDUCTING_ORG_COLUMN_NAME = "activity_conducting_org";
 	public static final String ACTIVITY_COMMENT_COLUMN_NAME = "activity_comment";
 	public static final String SAMPLE_AQFR_NAME_COLUMN_NAME = "sample_aqfr_name";
 	public static final String HYDROLOGIC_CONDITION_NAME_COLUMN_NAME = "hydrologic_condition_name";
@@ -62,9 +62,9 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 	public static final String PARM_TEMP_TX_COLUMN_NAME = "parm_temp_tx";
 	public static final String PARM_SIZE_TX_COLUMN_NAME = "parm_size_tx";
 	public static final String LAB_STD_VA_COLUMN_NAME = "lab_std_va";
-	public static final String RESULT_LAB_CM_TX_COLUMN_NAME = "result_lab_cm";
+	public static final String RESULT_LAB_CM_TX_COLUMN_NAME = "result_lab_cm_tx";
 	public static final String PARM_MEDIUM_TX_COLUMN_NAME = "parm_medium_tx";
-	public static final String SAMPLE_TISSUE_TAXONMIC_NAME_COLUMN_NAME = "sample_tissue_taxonmic_name";
+	public static final String SAMPLE_TISSUE_TAXONOMIC_NAME_COLUMN_NAME = "sample_tissue_taxonomic_name";
 	public static final String SAMPLE_TISSUE_ANATOMY_NAME_COLUMN_NAME = "sample_tissue_anatomy_name";
 	public static final String METH_CD_COLUMN_NAME = "meth_cd";
 	public static final String METH_NM_COLUMN_NAME = "meth_nm";
@@ -81,7 +81,7 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 	public static final String PARM_METH_MULTIPLIER_COLUMN_NAME = "parm_meth_multiplier";
 	public static final String PARM_MULTIPLIER_COLUMN_NAME = "parm_multiplier";
 	public static final String RPT_LEV_CD_COLUMN_NAME = "rpt_lev_cd";
-	public static final String WQX_RPT_LEV_NM_COLUMN_NAME = "wqx_rpt_lev_nm";
+	public static final String RPT_LEV_NM_COLUMN_NAME = "rpt_lev_nm";
 	public static final String PREP_DT_COLUMN_NAME = "prep_dt";
 
 	@Override
@@ -102,7 +102,7 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 		nwisResult.setSiteType(rs.getString(SITE_TYPE_COLUMN_NAME));
 		nwisResult.setHuc(rs.getString(HUC_COLUMN_NAME));
 		nwisResult.setGovernmentalUnitCode(rs.getString(GOVERNMENTAL_UNIT_CODE_COLUMN_NAME));
-		nwisResult.setOrganizationName(rs.getString(ORGANIZATION_COLUMN_NAME));
+		nwisResult.setOrganizationName(rs.getString(ORGANIZATION_NAME_COLUMN_NAME));
 		nwisResult.setActivityId(rs.getInt(ACTIVITY_ID_COLUMN_NAME));
 		nwisResult.setActivityTypeCode(rs.getString(ACTIVITY_TYPE_CODE_COLUMN_NAME));
 		nwisResult.setActivityMediaSubdivName(rs.getString(ACTIVITY_MEDIA_SUBDIV_NAME_COLUMN_NAME));
@@ -119,7 +119,7 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 		nwisResult.setActivityLowerDepth(rs.getString(ACTIVITY_LOWER_DEPTH_COLUMN_NAME));
 		nwisResult.setActivityLowerDepthUnit(rs.getString(ACTIVITY_LOWER_DEPTH_UNIT_COLUMN_NAME));
 		nwisResult.setProjectId(rs.getString(PROJECT_ID_COLUMN_NAME));
-		nwisResult.setActivityConductionOrg(rs.getString(ACTIVITY_CONDUCTION_ORG_COLUMN_NAME));
+		nwisResult.setActivityConductingOrg(rs.getString(ACTIVITY_CONDUCTING_ORG_COLUMN_NAME));
 		nwisResult.setActivityComment(rs.getString(ACTIVITY_COLUMN_NAME));
 		nwisResult.setSampleAqfrName(rs.getString(SAMPLE_AQFR_NAME_COLUMN_NAME));
 		nwisResult.setHydrologicConditionName(rs.getString(HYDROLOGIC_CONDITION_NAME_COLUMN_NAME));
@@ -144,7 +144,7 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 		nwisResult.setLabStdVa(rs.getString(LAB_STD_VA_COLUMN_NAME));
 		nwisResult.setResultLabCmTx(rs.getString(RESULT_LAB_CM_TX_COLUMN_NAME));
 		nwisResult.setParmMediumTx(rs.getString(PARM_MEDIUM_TX_COLUMN_NAME));
-		nwisResult.setSampleTissueTaxonmicName(rs.getString(SAMPLE_TISSUE_TAXONMIC_NAME_COLUMN_NAME));
+		nwisResult.setSampleTissueTaxonomicName(rs.getString(SAMPLE_TISSUE_TAXONOMIC_NAME_COLUMN_NAME));
 		nwisResult.setSampleTissueAnatomyName(rs.getString(SAMPLE_TISSUE_ANATOMY_NAME_COLUMN_NAME));
 		nwisResult.setMethCd(rs.getString(METH_CD_COLUMN_NAME));
 		nwisResult.setMethNm(rs.getString(METH_NM_COLUMN_NAME));
@@ -161,10 +161,10 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 		nwisResult.setParmMethMultiplier(rs.getString(PARM_METH_MULTIPLIER_COLUMN_NAME));
 		nwisResult.setParmMultiplier(rs.getString(PARM_MULTIPLIER_COLUMN_NAME));
 		nwisResult.setRptLevCd(rs.getString(RPT_LEV_CD_COLUMN_NAME));
-		nwisResult.setWqxRptLevNm(rs.getString(WQX_RPT_LEV_NM_COLUMN_NAME));
+		nwisResult.setRptLevNm(rs.getString(RPT_LEV_NM_COLUMN_NAME));
 		nwisResult.setPrepDt(rs.getString(PREP_DT_COLUMN_NAME));
 		
-		return null;
+		return nwisResult;
 	}
 
 }
