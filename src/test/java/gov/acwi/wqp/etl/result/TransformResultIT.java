@@ -17,8 +17,6 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.acwi.wqp.etl.NwisBaseFlowIT;
-import gov.acwi.wqp.etl.result.index.BuildResultIndexesFlowIT;
-import gov.acwi.wqp.etl.result.table.SetupResultSwapTableFlowIT;
 
 public class TransformResultIT extends NwisBaseFlowIT {
 	

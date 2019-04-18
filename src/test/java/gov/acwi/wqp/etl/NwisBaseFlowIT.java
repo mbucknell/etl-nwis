@@ -12,8 +12,8 @@ public abstract class NwisBaseFlowIT extends BaseFlowIT{
 	public void baseSetup() {
 		testJobParameters= new JobParametersBuilder()
 				.addJobParameters(jobLauncherTestUtils.getUniqueJobParameters())
-				.addString("wqpDataSourceId", "2", true)
-				.addString("wqpDataSource", "nwis", true)
+				.addString("wqpDataSourceId", Application.DATA_SOURCE_ID.toString(), true)
+				.addString("wqpDataSource", Application.DATA_SOURCE.toLowerCase(), true)
 				.addString("schemaName", "wqp", false)
 				.toJobParameters();
 	}
