@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import org.postgis.PGgeometry;
 import org.springframework.jdbc.core.RowMapper;
 
 public class NwisResultRowMapper implements RowMapper<NwisResult> {
@@ -22,6 +23,7 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 	public static final String SITE_TYPE_COLUMN_NAME = "site_type";
 	public static final String HUC_COLUMN_NAME = "huc";
 	public static final String GOVERNMENTAL_UNIT_CODE_COLUMN_NAME = "governmental_unit_code";
+	public static final String GEOM_COLUMN_NAME = "geom";
 	public static final String ORGANIZATION_NAME_COLUMN_NAME = "organization_name";
 	public static final String ACTIVITY_ID_COLUMN_NAME = "activity_id";
 	public static final String ACTIVITY_TYPE_CODE_COLUMN_NAME = "activity_type_code";
@@ -102,6 +104,7 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 		nwisResult.setSiteType(rs.getString(SITE_TYPE_COLUMN_NAME));
 		nwisResult.setHuc(rs.getString(HUC_COLUMN_NAME));
 		nwisResult.setGovernmentalUnitCode(rs.getString(GOVERNMENTAL_UNIT_CODE_COLUMN_NAME));
+		nwisResult.setGeom((PGgeometry)rs.getObject(GEOM_COLUMN_NAME));
 		nwisResult.setOrganizationName(rs.getString(ORGANIZATION_NAME_COLUMN_NAME));
 		nwisResult.setActivityId(rs.getInt(ACTIVITY_ID_COLUMN_NAME));
 		nwisResult.setActivityTypeCode(rs.getString(ACTIVITY_TYPE_CODE_COLUMN_NAME));

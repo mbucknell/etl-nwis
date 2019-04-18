@@ -13,6 +13,7 @@ select
 	activity_swap_nwis.site_type,
    	activity_swap_nwis.huc,
    	activity_swap_nwis.governmental_unit_code,
+   	activity_swap_nwis.geom,
    	activity_swap_nwis.organization_name,
    	activity_swap_nwis.activity_id,
    	activity_swap_nwis.activity_type_code,

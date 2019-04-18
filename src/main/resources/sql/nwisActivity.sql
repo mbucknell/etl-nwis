@@ -10,6 +10,7 @@ select
 	station.site_type,
 	station.huc,
 	station.governmental_unit_code,
+	station.geom,
 	station.organization_name,
 	qw_sample.sample_id,
 	qw_sample.samp_type_cd,

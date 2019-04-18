@@ -73,6 +73,7 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 		activity.setSiteType(nwisActivity.getSiteType());
 		activity.setHuc(nwisActivity.getHuc());
 		activity.setGovernmentalUnitCode(nwisActivity.getGovernmentalUnitCode());
+		activity.setGeom(nwisActivity.getGeom());
 		activity.setOrganizationName(nwisActivity.getOrganizationName());
 		activity.setActivityId(nwisActivity.getSampleId());
 		activity.setActivityTypeCode(ACTIVITY_TYPE_CODE_MAP.getOrDefault(nwisActivity.getSampTypeCd(), DEFAULT_ACTIVITY_TYPE));

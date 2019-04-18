@@ -2,6 +2,8 @@ package gov.acwi.wqp.etl.nwis;
 
 import java.time.LocalDate;
 
+import org.postgis.PGgeometry;
+
 public class NwisResult {
 	
 	private int stationId;
@@ -18,6 +20,7 @@ public class NwisResult {
 	private String siteType;
 	private String huc;
 	private String governmentalUnitCode;
+	private PGgeometry geom;
 	private String organizationName;
 	private int activityId;
 	private String activityTypeCode;
@@ -163,6 +166,12 @@ public class NwisResult {
 	}
 	public void setGovernmentalUnitCode(String governmentalUnitCode) {
 		this.governmentalUnitCode = governmentalUnitCode;
+	}
+	public PGgeometry getGeom() {
+		return geom;
+	}
+	public void setGeom(PGgeometry geom) {
+		this.geom = geom;
 	}
 	public String getOrganizationName() {
 		return organizationName;

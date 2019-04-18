@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.postgis.PGgeometry;
 import org.springframework.jdbc.core.RowMapper;
 
 public class NwisActivityRowMapper implements RowMapper<NwisActivity> {
@@ -20,6 +21,7 @@ public class NwisActivityRowMapper implements RowMapper<NwisActivity> {
 	public static final String SITE_TYPE_COLUMN_NAME = "site_type";
 	public static final String HUC_COLUMN_NAME = "huc";
 	public static final String GOVERNMENTAL_UNIT_CODE_COLUMN_NAME = "governmental_unit_code";
+	public static final String GEOM_COLUMN_NAME = "geom";
 	public static final String ORGANIZATION_NAME_COLUMN_NAME = "organization_name";
 	public static final String SAMPLE_ID_COLUMN_NAME = "sample_id";
 	public static final String SAMP_TYPE_CD_COLUMN_NAME = "samp_type_cd";
@@ -66,6 +68,7 @@ public class NwisActivityRowMapper implements RowMapper<NwisActivity> {
 		nwisActivity.setSiteType(rs.getString(SITE_TYPE_COLUMN_NAME));
 		nwisActivity.setHuc(rs.getString(HUC_COLUMN_NAME));
 		nwisActivity.setGovernmentalUnitCode(rs.getString(GOVERNMENTAL_UNIT_CODE_COLUMN_NAME));
+		nwisActivity.setGeom((PGgeometry)rs.getObject(GEOM_COLUMN_NAME));
 		nwisActivity.setOrganizationName(rs.getString(ORGANIZATION_NAME_COLUMN_NAME));
 		nwisActivity.setSampleId(rs.getInt(SAMPLE_ID_COLUMN_NAME));
 		nwisActivity.setSampTypeCd(rs.getString(SAMP_TYPE_CD_COLUMN_NAME));

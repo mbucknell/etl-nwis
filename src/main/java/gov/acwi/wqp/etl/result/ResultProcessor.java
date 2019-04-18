@@ -67,6 +67,7 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 		result.setSiteType(nwisResult.getSiteType());
 		result.setHuc(nwisResult.getHuc());
 		result.setGovernmentalUnitCode(nwisResult.getGovernmentalUnitCode());
+		result.setGeom(nwisResult.getGeom());
 		result.setOrganizationName(nwisResult.getOrganizationName());
 		result.setActivityId(nwisResult.getActivityId());
 		result.setActivityTypeCode(nwisResult.getActivityTypeCode());
