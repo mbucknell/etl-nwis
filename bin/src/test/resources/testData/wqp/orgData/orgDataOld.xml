@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<dataset>
-<org_data_swap_nwis data_source_id="2" data_source="nwis" organization_id="2" organization="USGS-IN" organization_name="USGS Indiana Water Science Center"></org_data_swap_nwis>
-<org_data_swap_nwis data_source_id="2" data_source="nwis" organization_id="3" organization="USGS-MI" organization_name="USGS Michigan Water Science Center" ></org_data_swap_nwis>
-<org_data_swap_nwis data_source_id="2" data_source="nwis" organization_id="4" organization="USGS-OH" organization_name="USGS Ohio Water Science Center"></org_data_swap_nwis>
-</dataset>

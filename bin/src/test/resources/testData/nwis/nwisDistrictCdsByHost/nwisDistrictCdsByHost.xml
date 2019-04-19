@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<dataset>
-<nwis_district_cds_by_host host_name="nwisin" district_cd="018" state_name="Indiana" state_postal_cd="IN" last_upd_date="2012-08-12"></nwis_district_cds_by_host>
-<nwis_district_cds_by_host host_name="nwismi" district_cd="26" state_name="Michigan" state_postal_cd="MI" last_upd_date="2012-08-12"></nwis_district_cds_by_host>
-<nwis_district_cds_by_host host_name="nwisoh" district_cd="39" state_name="Ohio" state_postal_cd="OH" last_upd_date="2012-08-12"></nwis_district_cds_by_host>
-</dataset>

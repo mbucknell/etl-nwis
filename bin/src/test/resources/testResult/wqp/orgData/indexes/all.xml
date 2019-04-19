@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dataset>
-    <pg_indexes
-        tablename="org_data_swap_nwis"
-        indexname="org_data_swap_nwis_organization"
-        indexdef="CREATE INDEX org_data_swap_nwis_organization ON wqp.org_data_swap_nwis USING btree (organization) WITH (fillfactor='100')"
-     />
-</dataset>
