@@ -41,14 +41,15 @@ public class TransformResDetectQntLimitIT extends NwisBaseFlowIT {
 	@DatabaseSetup(value="classpath:/testResult/wqp/resDetectQntLimit/empty.xml")
 	@DatabaseSetup(value="classpath:/testData/wqp/result/result.xml")
 	@ExpectedDatabase(value="classpath:/testResult/wqp/resDetectQntLimit/resDetectQntLimit.xml", assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
-	//@ExpectedDatabase(value="classpath:/testResult/wqp/resDetectQntLimit/indexes/all.xml",
-	//		assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-	//		table=EXPECTED_DATABASE_TABLE_CHECK_INDEX,
-	//		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'r_detect_qnt_lmt_swap_stewards'")
-	//@ExpectedDatabase(connection="pg", value="classpath:/testResult/stewards/resDetectQntLimit/create.xml",
-	//		assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-	//		table=EXPECTED_DATABASE_TABLE_CHECK_TABLE,
-	//		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'r_detect_qnt_lmt_swap_stewards'")
+	@ExpectedDatabase(value = "classpath:/testResult/wqp/resDetectQntLimit/indexes/all.xml",
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'r_detect_qnt_lmt_swap_nwis'")
+	@ExpectedDatabase(connection = "pg", 
+		value = "classpath:/testResult/wqp/resDetectQntLimit/create.xml", 
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_TABLE, 
+		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'r_detect_qnt_lmt_swap_nwis'")
 	public void resDetectQntLimitFlowTest() {
 		Job resDetectQntLimitFlowTest = jobBuilderFactory.get("resDetectQntLimitFlowTest")
 					.start(resDetectQntLimitFlow)

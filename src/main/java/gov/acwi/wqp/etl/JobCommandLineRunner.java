@@ -1,5 +1,7 @@
 package gov.acwi.wqp.etl;
 
+import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
@@ -31,11 +33,10 @@ public class JobCommandLineRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		JobParameters parameters = new JobParametersBuilder(jobExplorer)
-//				.addString(EtlConstants.JOB_ID, LocalDate.now().toString(), true)
-//				.addString(EtlConstants.JOB_PARM_DATA_SOURCE_ID, Application.DATA_SOURCE_ID.toString(), true)
-//				.addString(EtlConstants.JOB_PARM_DATA_SOURCE, Application.DATA_SOURCE.toLowerCase(), true)
-//				.addString(EtlConstants.JOB_PARM_SCHEMA, EtlConstants.WQP_SCHEMA_NAME, false)
-//				.addString(EtlConstants.JOB_PARM_GEO_SCHEMA, EtlConstants.NWIS_SCHEMA_NAME, false)
+				.addString(EtlConstantUtils.JOB_ID, LocalDate.now().toString(), true)
+				.addString(EtlConstantUtils.JOB_PARM_DATA_SOURCE_ID, Application.DATA_SOURCE_ID.toString(), true)
+				.addString(EtlConstantUtils.JOB_PARM_DATA_SOURCE, Application.DATA_SOURCE.toLowerCase(), true)
+				.addString(EtlConstantUtils.JOB_PARM_SCHEMA, EtlConstantUtils.WQP_SCHEMA_NAME, false)
 				.toJobParameters();
 		try {
 			JobExecution jobExecution = jobLauncher.run(job, parameters);

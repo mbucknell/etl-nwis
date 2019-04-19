@@ -49,17 +49,16 @@ public class TransformOrgDataIT extends NwisBaseFlowIT {
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/orgData/empty.xml")
 	@DatabaseSetup(value = "classpath:/testData/wqp/orgData/orgDataOld.xml")
-	@DatabaseSetup(connection = "nwis", 
-		value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
-	//@ExpectedDatabase(value = "classpath:/testResult/wqp/orgData/indexes/all.xml",
-	//	assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//	table = BuildOrgDataIndexesFlowIT.EXPECTED_DATABASE_TABLE,
-	//	query = BuildOrgDataIndexesFlowIT.EXPECTED_DATABASE_QUERY)
-	//@ExpectedDatabase(connection = "pg", 
-	//	value = "classpath:/testResult/wqp/orgData/create.xml", 
-	//	assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//	table = SetupOrgDataSwapTableFlowIT.EXPECTED_DATABASE_TABLE, 
-	//	query = SetupOrgDataSwapTableFlowIT.EXPECTED_DATABASE_QUERY)
+	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
+	@ExpectedDatabase(value = "classpath:/testResult/wqp/orgData/indexes/all.xml",
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'org_data_swap_nwis'")
+	@ExpectedDatabase(connection = "pg", 
+		value = "classpath:/testResult/wqp/orgData/create.xml", 
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_TABLE, 
+		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'org_data_swap_nwis'")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/orgData/orgData.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void orgDataFlowTest() {
 		try {

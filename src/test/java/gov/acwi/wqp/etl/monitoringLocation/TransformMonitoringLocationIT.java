@@ -60,8 +60,7 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/empty.xml")
 	@DatabaseSetup(value = "classpath:/testData/wqp/monitoringLocation/monitoringLocationOld.xml")
-	@DatabaseSetup(connection = "nwis", 
-		value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
+	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aqfr/aqfr.xml")
@@ -72,15 +71,15 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sitefile/sitefile.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/siteTp/siteTp.xml")
-	//@ExpectedDatabase(value = "classpath:/testResult/wqp/monitoringLocation/indexes/all.xml",
-	//	assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//	table = BuildMonitoringLocationIndexesFlowIT.EXPECTED_DATABASE_TABLE,
-	//	query = BuildMonitoringLocationIndexesFlowIT.EXPECTED_DATABASE_QUERY)
-	//@ExpectedDatabase(connection = "pg", 
-	//	value = "classpath:/testResult/wqp/monitoringLocation/create.xml", 
-	//	assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//	table = SetupMonitoringLocationSwapTableFlowIT.EXPECTED_DATABASE_TABLE, 
-	//	query = SetupMonitoringLocationSwapTableFlowIT.EXPECTED_DATABASE_QUERY)
+	@ExpectedDatabase(value = "classpath:/testResult/wqp/monitoringLocation/indexes/all.xml",
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'station_swap_nwis'")
+	@ExpectedDatabase(connection = "pg", 
+		value = "classpath:/testResult/wqp/monitoringLocation/create.xml", 
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_TABLE, 
+		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'station_swap_nwis'")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void monitoringLocationFlowTest() {
 		Job monitoringLocationFlowTest = jobBuilderFactory.get("monitoringLocationFlowTest")

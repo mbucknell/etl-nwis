@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application{
 
 
-	public static final String JOB_ID = "jobId";
 	public static final Integer DATA_SOURCE_ID = 2;
 	public static final String DATA_SOURCE = "NWIS";
 	

@@ -43,6 +43,18 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("resDetectQntLimitFlow")
 	private Flow resDetectQntLimitFlow;
+	
+	@Autowired
+	@Qualifier("createSummariesFlow")
+	private Flow createSummariesFlow;
+
+	@Autowired
+	@Qualifier("createLookupCodesFlow")
+	private Flow createLookupCodesFlow;
+
+	@Autowired
+	@Qualifier("databaseFinalizeFlow")
+	private Flow databaseFinalizeFlow;
 
 
 	@Bean
@@ -55,6 +67,9 @@ public class BatchConfiguration {
 				.next(activityFlow)
 				.next(resultFlow)
 				.next(resDetectQntLimitFlow)
+				.next(createSummariesFlow)
+				.next(createLookupCodesFlow)
+				.next(databaseFinalizeFlow)
 				.build()
 				.build();
 	}

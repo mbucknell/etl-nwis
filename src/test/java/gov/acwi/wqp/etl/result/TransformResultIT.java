@@ -65,15 +65,15 @@ public class TransformResultIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/nwisWqxRptLevCd/nwisWqxRptLevCd.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/qwSample/qwSample.xml")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/result/result.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
-	//@ExpectedDatabase(value = "classpath:/testResult/wqp/result/indexes/all.xml",
-	//	assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//	table = BuildResultIndexesFlowIT.EXPECTED_DATABASE_TABLE,
-	//	query = BuildResultIndexesFlowIT.EXPECTED_DATABASE_QUERY)
-	//@ExpectedDatabase(connection = "pg", 
-	//			value = "classpath:/testResult/wqp/result/create.xml", 
-	//			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//			table = SetupResultSwapTableFlowIT.EXPECTED_DATABASE_TABLE, 
-	//			query = SetupResultSwapTableFlowIT.EXPECTED_DATABASE_QUERY)
+	@ExpectedDatabase(value = "classpath:/testResult/wqp/result/indexes/all.xml",
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'result_swap_nwis'")
+	@ExpectedDatabase(connection = "pg", 
+		value = "classpath:/testResult/wqp/result/create.xml", 
+		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+		table = EXPECTED_DATABASE_TABLE_CHECK_TABLE, 
+		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'result_swap_nwis'")
 	public void resultFlowTest() {
 		Job resultFlowTest = jobBuilderFactory.get("resultFlowTest")
 				.start(resultFlow)

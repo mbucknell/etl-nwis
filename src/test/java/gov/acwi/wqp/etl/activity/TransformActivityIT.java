@@ -17,8 +17,6 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.acwi.wqp.etl.NwisBaseFlowIT;
-import gov.acwi.wqp.etl.activity.index.BuildActivityIndexesFlowIT;
-import gov.acwi.wqp.etl.activity.table.SetupActivitySwapTableFlowIT;
 
 public class TransformActivityIT extends NwisBaseFlowIT {
 	
@@ -68,15 +66,15 @@ public class TransformActivityIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aqfr/aqfr.xml")
 	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml")
-	//@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/indexes/all.xml",
-	//		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//		table = BuildActivityIndexesFlowIT.EXPECTED_DATABASE_TABLE,
-	//		query = BuildActivityIndexesFlowIT.EXPECTED_DATABASE_QUERY)
-	//@ExpectedDatabase(connection = "pg", 
-	//		value = "classpath:/testResult/wqp/activity/create.xml", 
-	//		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-	//		table = SetupActivitySwapTableFlowIT.EXPECTED_DATABASE_TABLE, 
-	//		query = SetupActivitySwapTableFlowIT.EXPECTED_DATABASE_QUERY)
+	@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/indexes/all.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+			table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+			query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'activity_swap_nwis'")
+	@ExpectedDatabase(connection = "pg", 
+			value = "classpath:/testResult/wqp/activity/create.xml", 
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
+			table = EXPECTED_DATABASE_TABLE_CHECK_TABLE, 
+			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'activity_swap_nwis'")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/activity.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void activityFlowTest() {
 		Job activityFlowTest = jobBuilderFactory.get("activityFlowTest")
