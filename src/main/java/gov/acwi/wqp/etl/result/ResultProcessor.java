@@ -132,8 +132,6 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 					remarkCd, 
 					nwisResult.getRptLevVa(), 
 					nwisResult.getResultUnrndVa(), 
-					nwisResult.getParmMethMultiplier(), 
-					nwisResult.getParmMultiplier(), 
 					nwisResult.getRptLevVa(),
 					nwisResult.getRptLevNm()));
 		result.setAnalysisPrepDateTx(prepDt == null ? null: 
@@ -206,8 +204,6 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 			String remarkCd,
 			String rptLevVa, 
 			String resultUnrndVa, 
-			String parmMethMultiplier, 
-			String parmMultiplier,
 			String rptLevCd,
 			String wqxRptLevNm) {
 		if (remarkCd.contentEquals("<") && rptLevVa == null) {

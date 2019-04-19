@@ -17,14 +17,14 @@ import org.springframework.util.FileCopyUtils;
 public class TransformResDetectQntLimitTasklet implements Tasklet {
 
 	private final JdbcTemplate jdbcTemplate;
+	
+	@Value("classpath:sql/resDetectQntLimit/writeResDetectQntLimit.sql")
+	private Resource executeResource;
 
 	@Autowired
 	public TransformResDetectQntLimitTasklet(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-
-	@Value("classpath:sql/resDetectQntLimit/writeResDetectQntLimit.sql")
-	private Resource executeResource;
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {

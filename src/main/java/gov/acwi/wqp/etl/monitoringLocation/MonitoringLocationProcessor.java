@@ -8,9 +8,10 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.batch.item.ItemProcessor;
 
 import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.BaseProcessor;
 import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
 
-public class MonitoringLocationProcessor implements ItemProcessor<NwisMonitoringLocation, MonitoringLocation> {
+public class MonitoringLocationProcessor extends BaseProcessor implements ItemProcessor<NwisMonitoringLocation, MonitoringLocation> {
 	
 	public static final String DEFAULT_GEOPOSITIONING_METHOD = "Unknown";
 	public static final String DEFAULT_HDATUM_ID_CODE = "Unknown";
@@ -56,7 +57,7 @@ public class MonitoringLocationProcessor implements ItemProcessor<NwisMonitoring
 		monitoringLocation.setDrainAreaValue(getBigDecimal(nwisML.getDrainAreaVa()));
 		monitoringLocation.setDrainAreaUnit(nwisML.getDrainAreaVa() == null ? null : DEFAULT_DRAIN_AREA_UNIT);
 		monitoringLocation.setContribDrainAreaValue(
-				nwisML.getContribDrainAreaVa() == "." ? BigDecimal.ZERO : getBigDecimal(nwisML.getContribDrainAreaVa()));
+				isNonNullAndEqual(nwisML.getContribDrainAreaVa(), ".") ? BigDecimal.ZERO : getBigDecimal(nwisML.getContribDrainAreaVa()));
 		monitoringLocation.setContribDrainAreaUnit(nwisML.getContribDrainAreaVa() == null ? null : DEFAULT_DRAIN_AREA_UNIT);
 		monitoringLocation.setGeopositionAccyValue(nwisML.getLatLongAccuracy());
 		monitoringLocation.setGeopositionAccyUnit(nwisML.getLatLongAccuracyUnit());
@@ -69,10 +70,10 @@ public class MonitoringLocationProcessor implements ItemProcessor<NwisMonitoring
 		monitoringLocation.setAqfrTypeName(nwisML.getAquiferTypeDescription());
 		monitoringLocation.setConstructionDate(nwisML.getConstructionDt());
 		monitoringLocation.setWellDepthValue(
-				nwisMLWellDepthVa == "." && nwisMLWellDepthVa == "-" ? BigDecimal.ZERO : getBigDecimal(nwisMLWellDepthVa));
+				isNonNullAndEqual(nwisMLWellDepthVa, ".") && isNonNullAndEqual(nwisMLWellDepthVa, "-") ? BigDecimal.ZERO : getBigDecimal(nwisMLWellDepthVa));
 		monitoringLocation.setWellDepthUnit(nwisMLWellDepthVa == null ? null : DEFAULT_DEPTH_UNIT);
 		monitoringLocation.setHoleDepthValue(
-				nwisMLHoleDepthVa == "." && nwisMLHoleDepthVa == "-" ? BigDecimal.ZERO : getBigDecimal(nwisMLHoleDepthVa));
+				isNonNullAndEqual(nwisMLHoleDepthVa, ".") && isNonNullAndEqual(nwisMLHoleDepthVa, "-") ? BigDecimal.ZERO : getBigDecimal(nwisMLHoleDepthVa));
 		monitoringLocation.setHoleDepthUnit(nwisMLHoleDepthVa == null ? null : DEFAULT_DEPTH_UNIT);
 		
 		return monitoringLocation;		

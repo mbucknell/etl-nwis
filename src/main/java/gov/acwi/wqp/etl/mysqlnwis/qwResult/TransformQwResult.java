@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import gov.acwi.wqp.etl.mysqlnwis.qwSample.QwSample;
-import gov.acwi.wqp.etl.mysqlnwis.qwSample.QwSampleRowMapper;
-
 @Component
 public class TransformQwResult {
 

@@ -3,7 +3,6 @@ package gov.acwi.wqp.etl.activity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
@@ -24,14 +23,6 @@ public class TransformActivityIT extends NwisBaseFlowIT {
 	@Qualifier("activityFlow")
 	private Flow activityFlow;
 
-	@Before
-	public void setup() {
-		testJob = jobBuilderFactory
-				.get("activityFlowTest")
-				.start(activityFlow)
-				.build().build();
-		jobLauncherTestUtils.setJob(testJob);
-	}
 	
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/activity/empty.xml")

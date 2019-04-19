@@ -10,9 +10,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
 
 import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.BaseProcessor;
 import gov.acwi.wqp.etl.nwis.NwisActivity;
 
-public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> {
+public class ActivityProcessor extends BaseProcessor implements ItemProcessor<NwisActivity, Activity> {
 	
 	private static final Map<String,String> ACTIVITY_TYPE_CODE_MAP = Map.ofEntries(
 			 new AbstractMap.SimpleEntry<String, String>("A", "Not determined"),
@@ -39,11 +40,11 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 		Activity activity = new Activity();
 		
 		String nwisSampleStartSg = nwisActivity.getSampleStartSg();
-		boolean isSampleStartInMorH = nwisSampleStartSg == null ? false : nwisSampleStartSg.contentEquals("m") || nwisSampleStartSg.contentEquals("h");
+		boolean isSampleStartInMorH = isNonNullAndEqual(nwisSampleStartSg, "m") || isNonNullAndEqual(nwisSampleStartSg, "h");
 		LocalDateTime nwisSampleStartDt = nwisActivity.getSampleStartDt();
 		
 		String nwisSampleEndSg = nwisActivity.getSampleEndSg();
-		boolean isSampleEndInMorH = nwisSampleEndSg == null ? false : nwisSampleEndSg.contentEquals("m") || nwisSampleEndSg.contentEquals("h");
+		boolean isSampleEndInMorH = isNonNullAndEqual(nwisSampleEndSg, "m") || isNonNullAndEqual(nwisSampleEndSg,"h");
 		String nwisSampleEndDt = nwisActivity.getSampleEndDt();
 		
 		boolean isSampleCollectMethod = 
@@ -205,12 +206,12 @@ public class ActivityProcessor implements ItemProcessor<NwisActivity, Activity> 
 		
 		if (nawqaSiteNo != null) {
 			if (sampleStartDt.compareTo(LocalDate.parse("2001-10-01")) >= 0) {
-				if (v71999 == "20" || v71999 == "25" || v71999 == "15") {
+				if (isNonNullAndEqual(v71999, "20") || isNonNullAndEqual(v71999, "25") || isNonNullAndEqual(v71999, "15")){
 					projectId = NAWQA_PROJECT_ID;
 				} else if (v71999 == null && v50280 != null) {
 					projectId = NAWQA_PROJECT_ID;
 				}
-			} else if (v71999 == "15" || v50280 != null) {
+			} else if (isNonNullAndEqual(v71999, "15") || v50280 != null) {
 				projectId = NAWQA_PROJECT_ID;
 			}
 		}

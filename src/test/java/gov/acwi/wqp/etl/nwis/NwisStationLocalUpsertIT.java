@@ -3,7 +3,6 @@ package gov.acwi.wqp.etl.nwis;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
@@ -23,15 +22,6 @@ public class NwisStationLocalUpsertIT extends NwisBaseFlowIT {
 	@Autowired
 	@Qualifier("upsertNwisStationLocalFlow")
 	private Flow upsertNwisStationLocalFlow;
-	
-	@Before
-	public void setup() {
-		testJob = jobBuilderFactory
-				.get("upsertNwisStationLocalFlowTest")
-				.start(upsertNwisStationLocalFlow)
-				.build().build();
-		jobLauncherTestUtils.setJob(testJob);
-	}
 	
 	@Test
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/empty.xml")

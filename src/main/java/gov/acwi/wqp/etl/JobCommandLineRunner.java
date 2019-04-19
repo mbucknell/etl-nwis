@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -44,7 +45,7 @@ public class JobCommandLineRunner implements CommandLineRunner {
 					|| ExitStatus.UNKNOWN.getExitCode().contentEquals(jobExecution.getExitStatus().getExitCode())
 					|| ExitStatus.FAILED.getExitCode().contentEquals(jobExecution.getExitStatus().getExitCode())
 					|| ExitStatus.STOPPED.getExitCode().contentEquals(jobExecution.getExitStatus().getExitCode())) {
-				throw new RuntimeException("Job did not complete as planned.");
+				throw new JobExecutionException("Job did not complete as planned.");
 			}
 			System.exit(0);
 		} catch (JobInstanceAlreadyCompleteException e) {

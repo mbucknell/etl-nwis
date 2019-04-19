@@ -3,9 +3,9 @@ package gov.acwi.wqp.etl.orgData;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,6 @@ public class TransformOrgDataIT extends NwisBaseFlowIT {
 	@Autowired
 	@Qualifier("orgDataFlow")
 	private Flow orgDataFlow;
-
-	@Before
-	public void setup() {
-		testJob = jobBuilderFactory
-				.get("orgDataFlowTest")
-				.start(orgDataFlow)
-				.build().build();
-		jobLauncherTestUtils.setJob(testJob);
-	}
 
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/orgData/empty.xml")
@@ -61,6 +52,11 @@ public class TransformOrgDataIT extends NwisBaseFlowIT {
 		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'org_data_swap_nwis'")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/orgData/orgData.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void orgDataFlowTest() {
+		Job orgDataFlowTest = jobBuilderFactory.get("orgDataFlowTest")
+				.start(orgDataFlow)
+				.build()
+				.build();
+	jobLauncherTestUtils.setJob(orgDataFlowTest);
 		try {
 			JobExecution jobExecution = jobLauncherTestUtils.launchJob(testJobParameters);
 			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());

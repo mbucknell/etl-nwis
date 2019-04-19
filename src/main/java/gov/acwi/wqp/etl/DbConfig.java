@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
+@Profile("default")
 public class DbConfig {
 
 	@Bean
 	@Primary
 	@ConfigurationProperties("spring.datasource-wqp")
-	@Profile("default")
 	public DataSourceProperties dataSourcePropertiesWqp() {
 		return new DataSourceProperties();
 	}
@@ -24,7 +24,6 @@ public class DbConfig {
 	@Bean
 	@Primary
 	@ConfigurationProperties("spring.datasource-wqp")
-	@Profile("default")
 	public DataSource dataSourceWqp() {
 		return dataSourcePropertiesWqp().initializeDataSourceBuilder().build();
 	}

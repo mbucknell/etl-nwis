@@ -1,6 +1,5 @@
 package gov.acwi.wqp.etl.nwis;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.postgis.PGgeometry;

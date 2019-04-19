@@ -3,7 +3,6 @@ package gov.acwi.wqp.etl.monitoringLocation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
@@ -24,15 +23,6 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	@Autowired
 	@Qualifier("monitoringLocationFlow")
 	private Flow monitoringLocationFlow;
-
-	@Before
-	public void setup() {
-		testJob = jobBuilderFactory
-				.get("monitoringLocationFlowTest")
-				.start(monitoringLocationFlow)
-				.build().build();
-		jobLauncherTestUtils.setJob(testJob);
-	}
 
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/empty.xml")
