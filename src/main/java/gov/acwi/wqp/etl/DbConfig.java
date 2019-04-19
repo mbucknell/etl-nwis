@@ -8,14 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
-@Profile("default")
 public class DbConfig {
 
 	@Bean
 	@Primary
 	@ConfigurationProperties("spring.datasource-wqp")
+	@Profile("default")
 	public DataSourceProperties dataSourcePropertiesWqp() {
 		return new DataSourceProperties();
 	}
@@ -23,8 +24,15 @@ public class DbConfig {
 	@Bean
 	@Primary
 	@ConfigurationProperties("spring.datasource-wqp")
+	@Profile("default")
 	public DataSource dataSourceWqp() {
 		return dataSourcePropertiesWqp().initializeDataSourceBuilder().build();
+	}
+	
+	@Bean
+	@Primary
+	public JdbcTemplate jdbcTemplateWqp() {
+		return new JdbcTemplate(dataSourceWqp());
 	}
 	
 	@Bean
@@ -37,6 +45,11 @@ public class DbConfig {
 	@ConfigurationProperties("spring.datasource-nwis")
 	public DataSource dataSourceNwis() {
 		return dataSourcePropertiesNwis().initializeDataSourceBuilder().build();
+	}
+	
+	@Bean
+	public JdbcTemplate jdbcTemplateNwis() {
+		return new JdbcTemplate(dataSourceNwis());
 	}
 	
 	@Bean

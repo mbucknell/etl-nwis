@@ -15,15 +15,13 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 
 public abstract class BaseDeleteTable implements Tasklet {
 
+	
 	private final JdbcTemplate jdbcTemplate;
 	private String tableName;
-	
-	@Autowired
-	@Qualifier("dataSourceNwis")
-	private DataSource dataSourceNwis;
+
 	
 	public static final String FUNCTION_NAME = "truncate_table";
-	public static final String SCHEMA_NAME = "nwis_ws_star";
+	public static final String SCHEMA_NAME = "nwis";
 	
 	@Autowired
 	public BaseDeleteTable(JdbcTemplate jdbcTemplate, String tableName) {
@@ -33,7 +31,6 @@ public abstract class BaseDeleteTable implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		this.jdbcTemplate.setDataSource(dataSourceNwis);
 		SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withSchemaName(SCHEMA_NAME).withFunctionName(FUNCTION_NAME);
 		
 		HashMap<String, Object> params = new HashMap<String, Object>();
