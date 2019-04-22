@@ -5,17 +5,17 @@ spring:
     initialize-schema: always
   
   datasource-wqp:
-    url: jdbc:postgresql://${WQP_CORE_HOST}:${WQP_CORE_PORT}/${WQP_CORE_DB}
-    username: ${WQP_CORE_USERNAME}
-    password: ${WQP_CORE_PASSWORD}
+    url: jdbc:postgresql://${WQP_DATABASE_ADDRESS}:${WQP_DATABASE_PORT}/${WQP_DATABASE_NAME}
+    username: ${WQP_SCHEMA_OWNER_USERNAME}
+    password: ${WQP_SCHEMA_OWNER_PASSWORD}
    
   datasource-nwis:
-    url: jdbc:postgresql://${NWIS_WS_STAR_HOST}:${NWIS_WS_STAR_PORT}/${NWIS_WS_STAR_DB}
-    username: ${NWIS_WS_STAR_USERNAME}
-    password: ${NWIS_WS_STAR_PASSWORD}  
+    url: jdbc:postgresql://${NWIS_DATABASE_HOST}:${NWIS_DATABASE_PORT}/${NWIS_DATABASE_NAME}
+    username: ${NWIS_OWNER_USERNAME}
+    password: ${NWIS_OWNER_PASSWORD}  
    
   datasource-mysqlnwis:
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}?serverTimezone=CST6CDT
+    url: jdbc:mysql://${MYSQL_DATABASE_ADDRESS}:${MYSQL_DATABASE_PORT}/${MYSQL_DATABASE_NAME}?serverTimezone=CST6CDT
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
     
