@@ -6,9 +6,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.job.flow.Flow;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -18,10 +15,6 @@ import gov.acwi.wqp.etl.NwisBaseFlowIT;
 
 
 public class NwisStationLocalUpsertIT extends NwisBaseFlowIT {
-	
-	@Autowired
-	@Qualifier("upsertNwisStationLocalFlow")
-	private Flow upsertNwisStationLocalFlow;
 	
 	@Test
 	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/empty.xml")

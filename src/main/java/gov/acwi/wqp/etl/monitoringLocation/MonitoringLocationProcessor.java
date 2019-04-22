@@ -82,7 +82,7 @@ public class MonitoringLocationProcessor extends BaseProcessor implements ItemPr
 	private String getElevationValue(String altDatumCd, String altVa) {
 		if (altDatumCd == null) {
 			return null;
-		} else if (altVa == ".") {
+		} else if (isNonNullAndEqual(altVa, ".")) {
 			return "0";	
 		} else {
 			return StringUtils.trimToNull(altVa);
