@@ -45,6 +45,10 @@ public class TransformMonitoringLocation {
 	private DataSource dataSourceNwis;
 
 	@Autowired
+	@Qualifier("upsertNwisStationLocalFlow")
+	private Flow upsertNwisStationLocalFlow;
+
+	@Autowired
 	@Qualifier(EtlConstantUtils.SETUP_MONITORING_LOCATION_SWAP_TABLE_FLOW)
 	private Flow setupMonitoringLocationSwapTableFlow;
 
@@ -67,7 +71,7 @@ public class TransformMonitoringLocation {
 	
 	@Bean
 	public ItemWriter<MonitoringLocation> monitoringLocationWriter() {
-		JdbcBatchItemWriter<MonitoringLocation> itemWriter = new JdbcBatchItemWriter<MonitoringLocation>();
+		JdbcBatchItemWriter<MonitoringLocation> itemWriter = new JdbcBatchItemWriter<>();
 		itemWriter.setDataSource(dataSourceWqp);
 		itemWriter.setSql("insert"
 				+ " into station_swap_nwis (data_source_id, data_source, station_id, site_id, organization, site_type, huc, governmental_unit_code,"
@@ -104,7 +108,8 @@ public class TransformMonitoringLocation {
 	@Bean
 	public Flow monitoringLocationFlow() throws Exception {
 		return new FlowBuilder<SimpleFlow>("monitoringLocationFlow")
-				.start(setupMonitoringLocationSwapTableFlow)
+				.start(upsertNwisStationLocalFlow)
+				.next(setupMonitoringLocationSwapTableFlow)
 				.next(transformMonitoringLocationStep())
 				.next(buildMonitoringLocationIndexesFlow)
 				.build();

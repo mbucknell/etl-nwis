@@ -25,10 +25,6 @@ public class BatchConfiguration {
 	private Flow orgDataFlow;
 	
 	@Autowired
-	@Qualifier("upsertNwisStationLocalFlow")
-	private Flow upsertNwisStationLocalFlow;
-	
-	@Autowired
 	@Qualifier("monitoringLocationFlow")
 	private Flow monitoringLocationFlow;
 	
@@ -62,7 +58,6 @@ public class BatchConfiguration {
 		return jobBuilderFactory.get("WQP_NWIS_ETL")
 				.start(mySqlNwisExtractFlow)
 				.next(orgDataFlow)
-				.next(upsertNwisStationLocalFlow)
 				.next(monitoringLocationFlow)
 				.next(activityFlow)
 				.next(resultFlow)

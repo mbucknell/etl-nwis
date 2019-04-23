@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.nwis;
+package gov.acwi.wqp.etl.monitoringLocation;
 
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;

@@ -12,28 +12,6 @@
     <!-- huc="040103020109" -->
     <!-- huc="040103020107" -->
     <!-- huc="040103020105" -->
-
-    <station_swap_nwis
-        data_source_id="2"
-        data_source="NWIS"
-        station_id="891038"
-        site_id="USGS-04028100"
-        organization="USGS-MI"
-        site_type="Stream"
-        huc="04010302"
-        governmental_unit_code="US:26:053"
-        station_name="MONTREAL RIVER NEAR IRONWOOD, MI"
-        organization_name="USGS Michigan Water Science Center"
-        station_type_name="Stream"
-        latitude="46.50716955"
-        longitude="-90.2298989"
-        geom="0101000020AD100000BA38E0A9B68E56C076638BEEEA404740"
-        geopositioning_method="Interpolated from MAP."
-        hdatum_id_code="NAD83"
-        drain_area_value="80.6"
-        drain_area_unit="sq mi"
-        geoposition_accy_value="1"
-        geoposition_accy_unit="seconds"></station_swap_nwis>
     <station_swap_nwis
         data_source_id="2"
         data_source="NWIS"
