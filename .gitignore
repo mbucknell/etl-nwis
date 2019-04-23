@@ -7,5 +7,5 @@
 /application.yml
 /application_it.yml
 local_setup.sh
-/*.iml
+*.iml
 src/test/resources/META-INF/
