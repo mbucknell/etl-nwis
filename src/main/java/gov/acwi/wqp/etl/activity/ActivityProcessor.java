@@ -37,6 +37,8 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 	private static final String FEET_UNIT = "feet";
 	private static final String METERS_UNIT = "meters";
 	private static final String NAWQA_PROJECT_ID = "National Water Quality Assessment Program (NAWQA)";
+	private static final String BELOW_SEA_LEVEL_REF_POINT = "Below mean sea level";
+	private static final String BELOW_LAND_SURFACE_REF_POINT = "Below land-surface datum";
 	private static final String USGS = "USGS";
 
 	@Autowired
@@ -61,9 +63,9 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 				nwisActivity.getV84164FxdTx() != null && nwisActivity.getV82398FxdTx() != null;
 		
 		String nwisV00003 = nwisActivity.getV00003();
-		String nwisV00098 = nwisActivity.getV00003();
-		String nwisV78890 = nwisActivity.getV00003();
-		String nwisV78891 = nwisActivity.getV00003();
+		String nwisV00098 = nwisActivity.getV00098();
+		String nwisV78890 = nwisActivity.getV78890();
+		String nwisV78891 = nwisActivity.getV78891();
 		String nwisV72015 = nwisActivity.getV72015();
 		String nwisV72016 = nwisActivity.getV72016();
 		String nwisV82047 = nwisActivity.getV82047();
@@ -98,11 +100,12 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 				nwisActivity.getSampleStartTimeDatumCd() : null);
 		activity.setActivityDepth(getActivityDepth(nwisV00003, nwisV00098, nwisV78890, nwisV78891));
 		activity.setActivityDepthUnit(getActivityDepthUnit(nwisV00003, nwisV00098, nwisV78890, nwisV78891));
-		activity.setActivityDepthRefPoint(getActivityDepthRefPoint(nwisV00003, nwisV00098, nwisV78890, nwisV78891));
+		activity.setActivityDepthRefPoint(getActivityDepthRefPoint(
+				nwisV00003, nwisV00098, nwisV78890, nwisV78891, nwisV72015, nwisV72016, nwisV82047));
 		activity.setActivityUpperDepth(getActivityUpperDepth(nwisV72015, nwisV82047));
 		activity.setActivityUpperDepthUnit(getActivityUpperDepthUnit(nwisV72015, nwisV82047));
 		activity.setActivityLowerDepth(getActivityLowerDepth(nwisV72015, nwisV72016, nwisV82047, nwisV82048));
-		activity.setActivityLowerDepthUnit(getActivityLowerDepthUnit(nwisV72016, nwisV82048));
+		activity.setActivityLowerDepthUnit(getActivityLowerDepthUnit(nwisV72015, nwisV72016, nwisV82047, nwisV82048));
 		activity.setProjectId(
 				getProjectId(nwisActivity.getNawqaSiteNo(), nwisActivity.getV50280(), nwisActivity.getV71999(), nwisSampleStartDt.toLocalDate()));
 		activity.setActivityConductingOrg(getActivityConductingOrg(nwisActivity.getProtoOrgNm(), nwisActivity.getCollEntCd()));
@@ -152,20 +155,31 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 	}
 	
 	private String getActivityDepthUnit(String v00003, String v00098, String v78890, String v78891) {
-		if (v00003 != null || v78890 != null) {
+		if (v00003 != null) {
 			return FEET_UNIT;
-		} else if (v00098 != null || v78891 != null) {
+		} else if (v00098 != null) {
+			return METERS_UNIT;
+		} else if (v78890 != null) {
+			return FEET_UNIT;
+		} else if (v78891 != null) {
 			return METERS_UNIT;
 		} else {
 			return null;
 		}
 	}
 	
-	private String getActivityDepthRefPoint(String v78890, String v78891, String v72015, String v72016) {
-		if (v78890 != null || v78891 != null) {
-			return "Below mean sea level";
-		} else if (v72015 != null || v72016 != null) {
-			return "Below land-surface datum";
+	private String getActivityDepthRefPoint(
+			String v00003, String v00098, String v78890, String v78891, String v72015, String v72016, String v82047) {
+		if (v00003 != null || v00098 != null) {
+			return null;
+		} else if (v78890 != null || v78891 != null) {
+			return BELOW_SEA_LEVEL_REF_POINT;
+		} else if (v72015 != null) {
+			return BELOW_LAND_SURFACE_REF_POINT;
+		} else if (v82047 != null) {
+			return null;
+		} else if (v72016 != null) {
+			return BELOW_LAND_SURFACE_REF_POINT;
 		} else {
 			return null;
 		}
@@ -192,17 +206,29 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 	}
 	
 	private String getActivityLowerDepth(String v72015, String v72016, String v82047, String v82048) {
-		if (v72015 != null || v72016 != null) {
+		if (v72015 != null ) {
 			return v72016;
-		} else if (v82047 != null || v82048 != null) {
+		} else if (v82047 != null) {
+			return v82048;
+		} else if (v72016 != null) {
+			return v72016;
+		} else if (v82048 != null) {
 			return v82048;
 		} else {
 			return null;
 		}
 	}
 	
-	private String getActivityLowerDepthUnit(String v72016, String v82048) {
-		if (v72016 != null) {
+	private String getActivityLowerDepthUnit(String v72015, String v72016, String v82047, String v82048) {
+		if (v72015 != null && v72016 == null) {
+			return null;
+		} else if (v72015 != null && v72016 != null) {
+			return FEET_UNIT;
+		} else if (v82047 != null & v82048 == null) {
+			return null;
+		} else if (v82047 != null) {
+			return METERS_UNIT;
+		} else if (v72016 != null) {
 			return FEET_UNIT;
 		} else if (v82048 != null) {
 			return METERS_UNIT;
