@@ -1,24 +1,33 @@
 package gov.acwi.wqp.etl.monitoringLocation;
 
 
-import java.math.BigDecimal;
-
+import gov.acwi.wqp.etl.BaseProcessor;
+import gov.acwi.wqp.etl.ConfigurationService;
+import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import gov.acwi.wqp.etl.Application;
-import gov.acwi.wqp.etl.BaseProcessor;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
+import java.math.BigDecimal;
 
+@Component
 public class MonitoringLocationProcessor extends BaseProcessor implements ItemProcessor<NwisMonitoringLocation, MonitoringLocation> {
-	
-	public static final String DEFAULT_GEOPOSITIONING_METHOD = "Unknown";
-	public static final String DEFAULT_HDATUM_ID_CODE = "Unknown";
-	public static final String DEFAULT_ELEVATION_UNIT = "feet";
-	public static final String DEFAULT_DRAIN_AREA_UNIT = "sq mi";
-	public static final String DEFAULT_VERTICAL_ACCURACY_UNIT = "feet";
-	public static final String DEFAULT_DEPTH_UNIT = "ft";
+
+	private final ConfigurationService configurationService;
+
+	private static final String DEFAULT_GEOPOSITIONING_METHOD = "Unknown";
+	private  static final String DEFAULT_HDATUM_ID_CODE = "Unknown";
+	private  static final String DEFAULT_ELEVATION_UNIT = "feet";
+	private  static final String DEFAULT_DRAIN_AREA_UNIT = "sq mi";
+	private  static final String DEFAULT_VERTICAL_ACCURACY_UNIT = "feet";
+	private  static final String DEFAULT_DEPTH_UNIT = "ft";
+
+	@Autowired
+	public MonitoringLocationProcessor(ConfigurationService configurationService) {
+		this.configurationService = configurationService;
+	}
 	
 	@Override
 	public MonitoringLocation process(NwisMonitoringLocation nwisML) throws Exception {
@@ -29,8 +38,8 @@ public class MonitoringLocationProcessor extends BaseProcessor implements ItemPr
 		String nwisMLWellDepthVa = nwisML.getWellDepthVa();
 		String nwisMLHoleDepthVa = nwisML.getHoleDepthVa();
 		
-		monitoringLocation.setDataSourceId(Application.DATA_SOURCE_ID);
-		monitoringLocation.setDataSource(Application.DATA_SOURCE);
+		monitoringLocation.setDataSourceId(configurationService.getEtlDataSourceId());
+		monitoringLocation.setDataSource(configurationService.getEtlDataSource());
 		monitoringLocation.setStationId(nwisML.getSiteId());
 		monitoringLocation.setSiteId(nwisML.getAgencyCd() + "-" + nwisML.getSiteNo());
 		monitoringLocation.setOrganization(nwisML.getOrganizationId());

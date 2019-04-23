@@ -1,12 +1,15 @@
 package gov.acwi.wqp.etl.orgData;
 
-import javax.sql.DataSource;
-
+import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
+import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHostRowMapper;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
@@ -18,29 +21,31 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHostRowMapper;
+import javax.sql.DataSource;
 
 @Configuration
 public class TransformOrgData {
+
+	@Autowired
+	@Qualifier("orgDataProcessor")
+	private ItemProcessor<NwisDistrictCdsByHost, OrgData> processor;
 	
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	@Qualifier("dataSourceWqp")
 	private DataSource dataSourceWqp;
 	
 	@Autowired
-	@Qualifier("dataSourceNwis")
+	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
 	private DataSource dataSourceNwis;
 	
 	@Autowired
-	@Qualifier("setupOrgDataSwapTableFlow")
+	@Qualifier(EtlConstantUtils.SETUP_ORG_DATA_SWAP_TABLE_FLOW)
 	private Flow setupOrgDataSwapTableFlow;
 
 	@Autowired
-	@Qualifier("buildOrgDataIndexesFlow")
+	@Qualifier(EtlConstantUtils.BUILD_ORG_DATA_INDEXES_FLOW)
 	private Flow buildOrgDataIndexesFlow;
 
 	@Bean
@@ -55,7 +60,7 @@ public class TransformOrgData {
 
 	@Bean
 	public ItemWriter<OrgData> orgDataWriter() {
-		JdbcBatchItemWriter<OrgData> itemWriter = new JdbcBatchItemWriter<OrgData>();
+		JdbcBatchItemWriter<OrgData> itemWriter = new JdbcBatchItemWriter<>();
 		itemWriter.setDataSource(dataSourceWqp);
 		itemWriter.setSql("insert into org_data_swap_nwis (data_source_id, data_source, organization_id, organization, organization_name)"
 				+ " values (:dataSourceId, :dataSource, :organizationId, :organization, :organizationName)");
@@ -72,7 +77,7 @@ public class TransformOrgData {
 				.get("transformOrgDataStep")
 				.<NwisDistrictCdsByHost, OrgData>chunk(10)
 				.reader(nwisOrgReader())
-				.processor(new OrgDataProcessor())
+				.processor(processor)
 				.writer(orgDataWriter())
 				.build();
 	}

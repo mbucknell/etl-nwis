@@ -1,7 +1,6 @@
 package gov.acwi.wqp.etl.mysqlnwis.sitefile;
 
-import javax.sql.DataSource;
-
+import gov.acwi.wqp.etl.Application;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -14,18 +13,21 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+
 @Component
 public class TransformSitefile {
-	@Autowired
-	@Qualifier("dataSourceMysqlnwis")
-	private DataSource dataSourceMysqlnwis;
-
-	@Autowired
-	@Qualifier("dataSourceNwis")
-	private DataSource dataSourceNwis;
 
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
+
+	@Autowired
+	@Qualifier(Application.DATASOURCE_MYSQLNWIS_QUALIFER)
+	private DataSource dataSourceMysqlnwis;
+
+	@Autowired
+	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
+	private DataSource dataSourceNwis;
 	
 	@Bean
 	public JdbcCursorItemReader<Sitefile> sitefileReader() {
@@ -39,7 +41,7 @@ public class TransformSitefile {
 	
 	@Bean
 	public PassThroughItemProcessor<Sitefile> sitefileProcessor() {
-		return new PassThroughItemProcessor<Sitefile>();
+		return new PassThroughItemProcessor<>();
 	}
 	
 	@Bean

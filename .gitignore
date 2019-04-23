@@ -7,3 +7,4 @@
 /application.yml
 /application_it.yml
 local_setup.sh
+/*.iml

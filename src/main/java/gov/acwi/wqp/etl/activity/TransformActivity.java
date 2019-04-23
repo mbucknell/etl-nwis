@@ -1,12 +1,15 @@
 package gov.acwi.wqp.etl.activity;
 
-import javax.sql.DataSource;
-
+import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.nwis.NwisActivity;
+import gov.acwi.wqp.etl.nwis.NwisActivityRowMapper;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
@@ -21,29 +24,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 
-import gov.acwi.wqp.etl.nwis.NwisActivity;
-import gov.acwi.wqp.etl.nwis.NwisActivityRowMapper;
+import javax.sql.DataSource;
 
 @Configuration
 public class TransformActivity {
+
+	@Autowired
+	@Qualifier("activityProcessor")
+	private ItemProcessor<NwisActivity, Activity> processor;
 	
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	@Qualifier("dataSourceWqp")
 	private DataSource dataSourceWqp;
 
 	@Autowired
-	@Qualifier("dataSourceNwis")
+	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
 	private DataSource dataSourceNwis;
 
 	@Autowired
-	@Qualifier("setupActivitySwapTableFlow")
+	@Qualifier(EtlConstantUtils.SETUP_ACTIVITY_SWAP_TABLE_FLOW)
 	private Flow setupActivitySwapTableFlow;
 
 	@Autowired
-	@Qualifier("buildActivityIndexesFlow")
+	@Qualifier(EtlConstantUtils.BUILD_ACTIVITY_INDEXES_FLOW)
 	private Flow buildActivityIndexesFlow;
 	
 	@Value("classpath:sql/nwisActivity.sql")
@@ -61,7 +66,7 @@ public class TransformActivity {
 	
 	@Bean
 	public ItemWriter<Activity> activityWriter() {
-		JdbcBatchItemWriter<Activity> itemWriter = new JdbcBatchItemWriter<Activity>();
+		JdbcBatchItemWriter<Activity> itemWriter = new JdbcBatchItemWriter<>();
 		itemWriter.setDataSource(dataSourceWqp);
 		itemWriter.setSql("insert"
 				+ " into activity_swap_nwis ("
@@ -94,7 +99,7 @@ public class TransformActivity {
 				.get("transformActivityStep")
 				.<NwisActivity, Activity>chunk(10)
 				.reader(activityReader())
-				.processor(new ActivityProcessor())
+				.processor(processor)
 				.writer(activityWriter())
 				.build();
 	}

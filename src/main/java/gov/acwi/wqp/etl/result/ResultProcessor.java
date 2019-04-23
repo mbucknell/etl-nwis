@@ -1,37 +1,44 @@
 package gov.acwi.wqp.etl.result;
 
+import gov.acwi.wqp.etl.ConfigurationService;
+import gov.acwi.wqp.etl.nwis.NwisResult;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.AbstractMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.batch.item.ItemProcessor;
-
-import gov.acwi.wqp.etl.Application;
-import gov.acwi.wqp.etl.nwis.NwisResult;
-
+@Component
 public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
-	
-	
+
+	private final ConfigurationService configurationService;
+
 	private static final Map<String, String> RESULT_DETECTION_CONDITION_TX = Map.ofEntries(
-			new AbstractMap.SimpleEntry<String, String>("U", "Not Detected"),
-			new AbstractMap.SimpleEntry<String, String>("V", "Systematic Contamination"),
-			new AbstractMap.SimpleEntry<String, String>("M", "Detected Not Quantified"),
-			new AbstractMap.SimpleEntry<String, String>("N", "Detected Not Quantified"),
-			new AbstractMap.SimpleEntry<String, String>("<", "Not Detected"),
-			new AbstractMap.SimpleEntry<String, String>(">", "Present Above Quantification Limit")		
+			new AbstractMap.SimpleEntry<>("U", "Not Detected"),
+			new AbstractMap.SimpleEntry<>("V", "Systematic Contamination"),
+			new AbstractMap.SimpleEntry<>("M", "Detected Not Quantified"),
+			new AbstractMap.SimpleEntry<>("N", "Detected Not Quantified"),
+			new AbstractMap.SimpleEntry<>("<", "Not Detected"),
+			new AbstractMap.SimpleEntry<>(">", "Present Above Quantification Limit")
 			);
 	
 	private static final Map<String, String> RESULT_VALUE_STATUS = Map.ofEntries(
-			new AbstractMap.SimpleEntry<String, String>("S", "Preliminary"),
-			new AbstractMap.SimpleEntry<String, String>("A", "Historical"),
-			new AbstractMap.SimpleEntry<String, String>("R", "Accepted")
+			new AbstractMap.SimpleEntry<>("S", "Preliminary"),
+			new AbstractMap.SimpleEntry<>("A", "Historical"),
+			new AbstractMap.SimpleEntry<>("R", "Accepted")
 			);
 	
-	public static final Map<String, String> STATISTIC_TYPE = Map.ofEntries(
+	private static final Map<String, String> STATISTIC_TYPE = Map.ofEntries(
 			new AbstractMap.SimpleEntry<>("S", "MPN"),
 			new AbstractMap.SimpleEntry<>("A", "mean")
 			);
-		
+
+	@Autowired
+	public ResultProcessor(ConfigurationService configurationService) {
+		this.configurationService = configurationService;
+	}
 
 	@Override
 	public Result process(NwisResult nwisResult) throws Exception {
@@ -52,8 +59,8 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 				nwisResult.getRptLevCd());
 		String prepDt = nwisResult.getPrepDt();
 		
-		result.setDataSourceId(Application.DATA_SOURCE_ID);
-		result.setDataSource(Application.DATA_SOURCE);
+		result.setDataSourceId(configurationService.getEtlDataSourceId());
+		result.setDataSource(configurationService.getEtlDataSource());
 		result.setStationId(nwisResult.getStationId());
 		result.setSiteId(nwisResult.getSiteId());
 		result.setEventDate(nwisResult.getEventDate());
@@ -230,11 +237,11 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 	}
 	
 	private String getLabRemark(String cd1Nm, String cd2Nm, String cd3Nm, String cd4Nm, String cd5Nm, String remarkCd) {
-		return cd1Nm == null ? "" : cd1Nm
-				+ cd2Nm == null ? "" : cd2Nm
-				+ cd3Nm == null ? "" : cd3Nm
-				+ cd4Nm == null ? "" : cd4Nm
-				+ cd5Nm == null ? "" : cd5Nm
+		return (cd1Nm == null ? "" : cd1Nm)
+				+ (cd2Nm == null ? "" : cd2Nm)
+				+ (cd3Nm == null ? "" : cd3Nm)
+				+ (cd4Nm == null ? "" : cd4Nm)
+				+ (cd5Nm == null ? "" : cd5Nm)
 				+ (remarkCd.contentEquals("R") ? "Result below sample specific critical level." : "");
 				
 	}

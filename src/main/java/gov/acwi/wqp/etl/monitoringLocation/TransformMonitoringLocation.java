@@ -1,12 +1,15 @@
 package gov.acwi.wqp.etl.monitoringLocation;
 
-import javax.sql.DataSource;
-
+import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
+import gov.acwi.wqp.etl.nwis.NwisMonitoringLocationRowMapper;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
@@ -21,30 +24,32 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocationRowMapper;
+import javax.sql.DataSource;
  
 
 @Configuration
 public class TransformMonitoringLocation {
+
+	@Autowired
+	@Qualifier("monitoringLocationProcessor")
+	private ItemProcessor<NwisMonitoringLocation, MonitoringLocation> processor;
 	
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	@Qualifier("dataSourceWqp")
 	private DataSource dataSourceWqp;
 
 	@Autowired
-	@Qualifier("dataSourceNwis")
+	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
 	private DataSource dataSourceNwis;
 
 	@Autowired
-	@Qualifier("setupMonitoringLocationSwapTableFlow")
+	@Qualifier(EtlConstantUtils.SETUP_MONITORING_LOCATION_SWAP_TABLE_FLOW)
 	private Flow setupMonitoringLocationSwapTableFlow;
 
 	@Autowired
-	@Qualifier("buildMonitoringLocationIndexesFlow")
+	@Qualifier(EtlConstantUtils.BUILD_MONITORING_LOCATION_INDEXES_FLOW)
 	private Flow buildMonitoringLocationIndexesFlow;
 	
 	@Value("classpath:sql/nwisMonitoringLocation.sql")
@@ -91,7 +96,7 @@ public class TransformMonitoringLocation {
 				.get("transformMonitoringLocationStep")
 				.<NwisMonitoringLocation, MonitoringLocation>chunk(10)
 				.reader(monitoringLocationReader())
-				.processor(new MonitoringLocationProcessor())
+				.processor(processor)
 				.writer(monitoringLocationWriter())
 				.build();
 	}

@@ -1,5 +1,6 @@
 package gov.acwi.wqp.etl.resDetectQntLimit;
 
+import gov.acwi.wqp.etl.EtlConstantUtils;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -18,7 +19,7 @@ public class TransformResDetectQntLimit {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	@Qualifier("setupResDetectQntLimitSwapTableFlow")
+	@Qualifier(EtlConstantUtils.SETUP_RES_DETECT_QNT_LIMIT_SWAP_TABLE_FLOW)
 	private Flow setupResDetectQntLimitSwapTableFlow;
 
 	@Autowired
@@ -26,7 +27,7 @@ public class TransformResDetectQntLimit {
 	private Tasklet transformResDetectQntLimitTasklet;
 
 	@Autowired
-	@Qualifier("buildResDetectQntLimitIndexesFlow")
+	@Qualifier(EtlConstantUtils.BUILD_RES_DETECT_QNT_LIMIT_INDEXES_FLOW)
 	private Flow buildResDetectQntLimitIndexesFlow;
 
 	@Bean

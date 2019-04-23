@@ -1,7 +1,6 @@
 package gov.acwi.wqp.etl.mysqlnwis.qwSample;
 
-import javax.sql.DataSource;
-
+import gov.acwi.wqp.etl.Application;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -12,17 +11,19 @@ import org.springframework.batch.item.support.PassThroughItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+import javax.sql.DataSource;
+
+@Configuration
 public class TransformQwSample {
 
 	@Autowired
-	@Qualifier("dataSourceMysqlnwis")
+	@Qualifier(Application.DATASOURCE_MYSQLNWIS_QUALIFER)
 	private DataSource dataSourceMysqlnwis;
 
 	@Autowired
-	@Qualifier("dataSourceNwis")
+	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
 	private DataSource dataSourceNwis;
 
 	@Autowired
@@ -40,7 +41,7 @@ public class TransformQwSample {
 	
 	@Bean
 	public PassThroughItemProcessor<QwSample> qwSampleProcessor() {
-		return new PassThroughItemProcessor<QwSample>();
+		return new PassThroughItemProcessor<>();
 	}
 	
 	@Bean

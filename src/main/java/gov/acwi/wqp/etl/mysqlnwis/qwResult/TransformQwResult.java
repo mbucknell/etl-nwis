@@ -1,7 +1,6 @@
 package gov.acwi.wqp.etl.mysqlnwis.qwResult;
 
-import javax.sql.DataSource;
-
+import gov.acwi.wqp.etl.Application;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -12,22 +11,24 @@ import org.springframework.batch.item.support.PassThroughItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+import javax.sql.DataSource;
+
+@Configuration
 public class TransformQwResult {
 
 	@Autowired
-	@Qualifier("dataSourceMysqlnwis")
+	public StepBuilderFactory stepBuilderFactory;
+
+	@Autowired
+	@Qualifier(Application.DATASOURCE_MYSQLNWIS_QUALIFER)
 	private DataSource dataSourceMysqlnwis;
 
 	@Autowired
-	@Qualifier("dataSourceNwis")
+	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
 	private DataSource dataSourceNwis;
 
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
-	
 	@Bean
 	public JdbcCursorItemReader<QwResult> qwResultReader() {
 		return new JdbcCursorItemReaderBuilder<QwResult>()
@@ -40,7 +41,7 @@ public class TransformQwResult {
 	
 	@Bean
 	public PassThroughItemProcessor<QwResult> qwResultProcessor() {
-		return new PassThroughItemProcessor<QwResult>();
+		return new PassThroughItemProcessor<>();
 	}
 	
 	@Bean

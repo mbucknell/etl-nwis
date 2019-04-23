@@ -1,12 +1,15 @@
 package gov.acwi.wqp.etl.result;
 
-import javax.sql.DataSource;
-
+import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.nwis.NwisResult;
+import gov.acwi.wqp.etl.nwis.NwisResultRowMapper;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
@@ -21,12 +24,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 
-import gov.acwi.wqp.etl.nwis.NwisResult;
-import gov.acwi.wqp.etl.nwis.NwisResultRowMapper;
+import javax.sql.DataSource;
 
 @Configuration
 public class TransformResult {
-	
+
+	@Autowired
+	@Qualifier("resultProcessor")
+	private ItemProcessor<NwisResult, Result> processor;
+
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
@@ -35,15 +41,15 @@ public class TransformResult {
 	private DataSource dataSourceWqp;
 
 	@Autowired
-	@Qualifier("dataSourceNwis")
+	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
 	private DataSource dataSourceNwis;
 
 	@Autowired
-	@Qualifier("setupResultSwapTableFlow")
+	@Qualifier(EtlConstantUtils.SETUP_RESULT_SWAP_TABLE_FLOW)
 	private Flow setupResultSwapTableFlow;
 
 	@Autowired
-	@Qualifier("buildResultIndexesFlow")
+	@Qualifier(EtlConstantUtils.BUILD_RESULT_INDEXES_FLOW)
 	private Flow buildResultIndexesFlow;
 	
 	@Value("classpath:sql/nwisResult.sql")
@@ -61,7 +67,7 @@ public class TransformResult {
 	
 	@Bean
 	public ItemWriter<Result> resultWriter() {
-		JdbcBatchItemWriter<Result> itemWriter = new JdbcBatchItemWriter<Result>();
+		JdbcBatchItemWriter<Result> itemWriter = new JdbcBatchItemWriter<>();
 		itemWriter.setDataSource(dataSourceWqp);
 		itemWriter.setSql("insert into result_swap_nwis ("
 				+ "data_source_id, data_source, station_id, site_id, event_date, "
@@ -112,7 +118,7 @@ public class TransformResult {
 				.get("transformResultStep")
 				.<NwisResult, Result>chunk(10)
 				.reader(resultReader())
-				.processor(new ResultProcessor())
+				.processor(processor)
 				.writer(resultWriter())
 				.build();
 	}

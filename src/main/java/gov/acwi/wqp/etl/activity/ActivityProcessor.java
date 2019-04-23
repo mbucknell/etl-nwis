@@ -1,39 +1,49 @@
 package gov.acwi.wqp.etl.activity;
 
+import gov.acwi.wqp.etl.BaseProcessor;
+import gov.acwi.wqp.etl.ConfigurationService;
+import gov.acwi.wqp.etl.nwis.NwisActivity;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.batch.item.ItemProcessor;
-
-import gov.acwi.wqp.etl.Application;
-import gov.acwi.wqp.etl.BaseProcessor;
-import gov.acwi.wqp.etl.nwis.NwisActivity;
-
+@Component
 public class ActivityProcessor extends BaseProcessor implements ItemProcessor<NwisActivity, Activity> {
-	
+
+	private final ConfigurationService configurationService;
+
 	private static final Map<String,String> ACTIVITY_TYPE_CODE_MAP = Map.ofEntries(
-			 new AbstractMap.SimpleEntry<String, String>("A", "Not determined"),
-			 new AbstractMap.SimpleEntry<String, String>("B","Quality Control Sample-Other"),
-			 new AbstractMap.SimpleEntry<String, String>("H","Sample-Composite Without Parents"),
-			 new AbstractMap.SimpleEntry<String, String>("1","Quality Control Sample-Field Spike"),
-			 new AbstractMap.SimpleEntry<String, String>("2","Quality Control Sample-Field Blank"),
-			 new AbstractMap.SimpleEntry<String, String>("3","Quality Control Sample-Reference Sample"),
-			 new AbstractMap.SimpleEntry<String, String>("4","Quality Control Sample-Blind"),
-			 new AbstractMap.SimpleEntry<String, String>("5","Quality Control Sample-Field Replicate"),
-			 new AbstractMap.SimpleEntry<String, String>("6","Quality Control Sample-Reference Material"),
-			 new AbstractMap.SimpleEntry<String, String>("7","Quality Control Sample-Field Replicate"),
-			 new AbstractMap.SimpleEntry<String, String>("8","Quality Control Sample-Spike Solution"),
-			 new AbstractMap.SimpleEntry<String, String>("9","Sample-Routine")
+			 new AbstractMap.SimpleEntry<>("A", "Not determined"),
+			 new AbstractMap.SimpleEntry<>("B","Quality Control Sample-Other"),
+			 new AbstractMap.SimpleEntry<>("H","Sample-Composite Without Parents"),
+			 new AbstractMap.SimpleEntry<>("1","Quality Control Sample-Field Spike"),
+			 new AbstractMap.SimpleEntry<>("2","Quality Control Sample-Field Blank"),
+			 new AbstractMap.SimpleEntry<>("3","Quality Control Sample-Reference Sample"),
+			 new AbstractMap.SimpleEntry<>("4","Quality Control Sample-Blind"),
+			 new AbstractMap.SimpleEntry<>("5","Quality Control Sample-Field Replicate"),
+			 new AbstractMap.SimpleEntry<>("6","Quality Control Sample-Reference Material"),
+			 new AbstractMap.SimpleEntry<>("7","Quality Control Sample-Field Replicate"),
+			 new AbstractMap.SimpleEntry<>("8","Quality Control Sample-Spike Solution"),
+			 new AbstractMap.SimpleEntry<>("9","Sample-Routine")
 			);
 	private static final String DEFAULT_ACTIVITY_TYPE = "Unknown";
 	private static final String FEET_UNIT = "feet";
 	private static final String METERS_UNIT = "meters";
 	private static final String NAWQA_PROJECT_ID = "National Water Quality Assessment Program (NAWQA)";
 	private static final String USGS = "USGS";
+
+	@Autowired
+	public ActivityProcessor(ConfigurationService configurationService) {
+		this.configurationService = configurationService;
+	}
+
 
 	@Override
 	public Activity process(NwisActivity nwisActivity) throws Exception {
@@ -61,8 +71,8 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 		
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		
-		activity.setDataSourceId(Application.DATA_SOURCE_ID);
-		activity.setDataSource(Application.DATA_SOURCE);
+		activity.setDataSourceId(configurationService.getEtlDataSourceId());
+		activity.setDataSource(configurationService.getEtlDataSource());
 		activity.setStationId(nwisActivity.getStationId());
 		activity.setSiteId(nwisActivity.getSiteId());
 		activity.setEventDate(nwisSampleStartDt.toLocalDate());
@@ -81,7 +91,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 		activity.setActivityMediaSubdivName(nwisActivity.getWqxActMedSub());
 		activity.setActivityStartTime(isSampleStartInMorH ? dateFormatter.format(nwisSampleStartDt) : null);
 		activity.setActStartTimeZone(
-				isSampleStartInMorH && nwisSampleStartDt != null ? nwisActivity.getSampleStartTimeDatumCd() : null);
+				isSampleStartInMorH ? nwisActivity.getSampleStartTimeDatumCd() : null);
 		activity.setActivityStopDate(getActivityStopDate(nwisSampleEndSg, nwisSampleEndDt));
 		activity.setActivityStopTime(isSampleEndInMorH ? StringUtils.substring(nwisSampleEndDt, 11) : null);
 		activity.setActStopTimeZone(nwisSampleEndDt != null && isSampleEndInMorH ?
