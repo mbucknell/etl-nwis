@@ -1,9 +1,7 @@
 package gov.acwi.wqp.etl.orgData;
 
-import gov.acwi.wqp.etl.Application;
-import gov.acwi.wqp.etl.EtlConstantUtils;
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHostRowMapper;
+import javax.sql.DataSource;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -21,7 +19,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.sql.DataSource;
+import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
+import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHostRowMapper;
 
 @Configuration
 public class TransformOrgData {

@@ -1,10 +1,11 @@
 package gov.acwi.wqp.etl.orgData;
 
-import gov.acwi.wqp.etl.ConfigurationService;
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import gov.acwi.wqp.etl.ConfigurationService;
+import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
 
 @Component
 public class OrgDataProcessor implements ItemProcessor<NwisDistrictCdsByHost, OrgData> {

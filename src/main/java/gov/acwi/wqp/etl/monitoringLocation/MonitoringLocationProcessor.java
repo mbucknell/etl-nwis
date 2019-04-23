@@ -1,16 +1,17 @@
 package gov.acwi.wqp.etl.monitoringLocation;
 
 
-import gov.acwi.wqp.etl.BaseProcessor;
-import gov.acwi.wqp.etl.ConfigurationService;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
+import java.math.BigDecimal;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
+import gov.acwi.wqp.etl.BaseProcessor;
+import gov.acwi.wqp.etl.ConfigurationService;
+import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
 
 @Component
 public class MonitoringLocationProcessor extends BaseProcessor implements ItemProcessor<NwisMonitoringLocation, MonitoringLocation> {

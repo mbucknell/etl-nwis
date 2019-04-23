@@ -1,9 +1,7 @@
 package gov.acwi.wqp.etl.monitoringLocation;
 
-import gov.acwi.wqp.etl.Application;
-import gov.acwi.wqp.etl.EtlConstantUtils;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocationRowMapper;
+import javax.sql.DataSource;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -24,7 +22,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 
-import javax.sql.DataSource;
+import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
+import gov.acwi.wqp.etl.nwis.NwisMonitoringLocationRowMapper;
  
 
 @Configuration

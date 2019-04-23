@@ -1,14 +1,15 @@
 package gov.acwi.wqp.etl.result;
 
-import gov.acwi.wqp.etl.ConfigurationService;
-import gov.acwi.wqp.etl.nwis.NwisResult;
+import java.util.AbstractMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
-import java.util.Map;
+import gov.acwi.wqp.etl.ConfigurationService;
+import gov.acwi.wqp.etl.nwis.NwisResult;
 
 @Component
 public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
