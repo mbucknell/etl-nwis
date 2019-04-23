@@ -53,7 +53,7 @@ public class TransformOrgData {
 		return new JdbcCursorItemReaderBuilder<NwisDistrictCdsByHost>()
 				.dataSource(dataSourceNwis)
 				.name("organizationReader")
-				.sql("select * from nwis_district_cds_by_host")
+				.sql("select distinct * from nwis_district_cds_by_host")
 				.rowMapper(new NwisDistrictCdsByHostRowMapper())
 				.build();
 	}
