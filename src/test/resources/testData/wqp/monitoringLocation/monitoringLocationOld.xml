@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dataset>
+    <station_swap_nwis data_source_id="2"
+        data_source="NWIS" station_id="891038" site_id="USGS-04028100"
+        organization="USGS-MI" site_type="Stream" huc="040103020107"
+        governmental_unit_code="US:26:053"
+        station_name="MONTREAL RIVER NEAR IRONWOOD, MI"
+        organization_name="USGS Michigan Water Science Center"
+        station_type_name="Stream" latitude="46.5071696"
+        longitude="-90.2298989"
+        geopositioning_method="Interpolated from MAP."
+        hdatum_id_code="NAD83" drain_area_value="80.6"
+        drain_area_unit="sq mi" geoposition_accy_value="1"
+        geoposition_accy_unit="seconds"></station_swap_nwis>
+    <station_swap_nwis data_source_id="2"
+        data_source="NWIS" station_id="899058"
+        site_id="USGS-463026090133301" organization="USGS-MI"
+        site_type="Well" huc="040103020105"
+        governmental_unit_code="US:26:053"
+        station_name="48N 47W 31DCDC 01 GOGEBIC CO (BIG SPRINGS WELL)"
+        organization_name="USGS Michigan Water Science Center"
+        station_type_name="Well" latitude="46.5071696"
+        longitude="-90.2260099" map_scale="25000"
+        geopositioning_method="Interpolated from MAP."
+        hdatum_id_code="NAD83" elevation_value="1198"
+        elevation_unit="feet"
+        elevation_method="Interpolated from topographic map."
+        vdatum_id_code="NGVD29" geoposition_accy_value="1"
+        geoposition_accy_unit="seconds" vertical_accuracy_value="5"
+        vertical_accuracy_unit="feet" construction_date="19530801"
+        well_depth_value="115" well_depth_unit="ft"
+        hole_depth_value="115" hole_depth_unit="ft"></station_swap_nwis>
+</dataset>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<dataset>
+    <nwis_wqx_rpt_lev_cd rpt_lev_cd="IRL"
+        rpt_lev_nm="Interim reporting level"
+        wqx_rpt_lev_nm="Estimated Detection Level"></nwis_wqx_rpt_lev_cd>
+    <nwis_wqx_rpt_lev_cd rpt_lev_cd="LRL"
+        rpt_lev_nm="Laboratory reporting level"
+        wqx_rpt_lev_nm="Laboratory Reporting Level"></nwis_wqx_rpt_lev_cd>
+    <nwis_wqx_rpt_lev_cd rpt_lev_cd="LT-MDL"
+        rpt_lev_nm="Long term method detection level"
+        wqx_rpt_lev_nm="Long Term Method Detection Level"></nwis_wqx_rpt_lev_cd>
+    <nwis_wqx_rpt_lev_cd rpt_lev_cd="MDL"
+        rpt_lev_nm="Method detection limit"
+        wqx_rpt_lev_nm="Method Detection Limit (MDL)"></nwis_wqx_rpt_lev_cd>
+    <nwis_wqx_rpt_lev_cd rpt_lev_cd="MRL"
+        rpt_lev_nm="Minimum reporting level"
+        wqx_rpt_lev_nm="Lower Reporting Limit"></nwis_wqx_rpt_lev_cd>
+    <nwis_wqx_rpt_lev_cd rpt_lev_cd="SSMDC"
+        rpt_lev_nm="Sample-specific min detect concentration"
+        wqx_rpt_lev_nm="Sample-specific Minimum Detectable Concentration"></nwis_wqx_rpt_lev_cd>
+</dataset>

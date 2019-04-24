@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<dataset>
+    <fxd parm_cd="01300" fxd_va="0" fxd_nm="None" fxd_tx="None"
+        fxd_init_dt="1983-01-01 00:00:00" fxd_init_nm="jbriggs"
+        fxd_rev_dt="1984-03-12 00:00:00" fxd_rev_nm="jbriggs"></fxd>
+    <fxd parm_cd="01300" fxd_va="1" fxd_nm="Mild" fxd_tx="Mild"
+        fxd_init_dt="1983-01-01 00:00:00" fxd_init_nm="jbriggs"
+        fxd_rev_dt="1984-03-12 00:00:00" fxd_rev_nm="jbriggs"></fxd>
+    <fxd parm_cd="01300" fxd_va="2" fxd_nm="Moderate"
+        fxd_tx="Moderate" fxd_init_dt="1983-01-01 00:00:00"
+        fxd_init_nm="jbriggs" fxd_rev_dt="1984-03-12 00:00:00"
+        fxd_rev_nm="jbriggs"></fxd>
+    <fxd parm_cd="01300" fxd_va="3" fxd_nm="Serious"
+        fxd_tx="Serious" fxd_init_dt="1983-01-01 00:00:00"
+        fxd_init_nm="jbriggs" fxd_rev_dt="1984-03-12 00:00:00"
+        fxd_rev_nm="jbriggs"></fxd>
+    <fxd parm_cd="01300" fxd_va="4" fxd_nm="Extreme"
+        fxd_tx="Extreme" fxd_init_dt="1983-01-01 00:00:00"
+        fxd_init_nm="jbriggs" fxd_rev_dt="1984-03-12 00:00:00"
+        fxd_rev_nm="jbriggs"></fxd>
+</dataset>

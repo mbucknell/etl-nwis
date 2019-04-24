@@ -1,1 +1,11 @@
 /.project
+/.idea
+/.settings
+/.classpath
+/target
+/build/
+/application.yml
+/application_it.yml
+local_setup.sh
+*.iml
+src/test/resources/META-INF/

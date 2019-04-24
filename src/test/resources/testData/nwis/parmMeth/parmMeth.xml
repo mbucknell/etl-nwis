@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<dataset>
+    <parm_meth parm_cd="00191" meth_cd="ALGOR"
+        parm_meth_rnd_tx="5433333335" parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2009-12-29 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2009-12-29 00:00:00" parm_meth_vld_fg="false"
+        multiplier="0.001"></parm_meth>
+    <parm_meth parm_cd="00301" meth_cd="ALGOR"
+        parm_meth_lgcy_cd="C" parm_meth_rnd_tx="0001233330"
+        parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2006-03-27 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2009-12-29 00:00:00" parm_meth_vld_fg="false"
+        multiplier="1."></parm_meth>
+    <parm_meth parm_cd="00605" meth_cd="ALGOR"
+        parm_meth_lgcy_cd="C" parm_meth_rnd_tx="0222222222"
+        parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2006-03-27 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2009-12-29 00:00:00" parm_meth_vld_fg="false"
+        multiplier="0.01"></parm_meth>
+    <parm_meth parm_cd="00620" meth_cd="ALGOR"
+        parm_meth_lgcy_cd="C" parm_meth_rnd_tx="3333333333"
+        parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2006-03-27 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2010-02-22 00:00:00" parm_meth_vld_fg="false"
+        multiplier="0.001"></parm_meth>
+    <parm_meth parm_cd="00900" meth_cd="ALGOR"
+        parm_meth_lgcy_cd="C" parm_meth_rnd_tx="0223333332"
+        parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2006-03-27 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2010-02-22 00:00:00" parm_meth_vld_fg="false"
+        multiplier="0.01"></parm_meth>
+    <parm_meth parm_cd="70303" meth_cd="ALGOR"
+        parm_meth_lgcy_cd="C" parm_meth_rnd_tx="0223333332"
+        parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2006-03-27 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2009-12-29 00:00:00" parm_meth_vld_fg="false"
+        multiplier="0.01"></parm_meth>
+    <parm_meth parm_cd="71845" meth_cd="ALGOR"
+        parm_meth_lgcy_cd="C" parm_meth_rnd_tx="3333333333"
+        parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2006-03-27 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2010-02-22 00:00:00" parm_meth_vld_fg="false"
+        multiplier="0.001"></parm_meth>
+    <parm_meth parm_cd="00405" meth_cd="ALGOR"
+        parm_meth_lgcy_cd="C" parm_meth_rnd_tx="0012233331"
+        parm_meth_init_nm="pearsall"
+        parm_meth_init_dt="2006-03-27 00:00:00"
+        parm_meth_rev_nm="pearsall"
+        parm_meth_rev_dt="2009-12-29 00:00:00" parm_meth_vld_fg="false"
+        multiplier="0.1"></parm_meth>
+</dataset>

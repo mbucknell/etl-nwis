@@ -1,0 +1,25 @@
+spring:
+  batch:
+    job:
+      enabled: false
+    initialize-schema: always
+  
+  datasource-wqp:
+    url: jdbc:postgresql://${WQP_DATABASE_ADDRESS}:${WQP_DATABASE_PORT}/${WQP_DATABASE_NAME}
+    username: ${WQP_SCHEMA_OWNER_USERNAME}
+    password: ${WQP_SCHEMA_OWNER_PASSWORD}
+   
+  datasource-nwis:
+    url: jdbc:postgresql://${NWIS_DATABASE_HOST}:${NWIS_DATABASE_PORT}/${NWIS_DATABASE_NAME}
+    username: ${NWIS_OWNER_USERNAME}
+    password: ${NWIS_OWNER_PASSWORD}  
+   
+  datasource-mysqlnwis:
+    url: jdbc:mysql://${MYSQL_DATABASE_ADDRESS}:${MYSQL_DATABASE_PORT}/${MYSQL_DATABASE_NAME}?serverTimezone=CST6CDT
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    
+  liquibase:
+    parameters:
+      WQP_SCHEMA_NAME: ${WQP_SCHEMA_NAME}
+      ETL_OWNER_USERNAME: ${ETL_OWNER_USERNAME}  

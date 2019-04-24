@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<dataset>
+    <altitude_method code="I" name="IfSAR"
+        sort_order="5"
+        description="Interferometric Synthetic Aperture Radar, airplane"
+        valid_flag="true"></altitude_method>
+    <altitude_method code="G" name="GPS" sort_order="4"
+        description="Global Positioning System." valid_flag="false"></altitude_method>
+    <altitude_method code="F" name="SGPS" sort_order="3"
+        description="Survey-grade GPSF" valid_flag="true"></altitude_method>
+    <altitude_method code="D" name="DGPS" sort_order="2"
+        description="Differentially corrected Global Positioning System."
+        valid_flag="true"></altitude_method>
+    <altitude_method code="A" name="Altimeter"
+        sort_order="1" description="Altimeter." valid_flag="true"></altitude_method>
+    <altitude_method code="Z" name="GNSS4-Qual Lvl 4"
+        sort_order="15"
+        description="GNSS4 - Level 4 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></altitude_method>
+    <altitude_method code="Y" name="GNSS3-Qual Lvl 3"
+        sort_order="14"
+        description="GNSS3 - Level 3 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></altitude_method>
+    <altitude_method code="X" name="GNSS2-Qual Lvl 2"
+        sort_order="13"
+        description="GNSS2 - Level 2 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></altitude_method>
+    <altitude_method code="W" name="GNSS1-Qual Lvl 1"
+        sort_order="12"
+        description="GNSS1 - Level 1 Quality Survey Grade Global Navigation Satellite System"
+        valid_flag="true"></altitude_method>
+    <altitude_method code="J" name="LiDAR"
+        sort_order="6"
+        description="Light Detection And Ranging, airplane"
+        valid_flag="true"></altitude_method>
+    <altitude_method code="U" name="Unknown"
+        sort_order="11" description="Unknown." valid_flag="false"></altitude_method>
+    <altitude_method code="R" name="Reported"
+        sort_order="10" description="Reported method of determination."
+        valid_flag="true"></altitude_method>
+    <altitude_method code="N" name="DEM" sort_order="9"
+        description="Interpolated from Digital Elevation Model"
+        valid_flag="true"></altitude_method>
+    <altitude_method code="M" name="Map" sort_order="8"
+        description="Interpolated from topographic map." valid_flag="true"></altitude_method>
+    <altitude_method code="L" name="Level"
+        sort_order="7" description="Level or other surveyed method."
+        valid_flag="true"></altitude_method>
+</dataset>

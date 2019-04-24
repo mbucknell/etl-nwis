@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<dataset>
+    <lat_long_accuracy code="1" name="Tenth second"
+        sort_order="6"
+        description="Accurate to + or - .1  sec (Differentially-Corrected GPS)."
+        valid_flag="true" accuracy=".1" unit="seconds"></lat_long_accuracy>
+    <lat_long_accuracy code="5" name="Half second"
+        sort_order="7"
+        description="Accurate to + or - .5  sec (PLGR/PPS GPS)."
+        valid_flag="true" accuracy=".5" unit="seconds"></lat_long_accuracy>
+    <lat_long_accuracy code="B" name="Level 1 SGPS"
+        sort_order="1" description="Level 1 survey-grade GPS"
+        valid_flag="true" accuracy="Unknown" unit="Unknown"></lat_long_accuracy>
+    <lat_long_accuracy code="C" name="Level 2 SGPS"
+        sort_order="2" description="Level 2 survey-grade GPS"
+        valid_flag="true" accuracy="Unknown" unit="Unknown"></lat_long_accuracy>
+    <lat_long_accuracy code="D" name="Level 3 SGPS"
+        sort_order="3" description="Level 3 survey-grade GPS"
+        valid_flag="true" accuracy="Unknown" unit="Unknown"></lat_long_accuracy>
+    <lat_long_accuracy code="E" name="Level 4 SGPS"
+        sort_order="4" description="Level 4 survey-grade GPS"
+        valid_flag="true" accuracy="Unknown" unit="Unknown"></lat_long_accuracy>
+    <lat_long_accuracy code="F" name="5 seconds"
+        sort_order="10" description="Accurate to + or - 5   sec."
+        valid_flag="true" accuracy="5" unit="seconds"></lat_long_accuracy>
+    <lat_long_accuracy code="H" name="Hndrth second"
+        sort_order="5"
+        description="Accurate to + or - .01 sec (Differentially-Corrected GPS)."
+        valid_flag="true" accuracy=".01" unit="seconds"></lat_long_accuracy>
+    <lat_long_accuracy code="M" name="Minute"
+        sort_order="12" description="Accurate to + or - 1   min."
+        valid_flag="true" accuracy="1" unit="minutes"></lat_long_accuracy>
+    <lat_long_accuracy code="R" name="3 seconds"
+        sort_order="9"
+        description="Accurate to + or - 3   sec (SPS GPS)."
+        valid_flag="true" accuracy="3" unit="seconds"></lat_long_accuracy>
+    <lat_long_accuracy code="S" name="Second"
+        sort_order="8" description="Accurate to + or - 1   sec."
+        valid_flag="true" accuracy="1" unit="seconds"></lat_long_accuracy>
+    <lat_long_accuracy code="T" name="10 seconds"
+        sort_order="11" description="Accurate to + or - 10  sec."
+        valid_flag="true" accuracy="10" unit="seconds"></lat_long_accuracy>
+    <lat_long_accuracy code="U" name="Unknown"
+        sort_order="13" description="Unknown or unspecified."
+        valid_flag="true" accuracy="Unknown" unit="Unknown"></lat_long_accuracy>
+</dataset>
