@@ -119,13 +119,13 @@
                 <configuration>
                     <environmentVariables>
                         <WQP_DATABASE_ADDRESS>127.0.0.1</WQP_DATABASE_ADDRESS>
-                        <WQP_DATABASE_PORT>5434</WQP_DATABASE_PORT>
+                        <WQP_DATABASE_PORT>5437</WQP_DATABASE_PORT>
                         <WQP_DATABASE_NAME>wqp_db</WQP_DATABASE_NAME>
                         <WQP_SCHEMA_NAME>wqp</WQP_SCHEMA_NAME>
                         <WQP_SCHEMA_OWNER_USERNAME>wqp_core</WQP_SCHEMA_OWNER_USERNAME>
                         <WQP_SCHEMA_OWNER_PASSWORD>changeMe</WQP_SCHEMA_OWNER_PASSWORD>
                         <NWIS_DATABASE_ADDRESS>127.0.0.1</NWIS_DATABASE_ADDRESS>
-                        <NWIS_DATABASE_PORT>5434</NWIS_DATABASE_PORT>
+                        <NWIS_DATABASE_PORT>5437</NWIS_DATABASE_PORT>
                         <NWIS_DATABASE_NAME>wqp_db</NWIS_DATABASE_NAME>
                         <NWIS_SCHEMA_OWNER_USERNAME>nwis_ws_star</NWIS_SCHEMA_OWNER_USERNAME>
                         <NWIS_SCHEMA_OWNER_PASSWORD>changeMe</NWIS_SCHEMA_OWNER_PASSWORD>
@@ -174,7 +174,7 @@
                             <name>usgswma/wqp_db:etl</name>
                             <run>
                                 <ports>
-                                    <port>5434:5432</port>
+                                    <port>5437:5432</port>
                                 </ports>
                                 <env>
                                     <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>
