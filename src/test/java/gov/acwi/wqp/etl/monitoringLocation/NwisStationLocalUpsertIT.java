@@ -31,9 +31,9 @@ public class NwisStationLocalUpsertIT extends NwisBaseFlowIT {
 	}
 	
 	@Test
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sitefile/sitefileUpdate.xml")
-	@ExpectedDatabase(connection = "nwis", value="classpath:/testResult/nwis/nwisStationLocal/nwisStationLocalUpdate.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/nwisStationLocal/updateTest/csv/")
+	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sitefile/updateTest/csv/")
+	@ExpectedDatabase(connection = "nwis", value="classpath:/testResult/nwis/nwisStationLocal/updateTest/csv/", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void updateNwisStationLocalStepTest() {
 		try {
 			JobExecution jobExecution = jobLauncherTestUtils.launchStep("upsertNwisStationLocalStep", testJobParameters);
