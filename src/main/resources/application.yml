@@ -10,9 +10,9 @@ spring:
     password: ${WQP_SCHEMA_OWNER_PASSWORD}
    
   datasource-nwis:
-    url: jdbc:postgresql://${NWIS_DATABASE_HOST}:${NWIS_DATABASE_PORT}/${NWIS_DATABASE_NAME}
-    username: ${NWIS_OWNER_USERNAME}
-    password: ${NWIS_OWNER_PASSWORD}  
+    url: jdbc:postgresql://${NWIS_DATABASE_ADDRESS}:${NWIS_DATABASE_PORT}/${NWIS_DATABASE_NAME}
+    username: ${NWIS_SCHEMA_OWNER_USERNAME}
+    password: ${NWIS_SCHEMA_OWNER_PASSWORD}
    
   datasource-mysqlnwis:
     url: jdbc:mysql://${MYSQL_DATABASE_ADDRESS}:${MYSQL_DATABASE_PORT}/${MYSQL_DATABASE_NAME}?serverTimezone=CST6CDT

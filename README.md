@@ -1,5 +1,6 @@
 # etl\-nwis
 
+[![Build Status](https://travis-ci.org/NWQMC/etl-nwis.svg?branch=master)](https://travis-ci.org/NWQMC/etl-nwis)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9cfcbdbc3cb64ca5bc2f2b90da8f63d7)](https://www.codacy.com/app/usgs_wma_dev/etl-nwis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=NWQMC/etl-nwis&amp;utm_campaign=Badge_Grade)
 
 ETL Water Quality Data from the NWIS System
@@ -12,17 +13,17 @@ This ETL is in the process of being transformed to a Java project using Spring B
 Create an application.yml file in the project directory containing the following (shown are example values - they should match the values you used in creating the etlDB):
 
 ```yaml
-WQP_DATABASE_HOST: <localhost>
+WQP_DATABASE_ADDRESS: <localhost>
 WQP_DATABASE_PORT: <5437>
 WQP_DATABASE_NAME: <wqp_db>
 WQP_SCHEMA_OWNER_USERNAME: <wqp_core>
 WQP_SCHEMA_OWNER_PASSWORD: <changeme>
 
-NWIS_DATABASE_HOST: <localhost>
+NWIS_DATABASE_ADDRESS: <localhost>
 NWIS_DATABASE_PORT: <5437>
 NWIS_DATABASE_NAME: <wqp_db>
-NWIS_OWNER_USERNAME: <nwis_ws_star>
-NWIS_OWNER_PASSWORD: <changeme>
+NWIS_SCHEMA_OWNER_USERNAME: <nwis_ws_star>
+NWIS_SCHEMA_OWNER_PASSWORD: <changeme>
 
 # Currently I have to open a tunnel to the MYSQL db at EROS. That's why
 # the address is localhost. The tunnel is opened as follows: ssh -L 1234:localhost:3306 <actual_database_address
@@ -34,6 +35,12 @@ MYSQL_PASSWORD: <changeme>
       
 WQP_SCHEMA_NAME: <wqp>
 ETL_OWNER_USERNAME: <nwis_ws_star>
+GEO_SCHEMA_NAME: <nwis>
+ETL_DATA_SOURCE_ID: <2>
+ETL_DATA_SOURCE: <NWIS>
+QWPORTAL_SUMMARY_ETL: <true>
+NWIS_OR_EPA: N
+
 ```
 
 ## Ant based ETL
