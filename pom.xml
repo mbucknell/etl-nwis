@@ -133,8 +133,8 @@
                         <GEO_SCHEMA_NAME>nwis</GEO_SCHEMA_NAME>
                         <ETL_DATA_SOURCE_ID>2</ETL_DATA_SOURCE_ID>
                         <ETL_DATA_SOURCE>NWIS</ETL_DATA_SOURCE>
-                        <QWPORTAL_SUMMARY_ETL>false</QWPORTAL_SUMMARY_ETL>
-                        <NWIS_OR_EPA></NWIS_OR_EPA>
+                        <QWPORTAL_SUMMARY_ETL>true</QWPORTAL_SUMMARY_ETL>
+                        <NWIS_OR_EPA>N</NWIS_OR_EPA>
                     </environmentVariables>
                 </configuration>
                 <executions>
