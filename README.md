@@ -1,5 +1,6 @@
 # etl\-nwis
 
+[![Build Status](https://travis-ci.org/NWQMC/etl-nwis.svg?branch=master)](https://travis-ci.org/NWQMC/etl-nwis)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9cfcbdbc3cb64ca5bc2f2b90da8f63d7)](https://www.codacy.com/app/usgs_wma_dev/etl-nwis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=NWQMC/etl-nwis&amp;utm_campaign=Badge_Grade)
 
 ETL Water Quality Data from the NWIS System
