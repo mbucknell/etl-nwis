@@ -24,8 +24,8 @@ import org.springframework.util.FileCopyUtils;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
-import gov.acwi.wqp.etl.nwis.NwisActivity;
-import gov.acwi.wqp.etl.nwis.NwisActivityRowMapper;
+import gov.acwi.wqp.etl.nwis.activity.NwisActivity;
+import gov.acwi.wqp.etl.nwis.activity.NwisActivityRowMapper;
 
 @Configuration
 public class TransformActivity {

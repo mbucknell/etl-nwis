@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.nwis;
+package gov.acwi.wqp.etl.nwis.nwisDistrictCdsByHost;
 
 import java.time.LocalDate;
 

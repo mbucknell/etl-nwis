@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHostRowMapper;
+import gov.acwi.wqp.etl.nwis.nwisDistrictCdsByHost.NwisDistrictCdsByHost;
+import gov.acwi.wqp.etl.nwis.nwisDistrictCdsByHost.NwisDistrictCdsByHostRowMapper;
 
 @Configuration
 public class TransformOrgData {

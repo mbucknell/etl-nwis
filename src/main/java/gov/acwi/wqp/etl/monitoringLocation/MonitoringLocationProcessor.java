@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import gov.acwi.wqp.etl.BaseProcessor;
 import gov.acwi.wqp.etl.ConfigurationService;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
+import gov.acwi.wqp.etl.nwis.monitoringLocation.NwisMonitoringLocation;
 
 @Component
 public class MonitoringLocationProcessor extends BaseProcessor implements ItemProcessor<NwisMonitoringLocation, MonitoringLocation> {
