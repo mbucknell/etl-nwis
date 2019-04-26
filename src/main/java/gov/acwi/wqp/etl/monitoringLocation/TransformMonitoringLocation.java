@@ -24,8 +24,8 @@ import org.springframework.util.FileCopyUtils;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocation;
-import gov.acwi.wqp.etl.nwis.NwisMonitoringLocationRowMapper;
+import gov.acwi.wqp.etl.nwis.monitoringLocation.NwisMonitoringLocation;
+import gov.acwi.wqp.etl.nwis.monitoringLocation.NwisMonitoringLocationRowMapper;
  
 
 @Configuration

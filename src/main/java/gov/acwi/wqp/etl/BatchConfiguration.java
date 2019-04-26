@@ -19,6 +19,10 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("mySqlNwisExtractFlow")
 	private Flow mySqlNwisExtractFlow;
+
+	@Autowired
+	@Qualifier("sampleParameterFlow")
+	private Flow sampleParameterFlow;
 	
 	@Autowired
 	@Qualifier("orgDataFlow")
@@ -57,6 +61,7 @@ public class BatchConfiguration {
 	public Job nwisEtl() {
 		return jobBuilderFactory.get("WQP_NWIS_ETL")
 				.start(mySqlNwisExtractFlow)
+				.next(sampleParameterFlow)
 				.next(orgDataFlow)
 				.next(monitoringLocationFlow)
 				.next(activityFlow)

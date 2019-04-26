@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import gov.acwi.wqp.etl.ConfigurationService;
-import gov.acwi.wqp.etl.nwis.NwisResult;
+import gov.acwi.wqp.etl.nwis.result.NwisResult;
 
 @Component
 public class ResultProcessor implements ItemProcessor<NwisResult, Result>{

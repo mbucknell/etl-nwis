@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import gov.acwi.wqp.etl.ConfigurationService;
-import gov.acwi.wqp.etl.nwis.NwisDistrictCdsByHost;
+import gov.acwi.wqp.etl.nwis.nwisDistrictCdsByHost.NwisDistrictCdsByHost;
 
 @Component
 public class OrgDataProcessor implements ItemProcessor<NwisDistrictCdsByHost, OrgData> {

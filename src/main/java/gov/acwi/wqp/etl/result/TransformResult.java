@@ -24,8 +24,8 @@ import org.springframework.util.FileCopyUtils;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
-import gov.acwi.wqp.etl.nwis.NwisResult;
-import gov.acwi.wqp.etl.nwis.NwisResultRowMapper;
+import gov.acwi.wqp.etl.nwis.result.NwisResult;
+import gov.acwi.wqp.etl.nwis.result.NwisResultRowMapper;
 
 @Configuration
 public class TransformResult {

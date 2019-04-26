@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.nwis;
+package gov.acwi.wqp.etl.nwis.result;
 
 import java.time.LocalDate;
 

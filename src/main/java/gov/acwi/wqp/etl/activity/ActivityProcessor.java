@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import gov.acwi.wqp.etl.BaseProcessor;
 import gov.acwi.wqp.etl.ConfigurationService;
-import gov.acwi.wqp.etl.nwis.NwisActivity;
+import gov.acwi.wqp.etl.nwis.activity.NwisActivity;
 
 @Component
 public class ActivityProcessor extends BaseProcessor implements ItemProcessor<NwisActivity, Activity> {
