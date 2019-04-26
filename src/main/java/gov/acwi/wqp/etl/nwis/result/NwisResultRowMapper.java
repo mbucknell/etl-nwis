@@ -123,7 +123,7 @@ public class NwisResultRowMapper implements RowMapper<NwisResult> {
 		nwisResult.setActivityLowerDepthUnit(rs.getString(ACTIVITY_LOWER_DEPTH_UNIT_COLUMN_NAME));
 		nwisResult.setProjectId(rs.getString(PROJECT_ID_COLUMN_NAME));
 		nwisResult.setActivityConductingOrg(rs.getString(ACTIVITY_CONDUCTING_ORG_COLUMN_NAME));
-		nwisResult.setActivityComment(rs.getString(ACTIVITY_COLUMN_NAME));
+		nwisResult.setActivityComment(rs.getString(ACTIVITY_COMMENT_COLUMN_NAME));
 		nwisResult.setSampleAqfrName(rs.getString(SAMPLE_AQFR_NAME_COLUMN_NAME));
 		nwisResult.setHydrologicConditionName(rs.getString(HYDROLOGIC_CONDITION_NAME_COLUMN_NAME));
 		nwisResult.setHydrologicEventName(rs.getString(HYDROLOGIC_EVENT_NAME_COLUMN_NAME));
