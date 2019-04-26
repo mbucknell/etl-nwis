@@ -178,6 +178,7 @@
                                     <port>5437:5432</port>
                                 </ports>
                                 <env>
+                                    <CONTEXTS>external,ci,schemaLoad</CONTEXTS>
                                     <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>
                                     <WQP_DATABASE_ADDRESS>127.0.0.1</WQP_DATABASE_ADDRESS>
                                     <WQP_DATABASE_NAME>wqp_db</WQP_DATABASE_NAME>
