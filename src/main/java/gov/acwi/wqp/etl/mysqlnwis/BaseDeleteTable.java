@@ -20,7 +20,6 @@ public abstract class BaseDeleteTable implements Tasklet {
 	public static final String FUNCTION_NAME = "truncate_table";
 	public static final String SCHEMA_NAME = "nwis";
 	
-	@Autowired
 	public BaseDeleteTable(JdbcTemplate jdbcTemplate, String tableName) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.tableName = tableName;
