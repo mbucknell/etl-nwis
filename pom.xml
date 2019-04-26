@@ -25,11 +25,13 @@
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
+        <!--
         <repository>
             <id>WMA</id>
             <name>WMA Artifactory</name>
             <url>${wma.maven.url}/wma-maven-centralized/</url>
         </repository>
+        -->
     </repositories>
 
     <parent>
