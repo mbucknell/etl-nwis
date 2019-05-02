@@ -125,6 +125,9 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
 
                 <configuration>
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExcludes>com.oracle:ojdbc6</classpathDependencyExcludes>
+                    </classpathDependencyExcludes>
                     <environmentVariables>
                         <WQP_DATABASE_ADDRESS>127.0.0.1</WQP_DATABASE_ADDRESS>
                         <WQP_DATABASE_PORT>5437</WQP_DATABASE_PORT>
