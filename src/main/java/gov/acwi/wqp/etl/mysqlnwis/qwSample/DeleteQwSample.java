@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import gov.acwi.wqp.etl.mysqlnwis.BaseDeleteTable;
+import gov.acwi.wqp.etl.BaseDeleteNwisTable;
 
 @Component
 @StepScope
-public class DeleteQwSample extends BaseDeleteTable {
+public class DeleteQwSample extends BaseDeleteNwisTable {
 	
 	@Autowired
 	public DeleteQwSample(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {

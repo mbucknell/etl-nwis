@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.mysqlnwis;
+package gov.acwi.wqp.etl;
 
 import java.util.HashMap;
 
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 
-public abstract class BaseDeleteTable implements Tasklet {
+public abstract class BaseDeleteNwisTable implements Tasklet {
 
 	
 	private final JdbcTemplate jdbcTemplate;
@@ -20,7 +20,7 @@ public abstract class BaseDeleteTable implements Tasklet {
 	public static final String FUNCTION_NAME = "truncate_table";
 	public static final String SCHEMA_NAME = "nwis";
 	
-	public BaseDeleteTable(JdbcTemplate jdbcTemplate, String tableName) {
+	public BaseDeleteNwisTable(JdbcTemplate jdbcTemplate, String tableName) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.tableName = tableName;
 	}

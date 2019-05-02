@@ -18,6 +18,11 @@ spring:
     url: jdbc:mysql://${MYSQL_DATABASE_ADDRESS}:${MYSQL_DATABASE_PORT}/${MYSQL_DATABASE_NAME}?serverTimezone=CST6CDT
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
+
+  datasource-nwqdatachecks:
+    url: jdbc:oracle:thin:@//${NWQ_DATA_CHECKS_DATABASE_ADDRESS}:${NWQ_DATA_CHECKS_DATABASE_PORT}/${NWQ_DATA_CHECKS_DATABASE_NAME}
+    username: ${NWQ_DATA_CHECKS_USERNAME}
+    password: ${NWQ_DATA_CHECKS_PASSWORD}
     
   liquibase:
     parameters:

@@ -70,7 +70,6 @@ public class TransformQwSample {
 						+ ":sampleMd, :qwSampleMd)")
 				.dataSource(dataSourceNwis)
 				.build();
-						
 	}
 	
 }

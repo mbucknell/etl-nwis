@@ -59,4 +59,15 @@ public class DbConfig {
 	public DataSource dataSourceMysqlnwis() {
 		return dataSourcePropertiesMysqlnwis().initializeDataSourceBuilder().build();
 	}
+
+	@Bean
+	@ConfigurationProperties(prefix="spring.datasource-nwqdatachecks")
+	public DataSourceProperties dataSourcePropertiesNwqDataChecks() {
+		return new DataSourceProperties();
+	}
+
+	@Bean
+	public DataSource dataSourceNwqDataChecks() {
+		return dataSourcePropertiesNwqDataChecks().initializeDataSourceBuilder().build();
+	}
 }

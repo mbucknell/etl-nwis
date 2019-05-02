@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.mysqlnwis.sitefile;
+package gov.acwi.wqp.etl.nwqDataChecks.nawqaSites;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +10,11 @@ import gov.acwi.wqp.etl.BaseDeleteNwisTable;
 
 @Component
 @StepScope
-public class DeleteSitefile extends BaseDeleteNwisTable {
-	
-	@Autowired
-	public DeleteSitefile(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
-		super(jdbcTemplate, "sitefile");
-	}
+public class DeleteNawqaSites extends BaseDeleteNwisTable {
 
+    @Autowired
+    public DeleteNawqaSites(@Qualifier("jdbcTemplateNwis") JdbcTemplate jdbcTemplate) {
+
+        super(jdbcTemplate, "nawqa_sites");
+    }
 }
