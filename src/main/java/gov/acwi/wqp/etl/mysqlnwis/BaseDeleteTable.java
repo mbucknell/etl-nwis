@@ -6,7 +6,6 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 
@@ -17,8 +16,8 @@ public abstract class BaseDeleteTable implements Tasklet {
 	private String tableName;
 
 	
-	public static final String FUNCTION_NAME = "truncate_table";
-	public static final String SCHEMA_NAME = "nwis";
+	private static final String FUNCTION_NAME = "truncate_table";
+	private static final String SCHEMA_NAME = "nwis";
 	
 	public BaseDeleteTable(JdbcTemplate jdbcTemplate, String tableName) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -29,7 +28,7 @@ public abstract class BaseDeleteTable implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withSchemaName(SCHEMA_NAME).withFunctionName(FUNCTION_NAME);
 		
-		HashMap<String, Object> params = new HashMap<String, Object>();
+		HashMap<String, Object> params = new HashMap<>();
 		params.put("table_name", tableName);
 
 		call.execute(params);
