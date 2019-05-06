@@ -35,7 +35,7 @@ public class TransformSitefile {
 		return new JdbcCursorItemReaderBuilder<Sitefile>()
 				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwSampleReader")
-				.sql("select * from SITEFILE limit 2000") //TODO remove limit
+				.sql("select * from SITEFILE")
 				.rowMapper(new SitefileRowMapper())
 				.build();
 	}

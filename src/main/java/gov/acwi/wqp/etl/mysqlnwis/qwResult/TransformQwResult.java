@@ -35,7 +35,7 @@ public class TransformQwResult {
 		return new JdbcCursorItemReaderBuilder<QwResult>()
 				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwResultReader")
-				.sql("select * from QW_RESULT limit 2000") //TODO remove limit
+				.sql("select * from QW_RESULT")
 				.rowMapper(new QwResultRowMapper())
 				.build();
 	}

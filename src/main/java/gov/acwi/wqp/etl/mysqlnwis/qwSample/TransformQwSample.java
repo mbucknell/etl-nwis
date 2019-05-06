@@ -35,7 +35,7 @@ public class TransformQwSample {
 		return new JdbcCursorItemReaderBuilder<QwSample>()
 				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwSampleReader")
-				.sql("select * from QW_SAMPLE limit 2000") //TODO remove limit
+				.sql("select * from QW_SAMPLE")
 				.rowMapper(new QwSampleRowMapper())
 				.build();
 	}
