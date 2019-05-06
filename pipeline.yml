@@ -1,0 +1,3 @@
+artifactoryPath: "wqp"
+dockerImageName: "etl-nwis"
+gitlabPath: "wma/docker/wqp"
