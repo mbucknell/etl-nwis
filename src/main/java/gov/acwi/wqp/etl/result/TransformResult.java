@@ -117,7 +117,7 @@ public class TransformResult {
 	public Step transformResultStep() throws Exception{
 		return stepBuilderFactory
 				.get("transformResultStep")
-				.<NwisResult, Result>chunk(10)
+				.<NwisResult, Result>chunk(100000)
 				.reader(resultReader())
 				.processor(processor)
 				.writer(resultWriter())
