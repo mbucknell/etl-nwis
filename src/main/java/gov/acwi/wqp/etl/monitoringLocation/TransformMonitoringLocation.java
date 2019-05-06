@@ -99,7 +99,7 @@ public class TransformMonitoringLocation {
 	public Step transformMonitoringLocationStep() throws Exception{
 		return stepBuilderFactory
 				.get("transformMonitoringLocationStep")
-				.<NwisMonitoringLocation, MonitoringLocation>chunk(10)
+				.<NwisMonitoringLocation, MonitoringLocation>chunk(10000)
 				.reader(monitoringLocationReader())
 				.processor(processor)
 				.writer(monitoringLocationWriter())

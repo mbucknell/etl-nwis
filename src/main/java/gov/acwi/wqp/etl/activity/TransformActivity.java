@@ -98,7 +98,7 @@ public class TransformActivity {
 	public Step transformActivityStep() throws Exception{
 		return stepBuilderFactory
 				.get("transformActivityStep")
-				.<NwisActivity, Activity>chunk(10)
+				.<NwisActivity, Activity>chunk(10000)
 				.reader(activityReader())
 				.processor(processor)
 				.writer(activityWriter())
