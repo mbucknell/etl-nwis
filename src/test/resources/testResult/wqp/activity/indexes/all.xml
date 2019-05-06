@@ -2,7 +2,12 @@
 <dataset>
     <pg_indexes
         tablename="activity_swap_nwis"
-        indexname="activity_swap_nwis_organization"
-        indexdef="CREATE INDEX activity_swap_nwis_organization ON wqp.activity_swap_nwis USING btree (organization) WITH (fillfactor='100')"
+        indexname="activity_swap_nwis_activity"
+        indexdef="CREATE INDEX activity_swap_nwis_activity ON wqp.activity_swap_nwis USING btree (activity) WITH (fillfactor='100')"
      />
+    <pg_indexes
+            tablename="activity_swap_nwis"
+            indexname="activity_swap_nwis_organization"
+            indexdef="CREATE INDEX activity_swap_nwis_organization ON wqp.activity_swap_nwis USING btree (organization) WITH (fillfactor='100')"
+    />
 </dataset>
