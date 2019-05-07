@@ -7,7 +7,7 @@ import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.support.PassThroughItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +26,7 @@ public class QwSampleTransformation {
 	
 	@Autowired
 	@Qualifier("qwSampleReader")
-	private JdbcCursorItemReader<QwSample> qwSampleReader;
+	private JdbcPagingItemReader<QwSample> qwSampleReader;
 	
 	@Autowired
 	@Qualifier("qwSampleProcessor")
