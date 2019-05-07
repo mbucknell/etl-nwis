@@ -27,6 +27,10 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("orgDataFlow")
 	private Flow orgDataFlow;
+
+	@Autowired
+	@Qualifier("projectDataFlow")
+	private Flow projectDataFlow;
 	
 	@Autowired
 	@Qualifier("monitoringLocationFlow")
@@ -63,6 +67,7 @@ public class BatchConfiguration {
 				.start(mySqlNwisExtractFlow)
 				.next(sampleParameterFlow)
 				.next(orgDataFlow)
+				.next(projectDataFlow)
 				.next(monitoringLocationFlow)
 				.next(activityFlow)
 				.next(resultFlow)
