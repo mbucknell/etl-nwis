@@ -47,7 +47,7 @@ public class QwResultTransformation {
 	public Step transformQwResultStep() {
 		return stepBuilderFactory
 				.get("transformQwResultStep")
-				.<QwResult, QwResult> chunk(100000)
+				.<QwResult, QwResult> chunk(1000)
 				.reader(qwResultReader)
 				.processor(qwResultProcessor)
 				.writer(qwResultWriter)

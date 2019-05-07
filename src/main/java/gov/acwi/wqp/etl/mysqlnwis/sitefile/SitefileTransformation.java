@@ -47,7 +47,7 @@ public class SitefileTransformation {
 	public Step transformSitefileStep() {
 		return stepBuilderFactory
 				.get("transformSitefileStep")
-				.<Sitefile, Sitefile> chunk(10000)
+				.<Sitefile, Sitefile> chunk(1000)
 				.reader(sitefileReader)
 				.processor(sitefileProcessor)
 				.writer(sitefileWriter)
