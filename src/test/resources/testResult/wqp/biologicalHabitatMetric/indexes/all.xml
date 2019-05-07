@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <pg_indexes
+            tablename="bio_hab_metric_swap_nwis"
+            indexname="bio_hab_metric_swap_nwis_organization"
+            indexdef="CREATE INDEX bio_hab_metric_swap_nwis_organization ON wqp.bio_hab_metric_swap_nwis USING btree (organization) WITH (fillfactor='100')"
+    />
+</dataset>
