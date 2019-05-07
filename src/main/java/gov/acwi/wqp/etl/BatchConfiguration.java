@@ -43,6 +43,10 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("activityFlow")
 	private Flow activityFlow;
+
+	@Autowired
+	@Qualifier("activityMetricFlow")
+	private Flow activityMetricFlow;
 	
 	@Autowired
 	@Qualifier("resultFlow")
@@ -72,9 +76,10 @@ public class BatchConfiguration {
 				.next(sampleParameterFlow)
 				.next(orgDataFlow)
 				.next(projectDataFlow)
-				.next(biologicalHabitatMetricFlow)
 				.next(monitoringLocationFlow)
+				.next(biologicalHabitatMetricFlow)
 				.next(activityFlow)
+				.next(activityMetricFlow)
 				.next(resultFlow)
 				.next(resDetectQntLimitFlow)
 				.next(createSummariesFlow)
