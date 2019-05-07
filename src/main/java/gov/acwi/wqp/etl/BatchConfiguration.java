@@ -55,6 +55,10 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("resDetectQntLimitFlow")
 	private Flow resDetectQntLimitFlow;
+
+	@Autowired
+	@Qualifier("projectMLWeightingFlow")
+	private Flow projectMLWeightingFlow;
 	
 	@Autowired
 	@Qualifier("createSummariesFlow")
@@ -82,6 +86,7 @@ public class BatchConfiguration {
 				.next(activityMetricFlow)
 				.next(resultFlow)
 				.next(resDetectQntLimitFlow)
+				.next(projectMLWeightingFlow)
 				.next(createSummariesFlow)
 				.next(createLookupCodesFlow)
 				.next(databaseFinalizeFlow)
