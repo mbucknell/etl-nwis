@@ -43,6 +43,7 @@ public class TransformQwResult {
 		Map<String, Order> sortKeys = new HashMap<>(1);
 
 		sortKeys.put("sample_id", Order.ASCENDING);
+		sortKeys.put("parameter_cd", Order.ASCENDING);
 		queryProvider.setSelectClause("select *");
 		queryProvider.setFromClause("from QW_RESULT");
 		queryProvider.setSortKeys(sortKeys);
@@ -50,6 +51,7 @@ public class TransformQwResult {
 		return new JdbcPagingItemReaderBuilder<QwResult>()
 				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwResultReader")
+				.pageSize(50000)
 				.queryProvider(queryProvider)
 				.rowMapper(new QwResultRowMapper())
 				.build();
