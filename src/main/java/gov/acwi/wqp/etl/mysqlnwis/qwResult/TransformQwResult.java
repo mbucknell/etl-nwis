@@ -8,9 +8,11 @@ import java.util.Map;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
@@ -20,8 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.FileCopyUtils;
 
 import gov.acwi.wqp.etl.Application;
+import gov.acwi.wqp.etl.nwis.monitoringLocation.NwisMonitoringLocation;
+import gov.acwi.wqp.etl.nwis.monitoringLocation.NwisMonitoringLocationRowMapper;
 
 @Configuration
 public class TransformQwResult {
@@ -38,25 +43,34 @@ public class TransformQwResult {
 	private DataSource dataSourceNwis;
 
 	@Bean
-	public JdbcPagingItemReader<QwResult> qwResultReader() {
-		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
-		Map<String, Order> sortKeys = new HashMap<>(1);
-
-		sortKeys.put("sample_id", Order.ASCENDING);
-		sortKeys.put("parameter_cd", Order.ASCENDING);
-		sortKeys.put("meth_cd", Order.ASCENDING);
-		queryProvider.setSelectClause("select *");
-		queryProvider.setFromClause("from QW_RESULT");
-		queryProvider.setSortKeys(sortKeys);
-
-		return new JdbcPagingItemReaderBuilder<QwResult>()
+	public JdbcCursorItemReader<QwResult> qwResultReader() throws Exception {
+		return new JdbcCursorItemReaderBuilder<QwResult>()
 				.dataSource(dataSourceMysqlnwis)
-				.name("mysqlQwResultReader")
-				.pageSize(50000)
-				.queryProvider(queryProvider)
+				.name("qwResultReader")
+				.sql("select * from QW_RESULT")
 				.rowMapper(new QwResultRowMapper())
 				.build();
 	}
+	//@Bean
+	//public JdbcPagingItemReader<QwResult> qwResultReader() {
+	//		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
+	//	Map<String, Order> sortKeys = new HashMap<>(1);
+
+	//	sortKeys.put("sample_id", Order.ASCENDING);
+	//	sortKeys.put("parameter_cd", Order.ASCENDING);
+	//	sortKeys.put("meth_cd", Order.ASCENDING);
+	//	queryProvider.setSelectClause("select *");
+	//	queryProvider.setFromClause("from QW_RESULT");
+	//	queryProvider.setSortKeys(sortKeys);
+
+	//	return new JdbcPagingItemReaderBuilder<QwResult>()
+	//			.dataSource(dataSourceMysqlnwis)
+	//			.name("mysqlQwResultReader")
+	//			.pageSize(50000)
+	//			.queryProvider(queryProvider)
+	//			.rowMapper(new QwResultRowMapper())
+	//			.build();
+	//}
 	
 	@Bean
 	public PassThroughItemProcessor<QwResult> qwResultProcessor() {
