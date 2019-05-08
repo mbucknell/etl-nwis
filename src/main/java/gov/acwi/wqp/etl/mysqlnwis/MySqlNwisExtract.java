@@ -26,8 +26,8 @@ public class MySqlNwisExtract {
 	@Bean
 	public Flow mySqlNwisExtractFlow() {
 		return new FlowBuilder<SimpleFlow>("mySqlNwisExtractFlow")
-				//.start(qwSampleFlow)
-				.start(qwResultFlow)
+				.start(qwSampleFlow)
+				.next(qwResultFlow)
 				.next(sitefileFlow)
 				.build();
 	}

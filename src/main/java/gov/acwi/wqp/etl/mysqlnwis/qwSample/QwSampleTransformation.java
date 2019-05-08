@@ -47,7 +47,7 @@ public class QwSampleTransformation {
 	public Step transformQwSampleStep() {
 		return stepBuilderFactory
 				.get("transformQwSampleStep")
-				.<QwSample, QwSample> chunk(1000)
+				.<QwSample, QwSample> chunk(10000)
 				.reader(qwSampleReader)
 				.processor(qwSampleProcessor)
 				.writer(qwSampleWriter)
