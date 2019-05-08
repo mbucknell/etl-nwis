@@ -36,7 +36,7 @@ public class JobCommandLineRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		JobParameters parameters = new JobParametersBuilder(jobExplorer)
-				.addString(EtlConstantUtils.JOB_ID, "44163", true)//LocalDateTime.now().toString(), true)
+				.addString(EtlConstantUtils.JOB_ID, LocalDateTime.now().toString(), true)
 				.addString(EtlConstantUtils.JOB_PARM_DATA_SOURCE_ID, configurationService.getEtlDataSourceId().toString(), true)
 				.addString(EtlConstantUtils.JOB_PARM_DATA_SOURCE, configurationService.getEtlDataSource().toLowerCase(), true)
 				.addString(EtlConstantUtils.JOB_PARM_WQP_SCHEMA, configurationService.getWqpSchemaName(), false)
