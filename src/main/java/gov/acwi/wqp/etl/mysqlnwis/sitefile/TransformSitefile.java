@@ -50,6 +50,7 @@ public class TransformSitefile {
 		return new JdbcPagingItemReaderBuilder<Sitefile>()
 				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwSampleReader")
+				.pageSize(5000)
 				.queryProvider(queryProvider)
 				.rowMapper(new SitefileRowMapper())
 				.build();
