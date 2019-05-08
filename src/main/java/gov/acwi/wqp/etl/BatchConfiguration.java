@@ -27,14 +27,26 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("orgDataFlow")
 	private Flow orgDataFlow;
+
+	@Autowired
+	@Qualifier("projectDataFlow")
+	private Flow projectDataFlow;
 	
 	@Autowired
 	@Qualifier("monitoringLocationFlow")
 	private Flow monitoringLocationFlow;
+
+	@Autowired
+	@Qualifier("biologicalHabitatMetricFlow")
+	private Flow biologicalHabitatMetricFlow;
 	
 	@Autowired
 	@Qualifier("activityFlow")
 	private Flow activityFlow;
+
+	@Autowired
+	@Qualifier("activityMetricFlow")
+	private Flow activityMetricFlow;
 	
 	@Autowired
 	@Qualifier("resultFlow")
@@ -43,6 +55,10 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("resDetectQntLimitFlow")
 	private Flow resDetectQntLimitFlow;
+
+	@Autowired
+	@Qualifier("projectMLWeightingFlow")
+	private Flow projectMLWeightingFlow;
 	
 	@Autowired
 	@Qualifier("createSummariesFlow")
@@ -63,10 +79,14 @@ public class BatchConfiguration {
 				.start(mySqlNwisExtractFlow)
 				.next(sampleParameterFlow)
 				.next(orgDataFlow)
+				.next(projectDataFlow)
 				.next(monitoringLocationFlow)
+				.next(biologicalHabitatMetricFlow)
 				.next(activityFlow)
+				.next(activityMetricFlow)
 				.next(resultFlow)
 				.next(resDetectQntLimitFlow)
+				.next(projectMLWeightingFlow)
 				.next(createSummariesFlow)
 				.next(createLookupCodesFlow)
 				.next(databaseFinalizeFlow)
