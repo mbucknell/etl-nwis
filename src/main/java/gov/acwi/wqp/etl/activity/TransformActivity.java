@@ -58,11 +58,12 @@ public class TransformActivity {
 	@Bean
 	public JdbcCursorItemReader<NwisActivity> activityReader() throws Exception {
 		return new JdbcCursorItemReaderBuilder<NwisActivity>()
-		.dataSource(dataSourceNwis)
-		.name("activityReader")
-		.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
-		.rowMapper(new NwisActivityRowMapper())
-		.build();
+				.dataSource(dataSourceNwis)
+				.name("activityReader")
+				.fetchSize(100000)
+				.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
+				.rowMapper(new NwisActivityRowMapper())
+				.build();
 	}
 	
 	@Bean
