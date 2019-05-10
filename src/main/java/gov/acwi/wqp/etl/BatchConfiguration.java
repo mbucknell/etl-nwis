@@ -77,7 +77,7 @@ public class BatchConfiguration {
 	public Job nwisEtl() {
 		return jobBuilderFactory.get("WQP_NWIS_ETL")
 				.start(mySqlNwisExtractFlow)
-				.start(sampleParameterFlow)
+				.next(sampleParameterFlow)
 				//.next(orgDataFlow)
 				//.next(projectDataFlow)
 				//.next(monitoringLocationFlow)
