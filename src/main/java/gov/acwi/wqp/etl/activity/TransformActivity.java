@@ -57,7 +57,7 @@ public class TransformActivity {
 	
 	@Bean
 	public JdbcCursorItemReader<NwisActivity> activityReader() throws Exception {
-		return new JdbcCursorItemReaderBuilder<NwisActivity>()
+				return new JdbcCursorItemReaderBuilder<NwisActivity>()
 				.dataSource(dataSourceNwis)
 				.name("activityReader")
 				.fetchSize(100000)
