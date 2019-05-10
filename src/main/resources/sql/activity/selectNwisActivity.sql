@@ -1,4 +1,3 @@
-select
     station.station_id,
     station.site_id,
     qw_sample.sample_start_dt,

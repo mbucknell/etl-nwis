@@ -65,10 +65,11 @@ public class TransformActivity {
 	@Bean
 	public JdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
 		SqlPagingQueryProviderFactoryBean providerFactory = new SqlPagingQueryProviderFactoryBean();
+		providerFactory.setDataSource(dataSourceNwis);
 		providerFactory.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
 		providerFactory.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
 		providerFactory.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
-		providerFactory.setSortKey("result_id");
+		providerFactory.setSortKey("sample_id");
 
 		return new JdbcPagingItemReaderBuilder<NwisActivity>()
 				.dataSource(dataSourceNwis)
