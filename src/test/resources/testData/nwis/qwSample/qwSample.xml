@@ -28,7 +28,7 @@
                db_no="01"
                qw_db_no="01"
                sample_web_cd="true"
-               sample_start_dt="1969-12-04"
+               sample_start_dt="1969-12-04 10:30:00"
                sample_start_display_dt="1969-12-04 10:30"
                sample_start_sg="m"
                sample_utc_start_dt="1969-12-04 16:30:00"

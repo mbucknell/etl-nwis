@@ -76,7 +76,7 @@ public class BatchConfiguration {
 	@Bean
 	public Job nwisEtl() {
 		return jobBuilderFactory.get("WQP_NWIS_ETL")
-				//.start(mySqlNwisExtractFlow)
+				.start(mySqlNwisExtractFlow)
 				.start(sampleParameterFlow)
 				//.next(orgDataFlow)
 				//.next(projectDataFlow)
