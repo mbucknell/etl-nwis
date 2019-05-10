@@ -43,26 +43,36 @@ public class TransformQwResult {
 	private DataSource dataSourceNwis;
 
 	@Bean
-	public JdbcPagingItemReader<QwResult> qwResultReader() {
-		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
-		Map<String, Order> sortKeys = new HashMap<>(1);
-
-		sortKeys.put("sample_id", Order.ASCENDING);
-		sortKeys.put("parameter_cd", Order.ASCENDING);
-		sortKeys.put("meth_cd", Order.ASCENDING);
-		queryProvider.setSelectClause("select *");
-		queryProvider.setFromClause("from QW_RESULT");
-		queryProvider.setSortKeys(sortKeys);
-
-		return new JdbcPagingItemReaderBuilder<QwResult>()
+	public JdbcCursorItemReader<QwResult> qwResultReader() throws Exception {
+		return new JdbcCursorItemReaderBuilder<QwResult>()
 				.dataSource(dataSourceMysqlnwis)
-				.name("mysqlQwResultReader")
-				.pageSize(10000)
-				.queryProvider(queryProvider)
+				.name("qwResultReader")
+				.fetchSize(5000)
+				.sql("select * from QW_RESULT")
 				.rowMapper(new QwResultRowMapper())
 				.build();
 	}
-	
+	//@Bean
+	//public JdbcPagingItemReader<QwResult> qwResultReader() {
+	//		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
+	//	Map<String, Order> sortKeys = new HashMap<>(1);
+
+	//	sortKeys.put("sample_id", Order.ASCENDING);
+	//	sortKeys.put("parameter_cd", Order.ASCENDING);
+	//	sortKeys.put("meth_cd", Order.ASCENDING);
+	//	queryProvider.setSelectClause("select *");
+	//	queryProvider.setFromClause("from QW_RESULT");
+	//	queryProvider.setSortKeys(sortKeys);
+
+	//	return new JdbcPagingItemReaderBuilder<QwResult>()
+	//			.dataSource(dataSourceMysqlnwis)
+	//			.name("mysqlQwResultReader")
+	//			.pageSize(50000)
+	//			.queryProvider(queryProvider)
+	//			.rowMapper(new QwResultRowMapper())
+	//			.build();
+	//}
+
 	@Bean
 	public PassThroughItemProcessor<QwResult> qwResultProcessor() {
 		return new PassThroughItemProcessor<>();
