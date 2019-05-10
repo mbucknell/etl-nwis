@@ -51,7 +51,7 @@ public class NwisActivityRowMapper implements RowMapper<NwisActivity> {
 	private static final String HYD_COND_NM_COLUMN_NAME = "hyd_cond_nm";
 	private static final String HYD_EVENT_NM_COLUMN_NAME = "hyd_event_nm";
 	
-	private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd [HH:mm:ss]");
+	private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public NwisActivity mapRow(ResultSet rs, int rowNum) throws SQLException {
