@@ -13,7 +13,10 @@ import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourc
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,17 +55,27 @@ public class TransformActivity {
 	@Qualifier(EtlConstantUtils.BUILD_ACTIVITY_INDEXES_FLOW)
 	private Flow buildActivityIndexesFlow;
 	
-	@Value("classpath:sql/nwisActivity.sql")
-	private Resource sqlResource;
+	@Value("classpath:sql/activity/selectNwisActivity.sql")
+	private Resource selectClause;
+	@Value("classpath:sql/activity/fromNwisActivity.sql")
+	private Resource fromClause;
+	@Value("classpath:sql/activity/whereNwisActivity.sql")
+	private Resource whereClause;
 	
 	@Bean
-	public JdbcCursorItemReader<NwisActivity> activityReader() throws Exception {
-				return new JdbcCursorItemReaderBuilder<NwisActivity>()
+	public JdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
+		SqlPagingQueryProviderFactoryBean providerFactory = new SqlPagingQueryProviderFactoryBean();
+		providerFactory.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
+		providerFactory.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
+		providerFactory.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
+		providerFactory.setSortKey("result_id");
+
+		return new JdbcPagingItemReaderBuilder<NwisActivity>()
 				.dataSource(dataSourceNwis)
 				.name("activityReader")
-				.fetchSize(100000)
-				.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
+				.pageSize(5000)
 				.rowMapper(new NwisActivityRowMapper())
+				.queryProvider(providerFactory.getObject())
 				.build();
 	}
 	
