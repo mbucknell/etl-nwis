@@ -52,7 +52,6 @@ public class TransformQwSample {
 				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwSampleReader")
 				.queryProvider(queryProvider)
-				.maxItemCount(5000)
 				.pageSize(5000)
 				.rowMapper(new QwSampleRowMapper())
 				.build();
