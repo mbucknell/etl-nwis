@@ -51,7 +51,7 @@ public class TransformQwResult {
 	//			.sql("select * from QW_RESULT")
 	//			.rowMapper(new QwResultRowMapper())
 	//			.build();
-	/}
+	//}
 	@Bean
 	public JdbcPagingItemReader<QwResult> qwResultReader() {
 			MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
