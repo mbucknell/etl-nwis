@@ -2,6 +2,7 @@ package gov.acwi.wqp.etl.mysqlnwis.qwSample;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -88,8 +89,8 @@ public class QwSampleRowMapper implements RowMapper<QwSample> {
 		qwSample.setHydCondCd(rs.getString(HYD_COND_CD_COLUMN_NAME));
 		qwSample.setHydEventCd(rs.getString(HYD_EVENT_CD_COLUMN_NAME));
 		qwSample.setTmDatumRlbtyCd(rs.getString(TM_DATUM_RLBTY_CD_COLUMN_NAME));
-		qwSample.setSampleMd(LocalDateTime.parse(rs.getString(SAMPLE_MD_COLUMN_NAME), dateTimeFormatter));
-		qwSample.setQwSampleMd(LocalDateTime.parse(rs.getString(QW_SAMPLE_MD_COLUMN_NAME), dateTimeFormatter));
+		qwSample.setSampleMd(LocalDate.parse(rs.getString(SAMPLE_MD_COLUMN_NAME), dateTimeFormatter));
+		qwSample.setQwSampleMd(LocalDate.parse(rs.getString(QW_SAMPLE_MD_COLUMN_NAME), dateTimeFormatter));
 		
 		return qwSample;
 	}
