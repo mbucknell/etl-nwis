@@ -27,7 +27,7 @@ public class QwResultTransformation {
 	
 	@Autowired
 	@Qualifier("qwResultReader")
-	private JdbcCursorItemReader<QwResult> qwResultReader;
+	private JdbcPagingItemReader<QwResult> qwResultReader;
 	
 	@Autowired
 	@Qualifier("qwResultProcessor")
