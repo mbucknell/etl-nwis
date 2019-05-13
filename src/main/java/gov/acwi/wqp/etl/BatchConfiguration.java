@@ -84,12 +84,12 @@ public class BatchConfiguration {
 				.next(biologicalHabitatMetricFlow)
 				.next(activityFlow)
 				.next(activityMetricFlow)
-				//.next(resultFlow)
-				//.next(resDetectQntLimitFlow)
-				//.next(projectMLWeightingFlow)
-				//.next(createSummariesFlow)
-				//.next(createLookupCodesFlow)
-				//.next(databaseFinalizeFlow)
+				.next(resultFlow)
+				.next(resDetectQntLimitFlow)
+				.next(projectMLWeightingFlow)
+				.next(createSummariesFlow)
+				.next(createLookupCodesFlow)
+				.next(databaseFinalizeFlow)
 				.build()
 				.build();
 	}
