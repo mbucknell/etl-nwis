@@ -57,9 +57,9 @@ public class TransformQwResult {
 			MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
 		Map<String, Order> sortKeys = new HashMap<>(1);
 
-		sortKeys.put("sample_id", Order.ASCENDING);
-		sortKeys.put("parameter_cd", Order.ASCENDING);
 		sortKeys.put("meth_cd", Order.ASCENDING);
+		sortKeys.put("parameter_cd", Order.ASCENDING);
+		sortKeys.put("sample_id", Order.ASCENDING);
 		queryProvider.setSelectClause("select *");
 		queryProvider.setFromClause("from QW_RESULT");
 		queryProvider.setSortKeys(sortKeys);
