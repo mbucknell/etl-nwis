@@ -1,7 +1,7 @@
 package gov.acwi.wqp.etl.mysqlnwis.qwSample;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class QwSample {
 
@@ -40,8 +40,8 @@ public class QwSample {
 	private String hydCondCd;
 	private String hydEventCd;
 	private String tmDatumRlbtyCd;
-	private LocalDateTime sampleMd;
-	private LocalDateTime qwSampleMd;
+	private LocalDate sampleMd;
+	private LocalDate qwSampleMd;
 	
 	public int getSampleId() {
 		return sampleId;
@@ -255,16 +255,16 @@ public class QwSample {
 	public void setTmDatumRlbtyCd(String tmDatumRlbtyCd) {
 		this.tmDatumRlbtyCd = tmDatumRlbtyCd;
 	}
-	public LocalDateTime getSampleMd() {
+	public LocalDate getSampleMd() {
 		return sampleMd;
 	}
-	public void setSampleMd(LocalDateTime sampleMd) {
+	public void setSampleMd(LocalDate sampleMd) {
 		this.sampleMd = sampleMd;
 	}
-	public LocalDateTime getQwSampleMd() {
+	public LocalDate getQwSampleMd() {
 		return qwSampleMd;
 	}
-	public void setQwSampleMd(LocalDateTime qwSampleMd) {
+	public void setQwSampleMd(LocalDate qwSampleMd) {
 		this.qwSampleMd = qwSampleMd;
 	}
 }
