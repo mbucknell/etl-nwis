@@ -47,7 +47,7 @@ public class TransformQwResult {
 		return new JdbcCursorItemReaderBuilder<QwResult>()
 				.dataSource(dataSourceMysqlnwis)
 				.name("qwResultReader")
-				.fetchSize(5000)
+				.fetchSize(Integer.MIN_VALUE)
 				.sql("select * from QW_RESULT")
 				.rowMapper(new QwResultRowMapper())
 				.build();
