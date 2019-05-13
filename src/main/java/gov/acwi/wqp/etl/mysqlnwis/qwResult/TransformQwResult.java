@@ -3,6 +3,7 @@ package gov.acwi.wqp.etl.mysqlnwis.qwResult;
 import javax.sql.DataSource;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -55,11 +56,11 @@ public class TransformQwResult {
 	@Bean
 	public JdbcPagingItemReader<QwResult> qwResultReader() {
 			MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
-		Map<String, Order> sortKeys = new HashMap<>(1);
+		LinkedHashMap<String, Order> sortKeys = new LinkedHashMap<>(1);
 
-		sortKeys.put("meth_cd", Order.ASCENDING);
-		sortKeys.put("parameter_cd", Order.ASCENDING);
 		sortKeys.put("sample_id", Order.ASCENDING);
+		sortKeys.put("parameter_cd", Order.ASCENDING);
+		sortKeys.put("meth_cd", Order.ASCENDING);
 		queryProvider.setSelectClause("select *");
 		queryProvider.setFromClause("from QW_RESULT");
 		queryProvider.setSortKeys(sortKeys);
