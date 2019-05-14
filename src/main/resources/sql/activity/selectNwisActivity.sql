@@ -11,7 +11,7 @@
     station.governmental_unit_code,
     station.geom,
     station.organization_name,
-    qw_sample.sample_id,
+    qw_sample.sample_id sample_id,
     qw_sample.samp_type_cd,
     nwis_wqx_medium_cd.wqx_act_med_sub,
     qw_sample.sample_start_sg,
