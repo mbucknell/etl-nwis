@@ -27,8 +27,8 @@ public class MySqlNwisExtract {
 	public Flow mySqlNwisExtractFlow() {
 		return new FlowBuilder<SimpleFlow>("mySqlNwisExtractFlow")
 				.start(qwSampleFlow)
-				//.next(qwResultFlow)
-				//.next(sitefileFlow)
+				.next(qwResultFlow)
+				.next(sitefileFlow)
 				.build();
 	}
 }
