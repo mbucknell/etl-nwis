@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.mysqlnwis.qwResult;
+package gov.acwi.wqp.etl.nwis.sampleParameter;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,12 @@ import gov.acwi.wqp.etl.nwis.TruncateTable;
 
 @Component
 @StepScope
-public class DeleteQwResult extends TruncateTable
-{
+public class DeleteSampleParameterTasklet extends TruncateTable {
 
-	@Autowired
-	public DeleteQwResult(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
-		super(jdbcTemplate, "qw_result");
-	}
+    @Autowired
+    public DeleteSampleParameterTasklet(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
+
+        super(jdbcTemplate, "sample_parameter");
+    }
 
 }
