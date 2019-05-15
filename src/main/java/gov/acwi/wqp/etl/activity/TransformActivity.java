@@ -69,7 +69,7 @@ public class TransformActivity {
 		providerFactory.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
 		providerFactory.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
 		providerFactory.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
-		providerFactory.setSortKey("sample_id");
+		providerFactory.setSortKey("qw_sample.sample_id");
 
 		return new JdbcPagingItemReaderBuilder<NwisActivity>()
 				.dataSource(dataSourceNwis)
