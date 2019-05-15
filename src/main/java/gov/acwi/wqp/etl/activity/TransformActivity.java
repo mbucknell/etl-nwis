@@ -2,6 +2,9 @@ package gov.acwi.wqp.etl.activity;
 
 import javax.sql.DataSource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -14,8 +17,10 @@ import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.batch.item.database.support.PostgresPagingQueryProvider;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -64,19 +69,21 @@ public class TransformActivity {
 	
 	@Bean
 	public JdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
-		SqlPagingQueryProviderFactoryBean providerFactory = new SqlPagingQueryProviderFactoryBean();
-		providerFactory.setDataSource(dataSourceNwis);
-		providerFactory.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
-		providerFactory.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
-		providerFactory.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
-		providerFactory.setSortKey("qw_sample.sample_id");
+		PostgresPagingQueryProvider queryProvider = new PostgresPagingQueryProvider();
+		Map<String, Order> sortKeys = new HashMap<>();
+
+		queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
+		queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
+		queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
+		sortKeys.put("sample_id", Order.ASCENDING);
+		queryProvider.setSortKeys(sortKeys);
 
 		return new JdbcPagingItemReaderBuilder<NwisActivity>()
 				.dataSource(dataSourceNwis)
 				.name("activityReader")
 				.pageSize(5000)
 				.rowMapper(new NwisActivityRowMapper())
-				.queryProvider(providerFactory.getObject())
+				.queryProvider(queryProvider)
 				.build();
 	}
 	
