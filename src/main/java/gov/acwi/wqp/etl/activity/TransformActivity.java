@@ -32,6 +32,8 @@ import org.springframework.util.FileCopyUtils;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.NwisJdbcPagingItemReader;
+import gov.acwi.wqp.etl.NwisPostgresPagingQueryProvider;
 import gov.acwi.wqp.etl.nwis.activity.NwisActivity;
 import gov.acwi.wqp.etl.nwis.activity.NwisActivityRowMapper;
 
@@ -70,35 +72,36 @@ public class TransformActivity {
 	@Value("classpath:sql/nwisActivity.sql")
 	private Resource sqlResource;
 
-	@Bean
-	public JdbcCursorItemReader<NwisActivity> activityReader() throws Exception {
-		return new JdbcCursorItemReaderBuilder<NwisActivity>()
-				.dataSource(dataSourceNwis)
-				.name("activityReader")
-				.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
-				.rowMapper(new NwisActivityRowMapper())
-				.build();
-	}
-	
 	//@Bean
-	//public JdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
-	//	PostgresPagingQueryProvider queryProvider = new PostgresPagingQueryProvider();
-	//	Map<String, Order> sortKeys = new HashMap<>();
-
-	//	queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
-	//	queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
-	//	queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
-	//	sortKeys.put("sample_id", Order.ASCENDING);
-	//	queryProvider.setSortKeys(sortKeys);
-
-	//	return new JdbcPagingItemReaderBuilder<NwisActivity>()
+	//public JdbcCursorItemReader<NwisActivity> activityReader() throws Exception {
+	//	return new JdbcCursorItemReaderBuilder<NwisActivity>()
 	//			.dataSource(dataSourceNwis)
 	//			.name("activityReader")
-	//			.pageSize(10)//(5000)
+	//			.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
 	//			.rowMapper(new NwisActivityRowMapper())
-	//			.queryProvider(queryProvider)
 	//			.build();
 	//}
+	
+	@Bean
+	public NwisJdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
+		NwisPostgresPagingQueryProvider queryProvider = new NwisPostgresPagingQueryProvider();
+		Map<String, Order> sortKeys = new HashMap<>();
+
+		queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
+		queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
+		queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
+		sortKeys.put("qw_sample.sample_id", Order.ASCENDING);
+		queryProvider.setSortKeys(sortKeys);
+
+		NwisJdbcPagingItemReader reader = new NwisJdbcPagingItemReader();
+		reader.setDataSource(dataSourceNwis);
+		reader.setName("activityReader");
+		reader.setPageSize(5000);
+		reader.setRowMapper(new NwisActivityRowMapper());
+		reader.setQueryProvider(queryProvider);
+
+		return reader;
+	}
 
 	@Bean
 	public ItemWriter<Activity> activityWriter() {
