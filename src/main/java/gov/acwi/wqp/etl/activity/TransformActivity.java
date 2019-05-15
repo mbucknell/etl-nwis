@@ -66,26 +66,39 @@ public class TransformActivity {
 	private Resource fromClause;
 	@Value("classpath:sql/activity/whereNwisActivity.sql")
 	private Resource whereClause;
-	
+
+	@Value("classpath:sql/nwisActivity.sql")
+	private Resource sqlResource;
+
 	@Bean
-	public JdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
-		PostgresPagingQueryProvider queryProvider = new PostgresPagingQueryProvider();
-		Map<String, Order> sortKeys = new HashMap<>();
-
-		queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
-		queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
-		queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
-		sortKeys.put("sample_id", Order.ASCENDING);
-		queryProvider.setSortKeys(sortKeys);
-
-		return new JdbcPagingItemReaderBuilder<NwisActivity>()
+	public JdbcCursorItemReader<NwisActivity> activityReader() throws Exception {
+		return new JdbcCursorItemReaderBuilder<NwisActivity>()
 				.dataSource(dataSourceNwis)
 				.name("activityReader")
-				.pageSize(5000)
+				.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
 				.rowMapper(new NwisActivityRowMapper())
-				.queryProvider(queryProvider)
 				.build();
 	}
+	
+	//@Bean
+	//public JdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
+	//	PostgresPagingQueryProvider queryProvider = new PostgresPagingQueryProvider();
+	//	Map<String, Order> sortKeys = new HashMap<>();
+
+	//	queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
+	//	queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
+	//	queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
+	//	sortKeys.put("sample_id", Order.ASCENDING);
+	//	queryProvider.setSortKeys(sortKeys);
+
+	//	return new JdbcPagingItemReaderBuilder<NwisActivity>()
+	//			.dataSource(dataSourceNwis)
+	//			.name("activityReader")
+	//			.pageSize(10)//(5000)
+	//			.rowMapper(new NwisActivityRowMapper())
+	//			.queryProvider(queryProvider)
+	//			.build();
+	//}
 	
 	@Bean
 	public ItemWriter<Activity> activityWriter() {
