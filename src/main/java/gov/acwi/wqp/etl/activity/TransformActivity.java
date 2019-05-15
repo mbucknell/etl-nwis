@@ -99,7 +99,7 @@ public class TransformActivity {
 	//			.queryProvider(queryProvider)
 	//			.build();
 	//}
-	
+
 	@Bean
 	public ItemWriter<Activity> activityWriter() {
 		JdbcBatchItemWriter<Activity> itemWriter = new JdbcBatchItemWriter<>();
