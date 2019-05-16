@@ -101,7 +101,7 @@ from qw_result
          on qw_result.parameter_cd = parm.parm_cd
        left join fxd
          on qw_result.parameter_cd = fxd.parm_cd and
-            cast (case when qw_result.result_va = '0.0' then '0' else qw_result.result_va end as numeric) = fxd.fxd_va
+            case when qw_result.result_va = '0.0' then '0' else qw_result.result_va end  = cast (fxd.fxd_va as varchar)
        left join proto_org
          on qw_result.anl_ent_cd = proto_org.proto_org_cd
        left join meth_with_cit meth
