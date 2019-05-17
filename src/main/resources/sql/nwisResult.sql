@@ -66,14 +66,14 @@ select
                         case when tu.tu_4_cd is not null then ' ' || tu.tu_4_cd end ||
                         case when tu.tu_4_nm is not null then ' ' || tu.tu_4_nm end
                    from tu
-                  where cast (qw_sample.tu_id as integer) = tu.tu_id)
+                  where qw_sample.tu_id = cast(tu.tu_id as varchar))
         else null
     end sample_tissue_taxonomic_name,
    	case
      	when parm.parm_medium_tx = 'Biological Tissue'
            then (select body_part_nm
                    from body_part
-                  where cast(qw_sample.body_part_id as integer) = body_part.body_part_id)
+                  where qw_sample.body_part_id = cast(body_part.body_part_id as varchar))
         else null
     end sample_tissue_anatomy_name,
    	qw_result.meth_cd,
