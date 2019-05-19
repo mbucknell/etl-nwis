@@ -189,7 +189,7 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 			String rptLevCd) {
 		if (remarkCd.contentEquals("<") && rptLevVa == null) {
 			return resultVa;
-		} else if (remarkCd.contentEquals("<") && Integer.parseInt(resultUnrndVa) > Integer.parseInt(rptLevVa)) {
+		} else if (remarkCd.contentEquals("<") && Float.parseFloat(resultUnrndVa) > Float.parseFloat(rptLevVa)) {
 			return resultVa;
 		} else if (remarkCd.contentEquals(">") ){
 			return resultVa;
