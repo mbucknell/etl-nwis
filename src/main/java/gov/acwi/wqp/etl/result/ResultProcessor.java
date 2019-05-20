@@ -187,23 +187,27 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 			String parmMethMultiplier, 
 			String parmMultiplier, 
 			String rptLevCd) {
-		if (remarkCd.contentEquals("<") && rptLevVa == null) {
-			return resultVa;
-		} else if (remarkCd.contentEquals("<") && Float.parseFloat(resultUnrndVa) > Float.parseFloat(rptLevVa)) {
-			return resultVa;
-		} else if (remarkCd.contentEquals(">") ){
-			return resultVa;
-		} else if ((remarkCd.contentEquals("N") || remarkCd.contentEquals("U")) && rptLevVa != null) {
-			return rptLevVa;
-		} else if (remarkCd.contentEquals("M") && rptLevVa == null) {
-			if (resultUnrndVa == null) {
-				return null;
+		try {
+			if (remarkCd.contentEquals("<") && rptLevVa == null) {
+				return resultVa;
+			} else if (remarkCd.contentEquals("<") && (Float.parseFloat(resultUnrndVa) > Float.parseFloat(rptLevVa))) {
+				return resultVa;
+			} else if (remarkCd.contentEquals(">")) {
+				return resultVa;
+			} else if ((remarkCd.contentEquals("N") || remarkCd.contentEquals("U")) && rptLevVa != null) {
+				return rptLevVa;
+			} else if (remarkCd.contentEquals("M") && rptLevVa == null) {
+				if (resultUnrndVa == null) {
+					return null;
+				} else {
+					return parmMethMultiplier == null ? parmMultiplier : parmMethMultiplier;
+				}
+			} else if (rptLevCd != null) {
+				return rptLevVa;
 			} else {
-				return parmMethMultiplier == null ? parmMultiplier : parmMethMultiplier;
+				return null;
 			}
-		} else if (rptLevCd != null) {
-			return rptLevVa;
-		} else {
+		} catch(NumberFormatException e) {
 			return null;
 		}
 	}
