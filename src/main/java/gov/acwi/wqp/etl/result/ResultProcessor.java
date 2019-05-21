@@ -218,25 +218,29 @@ public class ResultProcessor implements ItemProcessor<NwisResult, Result>{
 			String resultUnrndVa, 
 			String rptLevCd,
 			String wqxRptLevNm) {
-		if (remarkCd.contentEquals("<") && rptLevVa == null) {
-			return "Historical Lower Reporting Limit";
-		} else if (remarkCd.contentEquals("<") && Integer.parseInt(resultUnrndVa) > Integer.parseInt(rptLevVa)) {
-			return "Elevated Detection Limit";
-		} else if (remarkCd.contentEquals("<") && rptLevCd != null) {
-			return wqxRptLevNm;
-		} else if (remarkCd.contentEquals(">")) {
-			return "Upper Reporting Limit";
-		} else if (remarkCd.contentEquals("M") && rptLevVa == null) {
-			if (resultUnrndVa == null) {
-				return null;
+		try {
+			if (remarkCd.contentEquals("<") && rptLevVa == null) {
+				return "Historical Lower Reporting Limit";
+			} else if (remarkCd.contentEquals("<") && Float.parseFloat(resultUnrndVa) > Float.parseFloat(rptLevVa)) {
+				return "Elevated Detection Limit";
+			} else if (remarkCd.contentEquals("<") && rptLevCd != null) {
+				return wqxRptLevNm;
+			} else if (remarkCd.contentEquals(">")) {
+				return "Upper Reporting Limit";
+			} else if (remarkCd.contentEquals("M") && rptLevVa == null) {
+				if (resultUnrndVa == null) {
+					return null;
+				} else {
+					return "Lower Quantitation Limit";
+				}
+			} else if (remarkCd.contentEquals("M") && rptLevVa != null) {
+				return wqxRptLevNm;
+			} else if (rptLevVa != null) {
+				return wqxRptLevNm;
 			} else {
-				return "Lower Quantitation Limit";
+				return null;
 			}
-		} else if (remarkCd.contentEquals("M") && rptLevVa != null) {
-			return wqxRptLevNm;
-		} else if (rptLevVa != null) {
-			return wqxRptLevNm;
-		} else {
+		} catch(NumberFormatException e) {
 			return null;
 		}
 	}
