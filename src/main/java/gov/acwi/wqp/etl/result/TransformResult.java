@@ -93,7 +93,7 @@ public class TransformResult {
 
 		NwisJdbcPagingItemReader reader = new NwisJdbcPagingItemReader();
 		reader.setDataSource(dataSourceNwis);
-		reader.setName("activityReader");
+		reader.setName("resultReader");
 		reader.setPageSize(50000);
 		reader.setRowMapper(new NwisResultRowMapper());
 		reader.setQueryProvider(queryProvider);
