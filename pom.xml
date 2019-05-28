@@ -63,7 +63,7 @@
         <dependency>
             <groupId>gov.acwi</groupId>
             <artifactId>wqp-etl-core</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.1.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
