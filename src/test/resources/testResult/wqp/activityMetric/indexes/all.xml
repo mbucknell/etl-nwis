@@ -2,7 +2,92 @@
 <dataset>
     <pg_indexes
             tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_activity"
+            indexdef="CREATE INDEX act_metric_swap_nwis_activity ON wqp.act_metric_swap_nwis USING btree (activity) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_activity_id"
+            indexdef="CREATE INDEX act_metric_swap_nwis_activity_id ON wqp.act_metric_swap_nwis USING btree (activity_id) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_country"
+            indexdef="CREATE INDEX act_metric_swap_nwis_country ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((governmental_unit_code)::text, '^[^:]+'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_county"
+            indexdef="CREATE INDEX act_metric_swap_nwis_county ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((governmental_unit_code)::text, '^[^:]+:[^:]+:[^:]+$'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_event_date"
+            indexdef="CREATE INDEX act_metric_swap_nwis_event_date ON wqp.act_metric_swap_nwis USING btree (event_date) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_geom"
+            indexdef="CREATE INDEX act_metric_swap_nwis_geom ON wqp.act_metric_swap_nwis USING gist (geom) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_huc_2"
+            indexdef="CREATE INDEX act_metric_swap_nwis_huc_2 ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((huc)::text, '[0-9]{2}'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_huc_4"
+            indexdef="CREATE INDEX act_metric_swap_nwis_huc_4 ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((huc)::text, '[0-9]{4}'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_huc_6"
+            indexdef="CREATE INDEX act_metric_swap_nwis_huc_6 ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((huc)::text, '[0-9]{6}'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_huc_8"
+            indexdef="CREATE INDEX act_metric_swap_nwis_huc_8 ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((huc)::text, '[0-9]{8}'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_huc_10"
+            indexdef="CREATE INDEX act_metric_swap_nwis_huc_10 ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((huc)::text, '[0-9]{10}'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_huc_12"
+            indexdef="CREATE INDEX act_metric_swap_nwis_huc_12 ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((huc)::text, '[0-9]{12}'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
             indexname="act_metric_swap_nwis_organization"
             indexdef="CREATE INDEX act_metric_swap_nwis_organization ON wqp.act_metric_swap_nwis USING btree (organization) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_sample_media"
+            indexdef="CREATE INDEX act_metric_swap_nwis_sample_media ON wqp.act_metric_swap_nwis USING btree (sample_media) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_site_id"
+            indexdef="CREATE INDEX act_metric_swap_nwis_site_id ON wqp.act_metric_swap_nwis USING btree (site_id) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_site_type"
+            indexdef="CREATE INDEX act_metric_swap_nwis_site_type ON wqp.act_metric_swap_nwis USING btree (site_type) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_state"
+            indexdef="CREATE INDEX act_metric_swap_nwis_state ON wqp.act_metric_swap_nwis USING btree (&quot;substring&quot;((governmental_unit_code)::text, '^[^:]+:[^:]+'::text)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_station_id"
+            indexdef="CREATE INDEX act_metric_swap_nwis_station_id ON wqp.act_metric_swap_nwis USING btree (station_id) WITH (fillfactor='100')"
     />
 </dataset>

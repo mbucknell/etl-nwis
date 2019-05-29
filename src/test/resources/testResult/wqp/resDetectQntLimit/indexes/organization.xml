@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dataset>
-    <pg_indexes
-        tablename="r_detect_qnt_lmt_swap_nwis"
-        indexname="r_detect_qnt_lmt_swap_nwis_organization"
-        indexdef="CREATE INDEX r_detect_qnt_lmt_swap_nwis_organization ON wqp.r_detect_qnt_lmt_swap_nwis USING btree (organization) WITH (fillfactor='100')"
-     />
-</dataset>

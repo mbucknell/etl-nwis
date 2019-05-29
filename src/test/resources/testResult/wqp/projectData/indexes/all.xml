@@ -2,8 +2,8 @@
 <dataset>
     <pg_indexes
         tablename="project_data_swap_nwis"
-        indexname="project_data_swap_nwis_identifier"
-        indexdef="CREATE INDEX project_data_swap_nwis_identifier ON wqp.project_data_swap_nwis USING btree (project_identifier) WITH (fillfactor='100')"
+        indexname="project_data_swap_nwis_project_identifier"
+        indexdef="CREATE INDEX project_data_swap_nwis_project_identifier ON wqp.project_data_swap_nwis USING btree (project_identifier) WITH (fillfactor='100')"
      />
     <pg_indexes
             tablename="project_data_swap_nwis"
