@@ -1,18 +1,11 @@
 package gov.acwi.wqp.etl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.batch.item.database.Order;
-import org.springframework.batch.item.database.support.AbstractSqlPagingQueryProvider;
 import org.springframework.batch.item.database.support.PostgresPagingQueryProvider;
 import org.springframework.batch.item.database.support.SqlPagingQueryUtils;
 import org.springframework.util.StringUtils;
 
-public class NwisPostgresPagingQueryProvider extends PostgresPagingQueryProvider {
 
-    private String sortKeyTableName = "";
+public class NwisPostgresPagingQueryProvider extends PostgresPagingQueryProvider {
 
     @Override
     public String generateFirstPageQuery(int pageSize) {
