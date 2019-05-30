@@ -24,6 +24,10 @@ public class QwResultTransformation {
 	@Autowired
 	@Qualifier("deleteQwResult")
 	private Tasklet deleteQwResult;
+
+	@Autowired
+	@Qualifier("buildQwResultIdIndex")
+	private Tasklet buildQwResultIdIndex;
 	
 	@Autowired
 	@Qualifier("qwResultReader")
@@ -54,12 +58,21 @@ public class QwResultTransformation {
 				.writer(qwResultWriter)
 				.build();
 	}
-	
+
+	@Bean
+	public Step buildQwResultIdIndexStep() {
+		return stepBuilderFactory.get("buildQwResultIdIndexStep")
+				.tasklet(buildQwResultIdIndex)
+				.build();
+	}
+
+
 	@Bean
 	public Flow qwResultFlow() {
 		return new FlowBuilder<SimpleFlow>("qwResultFlow")
 				.start(deleteQwResultStep())
 				.next(transformQwResultStep())
+				.next(buildQwResultIdIndexStep())
 				.build();
 	}
 }

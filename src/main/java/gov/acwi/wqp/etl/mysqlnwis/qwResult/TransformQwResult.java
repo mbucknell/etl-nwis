@@ -48,8 +48,8 @@ public class TransformQwResult {
 	//	return new JdbcCursorItemReaderBuilder<QwResult>()
 	//			.dataSource(dataSourceMysqlnwis)
 	//			.name("qwResultReader")
-	//			.fetchSize(Integer.MIN_VALUE)
-	//			.sql("select * from QW_RESULT")
+	//			//.fetchSize(Integer.MIN_VALUE)
+	//			.sql("select * from QW_RESULT limit 2000")
 	//			.rowMapper(new QwResultRowMapper())
 	//			.build();
 	//}

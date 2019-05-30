@@ -87,8 +87,7 @@ public class TransformResult {
 		queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
 		queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
 		queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
-		sortKeys.put("activity_swap_nwis.activity_id", Order.ASCENDING);
-		sortKeys.put("qw_result.parameter_cd", Order.ASCENDING);
+		sortKeys.put("qw_result.result_id", Order.ASCENDING);
 		queryProvider.setSortKeys(sortKeys);
 
 		NwisJdbcPagingItemReader reader = new NwisJdbcPagingItemReader();

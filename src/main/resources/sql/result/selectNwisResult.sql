@@ -39,7 +39,7 @@
    	activity_swap_nwis.sample_collect_method_ctx,
    	activity_swap_nwis.sample_collect_method_name,
    	activity_swap_nwis.sample_collect_equip_name,
-   	row_number () over (order by station_id) result_id,
+   	qw_result.result_id result_id,
    	qw_result.remark_cd,
    	parm.parm_frac_tx,
    	fxd.fxd_tx,
