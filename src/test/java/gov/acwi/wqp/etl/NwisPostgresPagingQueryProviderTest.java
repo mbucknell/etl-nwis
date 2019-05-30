@@ -18,7 +18,7 @@ public class NwisPostgresPagingQueryProviderTest {
     private final static String WHERE_CLAUSE = "t1.flag is not null";
 
     @Before
-    public void setup() {
+    public void setUp() {
         Map<String, Order> sortKeys = new HashMap<>();
 
         queryProvider = new NwisPostgresPagingQueryProvider();
