@@ -2,6 +2,9 @@ package gov.acwi.wqp.etl.result;
 
 import javax.sql.DataSource;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -12,8 +15,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.database.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,8 @@ import org.springframework.util.FileCopyUtils;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.NwisJdbcPagingItemReader;
+import gov.acwi.wqp.etl.NwisPostgresPagingQueryProvider;
 import gov.acwi.wqp.etl.nwis.result.NwisResult;
 import gov.acwi.wqp.etl.nwis.result.NwisResultRowMapper;
 
@@ -52,18 +56,33 @@ public class TransformResult {
 	@Autowired
 	@Qualifier(EtlConstantUtils.BUILD_RESULT_INDEXES_FLOW)
 	private Flow buildResultIndexesFlow;
-	
-	@Value("classpath:sql/nwisResult.sql")
-	private Resource sqlResource;
+
+	@Value("classpath:sql/result/selectNwisResult.sql")
+	private Resource selectClause;
+	@Value("classpath:sql/result/fromNwisResult.sql")
+	private Resource fromClause;
+	@Value("classpath:sql/result/whereNwisResult.sql")
+	private Resource whereClause;
 	
 	@Bean
-	public JdbcCursorItemReader<NwisResult> resultReader() throws Exception {
-		return new JdbcCursorItemReaderBuilder<NwisResult>()
-		.dataSource(dataSourceNwis)
-		.name("resultReader")
-		.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
-		.rowMapper(new NwisResultRowMapper())
-		.build();
+	public NwisJdbcPagingItemReader<NwisResult> resultReader() throws Exception{
+		NwisPostgresPagingQueryProvider queryProvider = new NwisPostgresPagingQueryProvider();
+		Map<String, Order> sortKeys = new LinkedHashMap<>();
+
+		queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
+		queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
+		queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
+		sortKeys.put("qw_result.result_id", Order.ASCENDING);
+		queryProvider.setSortKeys(sortKeys);
+
+		NwisJdbcPagingItemReader reader = new NwisJdbcPagingItemReader();
+		reader.setDataSource(dataSourceNwis);
+		reader.setName("resultReader");
+		reader.setPageSize(50000);
+		reader.setRowMapper(new NwisResultRowMapper());
+		reader.setQueryProvider(queryProvider);
+
+		return reader;
 	}
 	
 	@Bean

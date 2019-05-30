@@ -69,7 +69,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 		String nwisV82047 = nwisActivity.getV82047();
 		String nwisV82048 = nwisActivity.getV82048();
 
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 		activity.setDataSourceId(configurationService.getEtlDataSourceId());
 		activity.setDataSource(configurationService.getEtlDataSource());
@@ -89,7 +89,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 		activity.setActivityTypeCode(
 				ACTIVITY_TYPE_CODE_MAP.getOrDefault(nwisActivity.getSampTypeCd(), DEFAULT_ACTIVITY_TYPE));
 		activity.setActivityMediaSubdivName(nwisActivity.getWqxActMedSub());
-		activity.setActivityStartTime(isSampleStartInMorH ? dateFormatter.format(nwisSampleStartDt) : null);
+		activity.setActivityStartTime(isSampleStartInMorH ? timeFormatter.format(nwisSampleStartDt) : null);
 		activity.setActStartTimeZone(isSampleStartInMorH ? nwisActivity.getSampleStartTimeDatumCd() : null);
 		activity.setActivityStopDate(getActivityStopDate(nwisSampleEndSg, nwisSampleEndDt));
 		activity.setActivityStopTime(isSampleEndInMorH ? StringUtils.substring(nwisSampleEndDt, 11) : null);

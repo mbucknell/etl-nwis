@@ -25,6 +25,7 @@ public class TransformSampleParameterIT extends NwisBaseFlowIT {
 
     @Test
     @DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/sampleParameter/empty.xml")
+    @DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sampleParameter/sampleParameterOld.xml")
     @DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/qwResult/qwResultForSampleParameterTest.xml")
     @DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/fxd/sampleParameterTest/")
     @ExpectedDatabase(connection = "nwis", value = "classpath:/testResult/nwis/sampleParameter/sampleParameter.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)

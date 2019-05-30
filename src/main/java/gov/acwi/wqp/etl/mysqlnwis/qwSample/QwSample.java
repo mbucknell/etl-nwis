@@ -1,6 +1,7 @@
 package gov.acwi.wqp.etl.mysqlnwis.qwSample;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class QwSample {
 
@@ -11,13 +12,13 @@ public class QwSample {
 	private String dbNo;
 	private String qwDbNo;
 	private boolean sampleWebCd;
-	private Date sampleStartDt;
+	private LocalDateTime sampleStartDt;
 	private String sampleStartDisplayDt;
 	private String sampleStartSg;
 	private String sampleEndDt;
 	private String sampleEndDisplayDt;
 	private String sampleEndSg;
-	private Date sampleUtcStartDt;
+	private LocalDateTime sampleUtcStartDt;
 	private String sampleUtcStartDisplayDt;
 	private String sampleUtcEndDt;
 	private String sampleUtcEndDisplayDt;
@@ -39,8 +40,8 @@ public class QwSample {
 	private String hydCondCd;
 	private String hydEventCd;
 	private String tmDatumRlbtyCd;
-	private Date sampleMd;
-	private Date qwSampleMd;
+	private LocalDate sampleMd;
+	private LocalDate qwSampleMd;
 	
 	public int getSampleId() {
 		return sampleId;
@@ -84,10 +85,10 @@ public class QwSample {
 	public void setSampleWebCd(boolean sampleWebCd) {
 		this.sampleWebCd = sampleWebCd;
 	}
-	public Date getSampleStartDt() {
+	public LocalDateTime getSampleStartDt() {
 		return sampleStartDt;
 	}
-	public void setSampleStartDt(Date sampleStartDt) {
+	public void setSampleStartDt(LocalDateTime sampleStartDt) {
 		this.sampleStartDt = sampleStartDt;
 	}
 	public String getSampleStartDisplayDt() {
@@ -120,10 +121,10 @@ public class QwSample {
 	public void setSampleEndSg(String sampleEndSg) {
 		this.sampleEndSg = sampleEndSg;
 	}
-	public Date getSampleUtcStartDt() {
+	public LocalDateTime getSampleUtcStartDt() {
 		return sampleUtcStartDt;
 	}
-	public void setSampleUtcStartDt(Date sampleUtcStartDt) {
+	public void setSampleUtcStartDt(LocalDateTime sampleUtcStartDt) {
 		this.sampleUtcStartDt = sampleUtcStartDt;
 	}
 	public String getSampleUtcStartDisplayDt() {
@@ -254,16 +255,16 @@ public class QwSample {
 	public void setTmDatumRlbtyCd(String tmDatumRlbtyCd) {
 		this.tmDatumRlbtyCd = tmDatumRlbtyCd;
 	}
-	public Date getSampleMd() {
+	public LocalDate getSampleMd() {
 		return sampleMd;
 	}
-	public void setSampleMd(Date sampleMd) {
+	public void setSampleMd(LocalDate sampleMd) {
 		this.sampleMd = sampleMd;
 	}
-	public Date getQwSampleMd() {
+	public LocalDate getQwSampleMd() {
 		return qwSampleMd;
 	}
-	public void setQwSampleMd(Date qwSampleMd) {
+	public void setQwSampleMd(LocalDate qwSampleMd) {
 		this.qwSampleMd = qwSampleMd;
 	}
 }
