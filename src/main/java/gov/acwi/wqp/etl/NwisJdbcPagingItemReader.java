@@ -26,6 +26,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 public class NwisJdbcPagingItemReader<T> extends AbstractPagingItemReader<T> implements InitializingBean {
+    //TODO extend JdbcPagingItemReader and only reimplement the methods that change
+
     private static final String START_AFTER_VALUE = "start.after";
 
     public static final int VALUE_NOT_SET = -1;
