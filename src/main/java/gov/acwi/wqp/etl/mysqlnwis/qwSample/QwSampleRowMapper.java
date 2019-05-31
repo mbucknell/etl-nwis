@@ -2,6 +2,9 @@ package gov.acwi.wqp.etl.mysqlnwis.qwSample;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -44,6 +47,8 @@ public class QwSampleRowMapper implements RowMapper<QwSample> {
 	public static final String TM_DATUM_RLBTY_CD_COLUMN_NAME = "tm_datum_rlbty_cd";
 	public static final String SAMPLE_MD_COLUMN_NAME = "sample_md";
 	public static final String QW_SAMPLE_MD_COLUMN_NAME = "qw_sample_md";
+
+	private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	
 	@Override
 	public QwSample mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -55,13 +60,13 @@ public class QwSampleRowMapper implements RowMapper<QwSample> {
 		qwSample.setDbNo(rs.getString(DB_NO_COLUMN_NAME));
 		qwSample.setQwDbNo(rs.getString(QW_DB_NO_COLUMN_NAME));
 		qwSample.setSampleWebCd(rs.getString(SAMPLE_WEB_CD_COLUMN_NAME).charAt(0) =='Y');
-		qwSample.setSampleStartDt(rs.getDate(SAMPLE_START_DT_COLUMN_NAME));
+		qwSample.setSampleStartDt(LocalDateTime.parse(rs.getString(SAMPLE_START_DT_COLUMN_NAME), dateTimeFormatter));
 		qwSample.setSampleStartDisplayDt(rs.getString(SAMPLE_START_DISPLAY_DT_COLUMN_NAME));
 		qwSample.setSampleStartSg(rs.getString(SAMPLE_START_SG_COLUMN_NAME));
 		qwSample.setSampleEndDt(rs.getString(SAMPLE_END_DT_COLUMN_NAME));
 		qwSample.setSampleEndDisplayDt(rs.getString(SAMPLE_END_DISPLAY_DT_COLUMN_NAME));
 		qwSample.setSampleEndSg(rs.getString(SAMPLE_END_SG_COLUMN_NAME));
-		qwSample.setSampleUtcStartDt(rs.getDate(SAMPLE_UTC_START_DT_COLUMN_NAME));
+		qwSample.setSampleUtcStartDt(LocalDateTime.parse(rs.getString(SAMPLE_UTC_START_DT_COLUMN_NAME), dateTimeFormatter));
 		qwSample.setSampleUtcStartDisplayDt(rs.getString(SAMPLE_UTC_START_DISPLAY_DT_COLUMN_NAME));
 		qwSample.setSampleUtcEndDt(rs.getString(SAMPLE_UTC_END_DT_COLUMN_NAME));
 		qwSample.setSampleUtcEndDisplayDt(rs.getString(SAMPLE_UTC_END_DISPLAY_DT_COLUMN_NAME));
@@ -83,8 +88,8 @@ public class QwSampleRowMapper implements RowMapper<QwSample> {
 		qwSample.setHydCondCd(rs.getString(HYD_COND_CD_COLUMN_NAME));
 		qwSample.setHydEventCd(rs.getString(HYD_EVENT_CD_COLUMN_NAME));
 		qwSample.setTmDatumRlbtyCd(rs.getString(TM_DATUM_RLBTY_CD_COLUMN_NAME));
-		qwSample.setSampleMd(rs.getDate(SAMPLE_MD_COLUMN_NAME));
-		qwSample.setQwSampleMd(rs.getDate(QW_SAMPLE_MD_COLUMN_NAME));
+		qwSample.setSampleMd(LocalDate.parse(rs.getString(SAMPLE_MD_COLUMN_NAME), dateTimeFormatter));
+		qwSample.setQwSampleMd(LocalDate.parse(rs.getString(QW_SAMPLE_MD_COLUMN_NAME), dateTimeFormatter));
 		
 		return qwSample;
 	}

@@ -10,6 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <wma.maven.url>https://cida.usgs.gov/artifactory/list</wma.maven.url>
+        <wqp-etl-core.version>0.1.1-SNAPSHOT</wqp-etl-core.version>
     </properties>
 
     <scm>
@@ -63,7 +64,7 @@
         <dependency>
             <groupId>gov.acwi</groupId>
             <artifactId>wqp-etl-core</artifactId>
-            <version>0.1.1-SNAPSHOT</version>
+            <version>${wqp-etl-core.version}</version>
         </dependency>
 
         <dependency>
@@ -101,7 +102,7 @@
             <artifactId>wqp-etl-core</artifactId>
             <classifier>tests</classifier>
             <type>test-jar</type>
-            <version>0.1.1-SNAPSHOT</version>
+            <version>${wqp-etl-core.version}</version>
             <scope>test</scope>
         </dependency>
  
@@ -212,7 +213,7 @@
                                     <NWIS_SCHEMA_OWNER_PASSWORD>changeMe</NWIS_SCHEMA_OWNER_PASSWORD>
                                 </env>
                                 <wait>
-                                    <time>60000</time>
+                                    <time>80000</time>
                                 </wait>
                             </run>
                         </image>

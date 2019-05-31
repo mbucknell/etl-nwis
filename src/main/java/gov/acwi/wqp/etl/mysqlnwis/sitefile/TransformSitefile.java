@@ -2,12 +2,17 @@ package gov.acwi.wqp.etl.mysqlnwis.sitefile;
 
 import javax.sql.DataSource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.batch.item.support.PassThroughItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,11 +36,20 @@ public class TransformSitefile {
 	private DataSource dataSourceNwis;
 	
 	@Bean
-	public JdbcCursorItemReader<Sitefile> sitefileReader() {
-		return new JdbcCursorItemReaderBuilder<Sitefile>()
+	public JdbcPagingItemReader<Sitefile> sitefileReader() {
+		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
+		Map<String, Order> sortKeys = new HashMap<>(1);
+
+		sortKeys.put("site_id", Order.ASCENDING);
+		queryProvider.setSelectClause("select *");
+		queryProvider.setFromClause("from SITEFILE");
+		queryProvider.setSortKeys(sortKeys);
+
+		return new JdbcPagingItemReaderBuilder<Sitefile>()
 				.dataSource(dataSourceMysqlnwis)
 				.name("mysqlQwSampleReader")
-				.sql("select * from SITEFILE")
+				.pageSize(5000)
+				.queryProvider(queryProvider)
 				.rowMapper(new SitefileRowMapper())
 				.build();
 	}

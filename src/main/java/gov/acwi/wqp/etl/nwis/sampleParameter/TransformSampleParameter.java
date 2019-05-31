@@ -18,8 +18,20 @@ public class TransformSampleParameter {
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
+    @Qualifier("deleteSampleParameterTasklet")
+    private Tasklet deleteSampleParameterTasklet;
+
+    @Autowired
     @Qualifier("transformSampleParameterTasklet")
     private Tasklet transformSampleParameterTasklet;
+
+    @Bean
+    public Step deleteSampleParameterStep() {
+        return stepBuilderFactory
+                .get("deleteSampleParameter")
+                .tasklet(deleteSampleParameterTasklet)
+                .build();
+    }
 
     @Bean
     public Step transformSampleParameterStep() {
@@ -32,7 +44,8 @@ public class TransformSampleParameter {
     @Bean
     public Flow sampleParameterFlow() {
         return new FlowBuilder<SimpleFlow>("sampleParameterFlow")
-                .start(transformSampleParameterStep())
+                .start(deleteSampleParameterStep())
+                .next(transformSampleParameterStep())
                 .build();
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.support.PassThroughItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,12 +21,20 @@ public class QwResultTransformation {
 	public StepBuilderFactory stepBuilderFactory;
 	
 	@Autowired
-	@Qualifier("deleteQwResult")
-	private Tasklet deleteQwResult;
-	
+	@Qualifier("truncateQwResult")
+	private Tasklet truncateQwResult;
+
+	@Autowired
+	@Qualifier("buildQwResultResultIdIndex")
+	private Tasklet buildQwResultResultIdIndex;
+
+	@Autowired
+	@Qualifier("dropQwResultResultIdIndex")
+	private Tasklet dropQwResultResultIdIndex;
+
 	@Autowired
 	@Qualifier("qwResultReader")
-	private JdbcCursorItemReader<QwResult> qwResultReader;
+	private JdbcPagingItemReader<QwResult> qwResultReader;
 	
 	@Autowired
 	@Qualifier("qwResultProcessor")
@@ -37,9 +45,9 @@ public class QwResultTransformation {
 	private JdbcBatchItemWriter<QwResult> qwResultWriter;
 	
 	@Bean
-	public Step deleteQwResultStep() {
-		return stepBuilderFactory.get("deleteQwResult")
-				.tasklet(deleteQwResult)
+	public Step truncateQwResultStep() {
+		return stepBuilderFactory.get("truncateQwResult")
+				.tasklet(truncateQwResult)
 				.build();
 	}
 	
@@ -53,12 +61,28 @@ public class QwResultTransformation {
 				.writer(qwResultWriter)
 				.build();
 	}
-	
+
+	@Bean
+	public Step dropQwResultResultIdIndexStep() {
+		return stepBuilderFactory.get("dropQwResultResultIdIndexStep")
+				.tasklet(dropQwResultResultIdIndex)
+				.build();
+	}
+
+	@Bean
+	public Step buildQwResultResultIdIndexStep() {
+		return stepBuilderFactory.get("buildQwResultResultIdIndexStep")
+				.tasklet(buildQwResultResultIdIndex)
+				.build();
+	}
+
 	@Bean
 	public Flow qwResultFlow() {
 		return new FlowBuilder<SimpleFlow>("qwResultFlow")
-				.start(deleteQwResultStep())
+				.start(truncateQwResultStep())
+				.next(dropQwResultResultIdIndexStep())
 				.next(transformQwResultStep())
+				.next(buildQwResultResultIdIndexStep())
 				.build();
 	}
 }

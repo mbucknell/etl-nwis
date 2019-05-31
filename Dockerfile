@@ -17,4 +17,4 @@ COPY --chown=1000:1000 --from=build /build/target/wqp-etl-nwis-*.jar app.jar
 
 USER $USER
 
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-Xmx3G", "-server", "-jar", "app.jar"]

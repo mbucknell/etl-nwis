@@ -69,7 +69,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 		String nwisV82047 = nwisActivity.getV82047();
 		String nwisV82048 = nwisActivity.getV82048();
 
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 		activity.setDataSourceId(configurationService.getEtlDataSourceId());
 		activity.setDataSource(configurationService.getEtlDataSource());
@@ -89,7 +89,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 		activity.setActivityTypeCode(
 				ACTIVITY_TYPE_CODE_MAP.getOrDefault(nwisActivity.getSampTypeCd(), DEFAULT_ACTIVITY_TYPE));
 		activity.setActivityMediaSubdivName(nwisActivity.getWqxActMedSub());
-		activity.setActivityStartTime(isSampleStartInMorH ? dateFormatter.format(nwisSampleStartDt) : null);
+		activity.setActivityStartTime(isSampleStartInMorH ? timeFormatter.format(nwisSampleStartDt) : null);
 		activity.setActStartTimeZone(isSampleStartInMorH ? nwisActivity.getSampleStartTimeDatumCd() : null);
 		activity.setActivityStopDate(getActivityStopDate(nwisSampleEndSg, nwisSampleEndDt));
 		activity.setActivityStopTime(isSampleEndInMorH ? StringUtils.substring(nwisSampleEndDt, 11) : null);
@@ -145,11 +145,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 			return v00098;
 		} else if (v78890 != null) {
 			return v78890;
-		} else if (v78891 != null) {
-			return v78891;
-		} else {
-			return null;
-		}
+		} else return v78891;
 	}
 
 	private String getActivityDepthUnit(String v00003, String v00098, String v78890, String v78891) {
@@ -186,11 +182,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 	private String getActivityUpperDepth(String v72015, String v82047) {
 		if (v72015 != null) {
 			return v72015;
-		} else if (v82047 != null) {
-			return v82047;
-		} else {
-			return null;
-		}
+		} else return v82047;
 	}
 
 	private String getActivityUpperDepthUnit(String v72015, String v82047) {
@@ -210,17 +202,13 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 			return v82048;
 		} else if (v72016 != null) {
 			return v72016;
-		} else if (v82048 != null) {
-			return v82048;
-		} else {
-			return null;
-		}
+		} else return v82048;
 	}
 
 	private String getActivityLowerDepthUnit(String v72015, String v72016, String v82047, String v82048) {
 		if (v72015 != null && v72016 == null) {
 			return null;
-		} else if (v72015 != null && v72016 != null) {
+		} else if (v72015 != null) {
 			return FEET_UNIT;
 		} else if (v82047 != null & v82048 == null) {
 			return null;
@@ -257,11 +245,7 @@ public class ActivityProcessor extends BaseProcessor implements ItemProcessor<Nw
 	private String getActivityConductingOrg(String protoOrgNm, String collEntCd) {
 		if (protoOrgNm != null) {
 			return protoOrgNm;
-		} else if (collEntCd != null) {
-			return collEntCd;
-		} else {
-			return null;
-		}
+		} else return collEntCd;
 	}
 
 }

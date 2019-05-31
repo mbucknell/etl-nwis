@@ -2,6 +2,9 @@ package gov.acwi.wqp.etl.activity;
 
 import javax.sql.DataSource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -12,8 +15,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.ItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.database.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,8 @@ import org.springframework.util.FileCopyUtils;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
+import gov.acwi.wqp.etl.NwisJdbcPagingItemReader;
+import gov.acwi.wqp.etl.NwisPostgresPagingQueryProvider;
 import gov.acwi.wqp.etl.nwis.activity.NwisActivity;
 import gov.acwi.wqp.etl.nwis.activity.NwisActivityRowMapper;
 
@@ -51,18 +55,33 @@ public class TransformActivity {
 	@Autowired
 	@Qualifier(EtlConstantUtils.BUILD_ACTIVITY_INDEXES_FLOW)
 	private Flow buildActivityIndexesFlow;
-	
-	@Value("classpath:sql/nwisActivity.sql")
-	private Resource sqlResource;
+
+	@Value("classpath:sql/activity/selectNwisActivity.sql")
+	private Resource selectClause;
+	@Value("classpath:sql/activity/fromNwisActivity.sql")
+	private Resource fromClause;
+	@Value("classpath:sql/activity/whereNwisActivity.sql")
+	private Resource whereClause;
 	
 	@Bean
-	public JdbcCursorItemReader<NwisActivity> activityReader() throws Exception {
-		return new JdbcCursorItemReaderBuilder<NwisActivity>()
-		.dataSource(dataSourceNwis)
-		.name("activityReader")
-		.sql(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())))
-		.rowMapper(new NwisActivityRowMapper())
-		.build();
+	public NwisJdbcPagingItemReader<NwisActivity> activityReader() throws Exception{
+		NwisPostgresPagingQueryProvider queryProvider = new NwisPostgresPagingQueryProvider();
+		Map<String, Order> sortKeys = new HashMap<>();
+
+		queryProvider.setSelectClause(new String(FileCopyUtils.copyToByteArray(selectClause.getInputStream())));
+		queryProvider.setFromClause(new String(FileCopyUtils.copyToByteArray(fromClause.getInputStream())));
+		queryProvider.setWhereClause(new String(FileCopyUtils.copyToByteArray(whereClause.getInputStream())));
+		sortKeys.put("qw_sample.sample_id", Order.ASCENDING);
+		queryProvider.setSortKeys(sortKeys);
+
+		NwisJdbcPagingItemReader reader = new NwisJdbcPagingItemReader();
+		reader.setDataSource(dataSourceNwis);
+		reader.setName("activityReader");
+		reader.setPageSize(5000);
+		reader.setRowMapper(new NwisActivityRowMapper());
+		reader.setQueryProvider(queryProvider);
+
+		return reader;
 	}
 	
 	@Bean

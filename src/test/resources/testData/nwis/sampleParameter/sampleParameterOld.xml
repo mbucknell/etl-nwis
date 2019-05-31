@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<dataset>
+    <sample_parameter sample_id="1155200"
+                      v71999="10"
+                      v82047="1.0"
+                      v82048="1.0"
+                      v82398="50"
+                      v84164="100"
+                      v71999_fxd_nm="Routine"
+                      v82398_fxd_tx="Point sample"
+                      v84164_fxd_tx="Van Dorn sampler">
+
+    </sample_parameter>
+</dataset>
