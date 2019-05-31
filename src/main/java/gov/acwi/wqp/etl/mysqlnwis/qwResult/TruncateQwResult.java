@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class DeleteQwResult implements Tasklet {
+public class TruncateQwResult implements Tasklet {
 
 	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public DeleteQwResult(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
+	public TruncateQwResult(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 

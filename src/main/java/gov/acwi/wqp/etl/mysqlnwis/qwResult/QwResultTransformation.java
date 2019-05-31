@@ -21,13 +21,17 @@ public class QwResultTransformation {
 	public StepBuilderFactory stepBuilderFactory;
 	
 	@Autowired
-	@Qualifier("deleteQwResult")
-	private Tasklet deleteQwResult;
+	@Qualifier("truncateQwResult")
+	private Tasklet truncateQwResult;
 
 	@Autowired
-	@Qualifier("buildQwResultIdIndex")
-	private Tasklet buildQwResultIdIndex;
-	
+	@Qualifier("buildQwResultResultIdIndex")
+	private Tasklet buildQwResultResultIdIndex;
+
+	@Autowired
+	@Qualifier("dropQwResultResultIdIndex")
+	private Tasklet dropQwResultResultIdIndex;
+
 	@Autowired
 	@Qualifier("qwResultReader")
 	private JdbcPagingItemReader<QwResult> qwResultReader;
@@ -41,9 +45,9 @@ public class QwResultTransformation {
 	private JdbcBatchItemWriter<QwResult> qwResultWriter;
 	
 	@Bean
-	public Step deleteQwResultStep() {
-		return stepBuilderFactory.get("deleteQwResult")
-				.tasklet(deleteQwResult)
+	public Step truncateQwResultStep() {
+		return stepBuilderFactory.get("truncateQwResult")
+				.tasklet(truncateQwResult)
 				.build();
 	}
 	
@@ -59,18 +63,26 @@ public class QwResultTransformation {
 	}
 
 	@Bean
-	public Step buildQwResultIdIndexStep() {
-		return stepBuilderFactory.get("buildQwResultIdIndexStep")
-				.tasklet(buildQwResultIdIndex)
+	public Step dropQwResultResultIdIndexStep() {
+		return stepBuilderFactory.get("dropQwResultResultIdIndexStep")
+				.tasklet(dropQwResultResultIdIndex)
+				.build();
+	}
+
+	@Bean
+	public Step buildQwResultResultIdIndexStep() {
+		return stepBuilderFactory.get("buildQwResultResultIdIndexStep")
+				.tasklet(buildQwResultResultIdIndex)
 				.build();
 	}
 
 	@Bean
 	public Flow qwResultFlow() {
 		return new FlowBuilder<SimpleFlow>("qwResultFlow")
-				.start(deleteQwResultStep())
+				.start(truncateQwResultStep())
+				.next(dropQwResultResultIdIndexStep())
 				.next(transformQwResultStep())
-				.next(buildQwResultIdIndexStep())
+				.next(buildQwResultResultIdIndexStep())
 				.build();
 	}
 }
