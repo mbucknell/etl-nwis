@@ -213,7 +213,7 @@
                                     <NWIS_SCHEMA_OWNER_PASSWORD>changeMe</NWIS_SCHEMA_OWNER_PASSWORD>
                                 </env>
                                 <wait>
-                                    <time>60000</time>
+                                    <time>80000</time>
                                 </wait>
                             </run>
                         </image>
