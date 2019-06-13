@@ -20,14 +20,14 @@ public class TransformBiologicalHabitatMetric {
     private Flow setupBiologicalHabitatMetricSwapTableFlow;
 
     @Autowired
-    @Qualifier(EtlConstantUtils.BUILD_BIOLOGICAL_HABITAT_METRIC_INDEXES_FLOW)
-    private Flow buildBiologicalHabitatMetricIndexesFlow;
+    @Qualifier(EtlConstantUtils.AFTER_LOAD_BIOLOGICAL_HABITAT_METRIC_FLOW)
+    private Flow afterLoadBiologicalHabitatMetricFlow;
 
     @Bean
     public Flow biologicalHabitatMetricFlow() throws IOException {
         return new FlowBuilder<SimpleFlow>("biologicalHabitatMetricFlow")
                 .start(setupBiologicalHabitatMetricSwapTableFlow)
-                .next(buildBiologicalHabitatMetricIndexesFlow)
+                .next(afterLoadBiologicalHabitatMetricFlow)
                 .build();
     }
 
