@@ -16,14 +16,9 @@ import org.springframework.context.annotation.Configuration;
 
 import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
-import gov.acwi.wqp.etl.nwis.result.NwisResult;
 
 @Configuration
 public class TransformResult {
-
-	@Autowired
-	@Qualifier("resultProcessor")
-	private ItemProcessor<NwisResult, Result> processor;
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
