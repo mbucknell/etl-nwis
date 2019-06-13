@@ -23,17 +23,17 @@ into activity_swap_nwis (data_source_id, data_source, station_id, site_id, event
 select
     2 data_source_id,
     'NWIS' data_source,
-    s.station_id,
-    s.site_id,
+    station_swap_nwis.station_id,
+    station_swap_nwis.site_id,
     cast(samp.sample_start_dt as date) event_date,
     samp.nwis_host || '.' || samp.qw_db_no || '.' || samp.record_no activity,
     nwis_wqx_medium_cd.wqx_act_med_nm sample_media,
-    s.organization,
-    s.site_type,
-    s.huc,
-    s.governmental_unit_code,
-    s.geom,
-    s.organization_name,
+    station_swap_nwis.organization,
+    station_swap_nwis.site_type,
+    station_swap_nwis.huc,
+    station_swap_nwis.governmental_unit_code,
+    station_swap_nwis.geom,
+    station_swap_nwis.organization_name,
     samp.sample_id activity_id,
     case
         when samp.samp_type_cd = 'A' then 'Not determined'
@@ -56,7 +56,7 @@ select
        else null
     end activity_start_time,
     case
-       when samp.sample_start_dt is not null and samp.sample_start_sg in ('h','m') then samp.sample_start_time_datum_cd
+       when samp.sample_start_dt is not null and samp.sample_start_sg in ('h','m') then nullif(samp.sample_start_time_datum_cd, '')
        else null
     end act_start_time_zone,
     case
@@ -70,83 +70,89 @@ select
         else null
     end activity_stop_time,
     case
-       when samp.sample_end_dt is not null and samp.sample_end_sg in ('h', 'm') then samp.sample_start_time_datum_cd
+       when nullif(samp.sample_end_dt, '') is not null and samp.sample_end_sg in ('h', 'm') then nullif(samp.sample_start_time_datum_cd, '')
        else null
     end act_stop_time_zone,
     null activity_relative_depth_name,
-    coalesce(parameter.V00003, parameter.V00098, parameter.V78890, parameter.V78891) activity_depth,
+    coalesce(sample_parameter.V00003, sample_parameter.V00098, sample_parameter.V78890, sample_parameter.V78891) activity_depth,
     case
-       when parameter.V00003 is not null then 'feet'
-       when parameter.V00098 is not null then 'meters'
-       when parameter.V78890 is not null then 'feet'
-       when parameter.V78891 is not null then 'meters'
+       when sample_parameter.V00003 is not null then 'feet'
+       when sample_parameter.V00098 is not null then 'meters'
+       when sample_parameter.V78890 is not null then 'feet'
+       when sample_parameter.V78891 is not null then 'meters'
        else null
     end activity_depth_unit,
     case
-       when parameter.V00003 is not null or
-            parameter.V00098 is not null
+       when sample_parameter.V00003 is not null or
+            sample_parameter.V00098 is not null
            then null
-       when parameter.V78890 is not null or
-            parameter.V78891 is not null
+       when sample_parameter.V78890 is not null or
+            sample_parameter.V78891 is not null
            then 'Below mean sea level'
-       when parameter.V72015 is not null
+       when sample_parameter.V72015 is not null
            then 'Below land-surface datum'
-       when parameter.V82047 is not null
+       when sample_parameter.V82047 is not null
            then null
-       when parameter.V72016 is not null
+       when sample_parameter.V72016 is not null
            then 'Below land-surface datum'
-       when parameter.V82048 is not null
+       when sample_parameter.V82048 is not null
            then null
        else null
     end activity_depth_ref_point,
-    coalesce(parameter.V72015, parameter.V82047) activity_upper_depth,
+    coalesce(sample_parameter.V72015, sample_parameter.V82047) activity_upper_depth,
     case
-        when coalesce(parameter.V72015, parameter.V82047) is not null
+        when coalesce(sample_parameter.V72015, sample_parameter.V82047) is not null
             then
                 case
-                    when parameter.V72015 is not null then 'feet'
-                    when parameter.V82047 is not null then 'meters'
-                    when parameter.V72016 is not null then 'feet'
-                    when parameter.V82048 is not null then 'meters'
+                    when sample_parameter.V72015 is not null then 'feet'
+                    when sample_parameter.V82047 is not null then 'meters'
+                    when sample_parameter.V72016 is not null then 'feet'
+                    when sample_parameter.V82048 is not null then 'meters'
                     else null
                 end
             else null
     end activity_upper_depth_unit,
     case
-       when parameter.V72015 is not null then parameter.V72016
-       when parameter.V82047 is not null then parameter.V82048
-       when parameter.V72016 is not null then parameter.V72016
-       when parameter.V82048 is not null then parameter.V82048
+       when sample_parameter.V72015 is not null then sample_parameter.V72016
+       when sample_parameter.V82047 is not null then sample_parameter.V82048
+       when sample_parameter.V72016 is not null then sample_parameter.V72016
+       when sample_parameter.V82048 is not null then sample_parameter.V82048
        else null
     end activity_lower_depth,
     case
         when (
             case
-                when parameter.V72015 is not null then parameter.V72016
-                when parameter.V82047 is not null then parameter.V82048
-                when parameter.V72016 is not null then parameter.V72016
-                when parameter.V82048 is not null then parameter.V82048
+                when sample_parameter.V72015 is not null then sample_parameter.V72016
+                when sample_parameter.V82047 is not null then sample_parameter.V82048
+                when sample_parameter.V72016 is not null then sample_parameter.V72016
+                when sample_parameter.V82048 is not null then sample_parameter.V82048
                 else null
             end) is not null then
                 case
-                    when parameter.V72015 is not null then 'feet'
-                    when parameter.V82047 is not null then 'meters'
-                    when parameter.V72016 is not null then 'feet'
-                    when parameter.V82048 is not null then 'meters'
+                    when sample_parameter.V72015 is not null then 'feet'
+                    when sample_parameter.V82047 is not null then 'meters'
+                    when sample_parameter.V72016 is not null then 'feet'
+                    when sample_parameter.V82048 is not null then 'meters'
                     else null
                 end
         else null
     end activity_lower_depth_unit,
     case
-        when nawqa_sites_site_no is not null then
-
-    nwis_ws_star.etl_helper.determine_project_id(nawqa_sites.site_no,
-                                                parameter.v50280,
-                                                parameter.v71999,
-                                                samp.sample_start_dt,
-                                                samp.project_cd) project_id,
-    coalesce(proto_org2.proto_org_nm, samp.coll_ent_cd) activity_conducting_org,
-    trim(samp.sample_lab_cm_tx) activity_comment,
+        when nawqa_sites.site_no is not null then
+            case
+                when samp.sample_start_dt > to_date('2001-10-01', 'yyyy-mm-dd') then
+                    case
+                        when sample_parameter.v71999 in ('15', '20', '25') then 'National Water Quality Assessment Program (NAWQA)'
+                        when sample_parameter.v71999 is null and sample_parameter.v50280 is not null then 'National Water Quality Assessment Program (NAWQA)'
+                        else null
+                    end
+                when sample_parameter.v71999 = '15' or sample_parameter.v50280 is not null then 'National Water Quality Assessment Program (NAWQA)'
+                else null
+            end
+        else null
+    end project_id,
+    coalesce(proto_org2.proto_org_nm, nullif(samp.coll_ent_cd, '')) activity_conducting_org,
+    nullif(trim(samp.sample_lab_cm_tx), '') activity_comment,
     aqfr.aqfr_nm sample_aqfr_name,
     hyd_cond_cd.hyd_cond_nm hydrologic_condition_name,
     hyd_event_cd.hyd_event_nm hydrologic_event_name,
@@ -178,25 +184,25 @@ select
     null act_current_speed_unit,
     null toxicity_test_type_name,
     case
-       when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-           then parameter.V82398
+       when sample_parameter.v84164_fxd_tx is not null and sample_parameter.v82398_fxd_tx is not null
+           then sample_parameter.V82398
        else 'USGS'
        end sample_collect_method_id,
     case
-       when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
+       when sample_parameter.v84164_fxd_tx is not null and sample_parameter.v82398_fxd_tx is not null
            then cast('USGS parameter code 82398' as varchar2(25))
        else 'USGS'
        end sample_collect_method_ctx,
     case
-       when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-           then parameter.v82398_fxd_tx
+       when sample_parameter.v84164_fxd_tx is not null and sample_parameter.v82398_fxd_tx is not null
+           then sample_parameter.v82398_fxd_tx
        else 'USGS'
        end sample_collect_method_name,
     null act_sam_collect_meth_qual_type,
     null act_sam_collect_meth_desc,
     case
-       when parameter.v84164_fxd_tx is not null and parameter.v82398_fxd_tx is not null
-           then parameter.v84164_fxd_tx
+       when sample_parameter.v84164_fxd_tx is not null and sample_parameter.v82398_fxd_tx is not null
+           then sample_parameter.v84164_fxd_tx
        else 'Unknown'
        end sample_collect_equip_name,
     null act_sam_collect_equip_comments,
@@ -210,32 +216,32 @@ select
     null act_sam_chemical_preservative,
     null thermal_preservative_name,
     null act_sam_transport_storage_desc
-    from nwis_ws_star.qw_sample samp
-     join nwis_ws_star.sitefile site
+    from nwis.qw_sample samp
+     join nwis.sitefile site
           on samp.site_id = site.site_id
-     join station_swap_nwis s
-          on site.site_id = s.station_id
-     left join nwis_ws_star.tu
+     join station_swap_nwis
+          on site.site_id = station_swap_nwis.station_id
+     left join nwis.tu
                on to_number(samp.tu_id) = tu.tu_id
-     left join nwis_ws_star.nwis_wqx_medium_cd
+     left join nwis.nwis_wqx_medium_cd
                on samp.medium_cd = nwis_wqx_medium_cd.nwis_medium_cd
-     left join nwis_ws_star.body_part
+     left join nwis.body_part
                on samp.body_part_id = body_part.body_part_id
-     left join nwis_ws_star.proto_org proto_org2
+     left join nwis.proto_org proto_org2
                on samp.coll_ent_cd = proto_org2.proto_org_cd
-     left join nwis_ws_star.hyd_event_cd
+     left join nwis.hyd_event_cd
                on samp.hyd_event_cd = hyd_event_cd.hyd_event_cd
-     left join nwis_ws_star.hyd_cond_cd
+     left join nwis.hyd_cond_cd
                on samp.hyd_cond_cd = hyd_cond_cd.hyd_cond_cd
-     join nwis_ws_star.nwis_district_cds_by_host dist
+     join nwis.nwis_district_cds_by_host dist
           on site.district_cd = dist.district_cd and
              site.nwis_host = dist.host_name
-     left join nwis_ws_star.aqfr
+     left join nwis.aqfr
                on samp.aqfr_cd = aqfr.aqfr_cd and
                   site.state_cd = aqfr.state_cd
-     left join nwis_ws_star.sample_parameter parameter
-               on samp.sample_id = parameter.sample_id
-     left join nwis_ws_star.nawqa_sites
+     left join nwis.sample_parameter
+               on samp.sample_id = sample_parameter.sample_id
+     left join nwis.nawqa_sites
                on site.site_no = nawqa_sites.site_no and
                   site.agency_cd = nawqa_sites.agency_cd
     where samp.sample_web_cd = 'Y' and
