@@ -19,7 +19,7 @@ select
     activity_swap_nwis.site_id,
     activity_swap_nwis.event_date,
     nemi.nemi_url analytical_method,
-    r.parameter_cd p_code,
+    nullif(r.parameter_cd, '') p_code,
     activity_swap_nwis.activity,
     coalesce(parm.wqpcrosswalk, parm.srsname) characterstic_name,
     parm.parm_seq_grp_nm characteristic_type,
@@ -78,8 +78,8 @@ select
                 fxd.fxd_tx,
                 case
                    when r.remark_cd in ('U', 'M', 'N', '<', '>') then null
-                   when r.remark_cd in ('R', 'V', 'S', 'E', 'A') or r.remark_cd is null then r.result_va
-                   else r.result_va
+                   when r.remark_cd in ('R', 'V', 'S', 'E', 'A') or nullif(r.remark_cd, '') is null then nullif(r.result_va, '')
+                   else nullif(r.result_va, '')
                 end) is not null then parm.parm_unt_tx
         else null
     end result_unit,
@@ -105,8 +105,8 @@ select
     parm.parm_tm_tx duration_basis,
     parm.parm_temp_tx temperature_basis_level,
     parm.parm_size_tx particle_size,
-    r.lab_std_va r_precision,
-    trim(r.result_lab_cm_tx) result_comment,
+    nullif(r.lab_std_va, '') r_precision,
+    nullif(trim(r.result_lab_cm_tx), '') result_comment,
     case
         when parm.parm_medium_tx = 'Biological Tissue'
             then (select tu.tu_1_nm ||
@@ -127,19 +127,19 @@ select
                   where qw_sample.body_part_id = cast(body_part.body_part_id as varchar))
         else null
     end sample_tissue_anatomy_name,
-    r.meth_cd analytical_procedure_id,
+    nullif(r.meth_cd, '') analytical_procedure_id,
     case
-        when r.meth_cd is not null then 'USGS'
+        when nullif(r.meth_cd, '') is not null then 'USGS'
         else null
     end analytical_procedure_source,
     meth.meth_nm analytical_method_name,
     meth.cit_nm analytical_method_citation,
     proto_org.proto_org_nm lab_name,
     case
-        when r.anl_dt is not null
+        when nullif(r.anl_dt, '') is not null
             then substring(r.anl_dt from 1 for 4) || '-' || substring(r.anl_dt from 5 for 2) || '-' || substring(r.anl_dt from 7 for 2)
         else null
-    end analysis_date_time,
+    end analysis_start_date,
     trim(val_qual_cd1.val_qual_nm ||
          val_qual_cd2.val_qual_nm ||
          val_qual_cd3.val_qual_nm ||
@@ -151,54 +151,65 @@ select
          end
     ) lab_remark,
     case
-        when r.remark_cd = '<' and r.rpt_lev_va is null then r.result_va
-        when r.remark_cd = '<' and cast(r.result_unrnd_va as numeric) > cast(r.rpt_lev_va as numeric) then r.result_va
-        when r.remark_cd = '>' then r.result_va
-        when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
-        when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-        when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then coalesce(parm_meth.multiplier, parm.multiplier)
-        when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
+        when r.remark_cd = '<' and r.rpt_lev_va is null then nullif(r.result_va, '')
+        when r.remark_cd = '<' and
+             cast(coalesce(nullif(r.result_unrnd_va, ''), '0') as numeric) > cast(coalesce(nullif(r.rpt_lev_va, ''), '0') as numeric)
+            then nullif(r.result_va, '')
+        when r.remark_cd = '>' then nullif(r.result_va, '')
+        when r.remark_cd in ('N', 'U') and nullif(r.rpt_lev_va, '') is not null then r.rpt_lev_va
+        when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is null then null
+        when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is not null
+            then coalesce(parm_meth.multiplier, parm.multiplier)
+        when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nullif(r.rpt_lev_va, '')
         else null
     end detection_limit,
     case
         when (case
-            when r.remark_cd = '<' and r.rpt_lev_va is null then r.result_va
-            when r.remark_cd = '<' and cast(r.result_unrnd_va as numeric) > cast(r.rpt_lev_va as numeric) then r.result_va
-            when r.remark_cd = '>' then r.result_va
-            when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
-            when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-            when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then coalesce(parm_meth.multiplier, parm.multiplier)
-            when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
+            when r.remark_cd = '<' and nullif(r.rpt_lev_va, '') is null then nullif(r.result_va, '')
+            when r.remark_cd = '<' and
+                cast(coalesce(nullif(r.result_unrnd_va, ''), '0') as numeric)
+                > cast(coalesce(nullif(r.rpt_lev_va, ''), '0') as numeric) then nullif(r.result_va, '')
+            when r.remark_cd = '>' then nullif(r.result_va, '')
+            when r.remark_cd in ('N', 'U') and nullif(r.rpt_lev_va, '') is not null then r.rpt_lev_va
+            when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is null then null
+            when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is not null
+                then coalesce(parm_meth.multiplier, parm.multiplier)
+            when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nullif(r.rpt_lev_va, '')
             else null
         end) is not null then parm.parm_unt_tx
         else null
     end detection_limit_unit,
     case when (
         case
-            when r.remark_cd = '<' and r.rpt_lev_va is null then r.result_va
-            when r.remark_cd = '<' and cast(r.result_unrnd_va as numeric) > cast(r.rpt_lev_va as numeric) then r.result_va
-            when r.remark_cd = '>' then r.result_va
-            when r.remark_cd in ('N', 'U') and r.rpt_lev_va is not null then r.rpt_lev_va
-            when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-            when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then coalesce(parm_meth.multiplier, parm.multiplier)
-            when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then r.rpt_lev_va
+            when r.remark_cd = '<' and nullif(r.rpt_lev_va, '') is null then nullif(r.result_va, '')
+            when r.remark_cd = '<' and
+                cast(coalesce(nullif(r.result_unrnd_va, ''), '0') as numeric) > cast(coalesce(nullif(r.rpt_lev_va, ''), '0') as numeric)
+                then nullif(r.result_va, '')
+            when r.remark_cd = '>' then nullif(r.result_va, '')
+            when r.remark_cd in ('N', 'U') and nullif(r.rpt_lev_va, '') is not null then r.rpt_lev_va
+            when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is null then null
+            when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is not null
+                then coalesce(parm_meth.multiplier, parm.multiplier)
+            when nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nullif(r.rpt_lev_va, '')
             else null
         end) is not null then
             (case
-                when r.remark_cd = '<' and r.rpt_lev_va is null then 'Historical Lower Reporting Limit'
-                when r.remark_cd = '<' and cast(r.result_unrnd_va as numeric) > cast(r.rpt_lev_va as numeric) then 'Elevated Detection Limit'
+                when r.remark_cd = '<' and nullif(r.rpt_lev_va, '') is null then 'Historical Lower Reporting Limit'
+                when r.remark_cd = '<' and cast(coalesce(nullif(r.result_unrnd_va, ''), '0') as numeric) > cast(coalesce(nullif(r.rpt_lev_va, ''), '0') as numeric)
+                    then 'Elevated Detection Limit'
                 when r.remark_cd = '<' and nwis_wqx_rpt_lev_cd.rpt_lev_cd is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
                 when r.remark_cd = '>' then 'Upper Reporting Limit'
-                when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is null then null
-                when r.remark_cd = 'M' and r.rpt_lev_va is null and r.result_unrnd_va is not null then 'Lower Quantitation Limit'
-                when r.remark_cd = 'M' and r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
-                when r.rpt_lev_va is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
+                when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is null then null
+                when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is null and nullif(r.result_unrnd_va, '') is not null then 'Lower Quantitation Limit'
+                when r.remark_cd = 'M' and nullif(r.rpt_lev_va, '') is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
+                when nullif(r.rpt_lev_va, '') is not null then nwis_wqx_rpt_lev_cd.wqx_rpt_lev_nm
                 else null
             end)
         else null
     end detection_limit_desc,
     case
-        when r.prep_dt is not null then substring(r.prep_dt from 1 for 4) || '-' || substring(r.prep_dt from 5 for 2) || '-' || substring(r.prep_dt from 7 for 2)
+        when nullif(r.prep_dt, '') is not null
+            then substring(r.prep_dt from 1 for 4) || '-' || substring(r.prep_dt from 5 for 2) || '-' || substring(r.prep_dt from 7 for 2)
         else null
     end analysis_prep_date_tx
 from nwis.qw_result r
@@ -236,4 +247,4 @@ from nwis.qw_result r
                       parm.parm_medium_tx = 'Biological Tissue'
 where
     r.result_web_cd = 'Y' and
-    (r.result_va is not null or r.rpt_lev_va is not null or r.remark_cd is not null);
+    (nullif(r.result_va, '') is not null or nullif(r.rpt_lev_va, '') is not null or nullif(r.remark_cd, '') is not null)
