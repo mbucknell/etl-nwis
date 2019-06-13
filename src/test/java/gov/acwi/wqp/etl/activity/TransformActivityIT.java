@@ -66,13 +66,15 @@ public class TransformActivityIT extends NwisBaseFlowIT {
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/indexes/all.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
 			table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
-			query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'activity_swap_nwis'")
+			query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + TABLE_NAME)
 	@ExpectedDatabase(connection = CONNECTION_INFORMATION_SCHEMA,
 			value = "classpath:/testResult/wqp/activity/create.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
 			table = EXPECTED_DATABASE_TABLE_CHECK_TABLE,
-			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'activity_swap_nwis'")
-	@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/activity.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + TABLE_NAME)
+	@ExpectedDatabase(
+			value = "classpath:/testResult/wqp/activity/activity.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(
 			value="classpath:/testResult/wqp/analyze/activity.xml",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
