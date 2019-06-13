@@ -190,7 +190,7 @@ select
        end sample_collect_method_id,
     case
        when sample_parameter.v84164_fxd_tx is not null and sample_parameter.v82398_fxd_tx is not null
-           then cast('USGS parameter code 82398' as varchar2(25))
+           then cast('USGS parameter code 82398' as varchar(25))
        else 'USGS'
        end sample_collect_method_ctx,
     case
@@ -222,11 +222,11 @@ select
      join station_swap_nwis
           on site.site_id = station_swap_nwis.station_id
      left join nwis.tu
-               on to_number(samp.tu_id) = tu.tu_id
+               on cast(samp.tu_id as integer) = tu.tu_id
      left join nwis.nwis_wqx_medium_cd
                on samp.medium_cd = nwis_wqx_medium_cd.nwis_medium_cd
      left join nwis.body_part
-               on samp.body_part_id = body_part.body_part_id
+               on cast(samp.body_part_id as integer) = body_part.body_part_id
      left join nwis.proto_org proto_org2
                on samp.coll_ent_cd = proto_org2.proto_org_cd
      left join nwis.hyd_event_cd
@@ -250,4 +250,4 @@ select
     site.dec_long_va <> 0 and
     site.db_no = '01' and
     site.site_web_cd = 'Y' and
-    site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP');
+    site.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP')
