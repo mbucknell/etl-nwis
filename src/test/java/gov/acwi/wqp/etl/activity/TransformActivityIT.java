@@ -19,10 +19,16 @@ import gov.acwi.wqp.etl.NwisBaseFlowIT;
 
 public class TransformActivityIT extends NwisBaseFlowIT {
 
+	public static final String TABLE_NAME = "'activity_swap_nwis'";
+	public static final String EXPECTED_DATABASE_QUERY_ANALYZE = BASE_EXPECTED_DATABASE_QUERY_ANALYZE + TABLE_NAME;
+	public static final String EXPECTED_DATABASE_QUERY_PRIMARY_KEY = BASE_EXPECTED_DATABASE_QUERY_PRIMARY_KEY
+			+ EQUALS_QUERY + TABLE_NAME;
+	public static final String EXPECTED_DATABASE_QUERY_FOREIGN_KEY = BASE_EXPECTED_DATABASE_QUERY_FOREIGN_KEY
+			+ EQUALS_QUERY + TABLE_NAME;
+
 	@Autowired
 	@Qualifier("activityFlow")
 	private Flow activityFlow;
-
 
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/activity/empty.xml")
@@ -47,7 +53,7 @@ public class TransformActivityIT extends NwisBaseFlowIT {
 	}
 
 	@Test
-	@DatabaseSetup(value = "classpath:/testResult/wqp/activity/empty.xml")
+	@DatabaseSetup(value = "classpath:/testData/wqp/activity/activityOld.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwSample/qwSample.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisWqxMediumCd/nwisWqxMediumCd.xml")
@@ -67,12 +73,34 @@ public class TransformActivityIT extends NwisBaseFlowIT {
 			table = EXPECTED_DATABASE_TABLE_CHECK_TABLE,
 			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'activity_swap_nwis'")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/activity.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(
+			value="classpath:/testResult/wqp/analyze/activity.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=EXPECTED_DATABASE_TABLE_CHECK_ANALYZE,
+			query=EXPECTED_DATABASE_QUERY_ANALYZE)
+	@ExpectedDatabase(
+			value="classpath:/testResult/wqp/activity/primaryKey.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=EXPECTED_DATABASE_TABLE_CHECK_PRIMARY_KEY,
+			query=EXPECTED_DATABASE_QUERY_PRIMARY_KEY)
+	@ExpectedDatabase(
+			value="classpath:/testResult/wqp/activity/foreignKey.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=EXPECTED_DATABASE_TABLE_CHECK_FOREIGN_KEY,
+			query=EXPECTED_DATABASE_QUERY_FOREIGN_KEY)
+	@ExpectedDatabase(
+			value="classpath:/testResult/wqp/activity/indexes/pk.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+			query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX_PK + TABLE_NAME)
 	public void activityFlowTest() {
 		Job activityFlowTest = jobBuilderFactory.get("activityFlowTest")
 				.start(activityFlow)
 				.build()
 				.build();
 		jobLauncherTestUtils.setJob(activityFlowTest);
+		jdbcTemplate.execute("select add_monitoring_location_primary_key('nwis', 'wqp', 'station')");
+
 		try {
 			JobExecution jobExecution = jobLauncherTestUtils.launchJob(testJobParameters);
 			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
