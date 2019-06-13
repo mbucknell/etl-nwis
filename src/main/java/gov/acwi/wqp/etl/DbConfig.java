@@ -34,7 +34,7 @@ public class DbConfig {
 	}
 	
 	@Bean
-	@ConfigurationProperties(prefix="spring.datasource-nwis")
+	@ConfigurationProperties(prefix=EtlConstantUtils.SPRING_DATASOURCE_NWIS)
 	public DataSourceProperties dataSourcePropertiesNwis() {
 		return new DataSourceProperties();
 	}
