@@ -20,7 +20,7 @@ public class TransformActivityTasklet implements Tasklet {
     private final JdbcTemplate jdbcTemplate;
 
     @Value("classpath:sql/activity/transformActivity.sql")
-    Resource resource;
+    private Resource resource;
 
     @Autowired
     public TransformActivityTasklet(JdbcTemplate jdbcTemplate) {
