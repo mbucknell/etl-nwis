@@ -33,16 +33,16 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/empty.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aqfr/aqfr.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sitefile/sitefile.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/siteTp/siteTp.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@ExpectedDatabase(
 			value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
@@ -58,15 +58,15 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	
 	@Test
 	@DatabaseSetup(value = "classpath:/testData/wqp/monitoringLocation/monitoringLocationOld.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aqfr/aqfr.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sitefile/sitefile.xml")
-	@DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/siteTp/siteTp.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/monitoringLocation/indexes/all.xml",
 		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
 		table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,

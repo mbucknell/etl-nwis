@@ -15,7 +15,7 @@
         result_md="2001-09-15 00:00:00"
         qw_result_md="2011-10-16 07:05:00"></qw_result>
     <qw_result
-        sample_id="12590529"
+            sample_id="12590529"
         site_id="891038"
         record_no="97000010"
         result_web_cd="true"
@@ -29,7 +29,7 @@
         result_md="2001-09-15 00:00:00"
         qw_result_md="2011-10-16 07:05:00"></qw_result>
     <qw_result
-        sample_id="12590529"
+            sample_id="12590529"
         site_id="891038"
         record_no="97000010"
         result_web_cd="true"
@@ -44,7 +44,7 @@
         result_md="2018-09-13 00:00:00"
         qw_result_md="2018-09-13 14:00:49"></qw_result>
     <qw_result
-        sample_id="12590529"
+            sample_id="12590529"
         site_id="891038"
         record_no="97000010"
         result_web_cd="true"
