@@ -19,6 +19,13 @@ import gov.acwi.wqp.etl.NwisBaseFlowIT;
 
 public class TransformProjectDataIT extends NwisBaseFlowIT {
 
+    public static final String TABLE_NAME = "'project_data_swap_nwis'";
+    public static final String EXPECTED_DATABASE_QUERY_ANALYZE = BASE_EXPECTED_DATABASE_QUERY_ANALYZE + TABLE_NAME;
+    public static final String EXPECTED_DATABASE_QUERY_PRIMARY_KEY = BASE_EXPECTED_DATABASE_QUERY_PRIMARY_KEY
+            + EQUALS_QUERY + TABLE_NAME;
+    public static final String EXPECTED_DATABASE_QUERY_FOREIGN_KEY = BASE_EXPECTED_DATABASE_QUERY_FOREIGN_KEY
+            + EQUALS_QUERY + TABLE_NAME;
+
     @Autowired
     @Qualifier("projectDataFlow")
     private Flow projectDataFlow;
@@ -27,12 +34,35 @@ public class TransformProjectDataIT extends NwisBaseFlowIT {
     @ExpectedDatabase(value="classpath:/testResult/wqp/projectData/indexes/all.xml",
             assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
             table=EXPECTED_DATABASE_TABLE_CHECK_INDEX,
-            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'project_data_swap_nwis'")
-    @ExpectedDatabase(connection=CONNECTION_INFORMATION_SCHEMA, value="classpath:/testResult/wqp/projectData/create.xml",
+            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + TABLE_NAME)
+    @ExpectedDatabase(connection=CONNECTION_INFORMATION_SCHEMA,
+            value="classpath:/testResult/wqp/projectData/create.xml",
             assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
             table=EXPECTED_DATABASE_TABLE_CHECK_TABLE,
-            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'project_data_swap_nwis'")
-    @ExpectedDatabase(value="classpath:/testResult/wqp/projectData/projectData.xml", assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + TABLE_NAME)
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/projectData/projectData.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/analyze/projectData.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+            table=EXPECTED_DATABASE_TABLE_CHECK_ANALYZE,
+            query=EXPECTED_DATABASE_QUERY_ANALYZE)
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/projectData/primaryKey.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+            table=EXPECTED_DATABASE_TABLE_CHECK_PRIMARY_KEY,
+            query=EXPECTED_DATABASE_QUERY_PRIMARY_KEY)
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/projectData/foreignKey.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+            table=EXPECTED_DATABASE_TABLE_CHECK_FOREIGN_KEY,
+            query=EXPECTED_DATABASE_QUERY_FOREIGN_KEY)
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/projectData/indexes/pk.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+            table=EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX_PK + TABLE_NAME)
     public void projectDataFlowTest() {
         Job projectDataFlowTest = jobBuilderFactory.get("projectDataFlowTest")
                 .start(projectDataFlow)
