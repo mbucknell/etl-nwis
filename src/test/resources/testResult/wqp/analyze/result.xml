@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <pg_stat_all_tables
+            schemaname="wqp"
+            relname="result_swap_nwis"
+            within_one_minute="true"
+    />
+</dataset>
