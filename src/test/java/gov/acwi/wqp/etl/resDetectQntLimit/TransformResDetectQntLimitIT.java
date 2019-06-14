@@ -19,6 +19,9 @@ import gov.acwi.wqp.etl.NwisBaseFlowIT;
 
 public class TransformResDetectQntLimitIT extends NwisBaseFlowIT {
 
+	public static final String TABLE_NAME = "'r_detect_qnt_lmt_swap_nwis'";
+	public static final String EXPECTED_DATABASE_QUERY_ANALYZE = BASE_EXPECTED_DATABASE_QUERY_ANALYZE + TABLE_NAME;
+
 	@Autowired
 	@Qualifier("resDetectQntLimitFlow")
 	private Flow resDetectQntLimitFlow;
@@ -26,7 +29,9 @@ public class TransformResDetectQntLimitIT extends NwisBaseFlowIT {
 	@Test
 	@DatabaseSetup(value="classpath:/testResult/wqp/resDetectQntLimit/empty.xml")
 	@DatabaseSetup(value="classpath:/testData/wqp/result/result.xml")
-	@ExpectedDatabase(value="classpath:/testResult/wqp/resDetectQntLimit/resDetectQntLimit.xml", assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(
+			value="classpath:/testResult/wqp/resDetectQntLimit/resDetectQntLimit.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void transformResDetectQntLimitStepTest() {
 		try {
 			JobExecution jobExecution = jobLauncherTestUtils.launchStep("transformResDetectQntLimitStep", testJobParameters);
@@ -40,16 +45,24 @@ public class TransformResDetectQntLimitIT extends NwisBaseFlowIT {
 	@Test
 	@DatabaseSetup(value="classpath:/testResult/wqp/resDetectQntLimit/empty.xml")
 	@DatabaseSetup(value="classpath:/testData/wqp/result/result.xml")
-	@ExpectedDatabase(value="classpath:/testResult/wqp/resDetectQntLimit/resDetectQntLimit.xml", assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
-	@ExpectedDatabase(value = "classpath:/testResult/wqp/resDetectQntLimit/indexes/all.xml",
-		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-		table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
-		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'r_detect_qnt_lmt_swap_nwis'")
+	@ExpectedDatabase(
+			value="classpath:/testResult/wqp/resDetectQntLimit/resDetectQntLimit.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(
+			value = "classpath:/testResult/wqp/resDetectQntLimit/indexes/all.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+			query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + TABLE_NAME)
 	@ExpectedDatabase(connection = "pg", 
 		value = "classpath:/testResult/wqp/resDetectQntLimit/create.xml", 
 		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
 		table = EXPECTED_DATABASE_TABLE_CHECK_TABLE, 
-		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'r_detect_qnt_lmt_swap_nwis'")
+		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + TABLE_NAME)
+	@ExpectedDatabase(
+			value="classpath:/testResult/wqp/analyze/resDetectQntLimit.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=EXPECTED_DATABASE_TABLE_CHECK_ANALYZE,
+			query=EXPECTED_DATABASE_QUERY_ANALYZE)
 	public void resDetectQntLimitFlowTest() {
 		Job resDetectQntLimitFlowTest = jobBuilderFactory.get("resDetectQntLimitFlowTest")
 					.start(resDetectQntLimitFlow)
