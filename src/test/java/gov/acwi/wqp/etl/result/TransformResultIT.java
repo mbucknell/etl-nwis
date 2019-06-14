@@ -73,6 +73,7 @@ public class TransformResultIT extends NwisBaseFlowIT {
 			connection = CONNECTION_NWIS,
 			value = "classpath:/testData/nwis/qwResult/qwResult.xml")
 	@DatabaseSetup(value = "classpath:/testResult/wqp/activity/activity.xml")
+	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml")
 	@DatabaseSetup(
 			connection = CONNECTION_NWIS,
 			value = "classpath:/testData/nwis/parm/parm.xml")
@@ -130,6 +131,7 @@ public class TransformResultIT extends NwisBaseFlowIT {
 		try {
 			JobExecution jobExecution = jobLauncherTestUtils.launchJob(testJobParameters);
 			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getLocalizedMessage());
