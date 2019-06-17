@@ -22,13 +22,6 @@ public class TransformActivity {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	private DataSource dataSourceWqp;
-
-	@Autowired
-	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
-	private DataSource dataSourceNwis;
-
-	@Autowired
 	@Qualifier(EtlConstantUtils.SETUP_ACTIVITY_SWAP_TABLE_FLOW)
 	private Flow setupActivitySwapTableFlow;
 
