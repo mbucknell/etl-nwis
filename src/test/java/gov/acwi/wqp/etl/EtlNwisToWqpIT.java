@@ -134,7 +134,6 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
     @ExpectedDatabase(value="classpath:/testResult/endToEnd/state.xml", assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     @ExpectedDatabase(value="classpath:/testResult/endToEnd/taxaName.xml", assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
 
-
     @ExpectedDatabase(
             value="classpath:/testResult/endToEnd/lastEtl.xml",
             assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
