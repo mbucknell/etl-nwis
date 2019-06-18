@@ -131,6 +131,7 @@ public class TransformResultIT extends NwisBaseFlowIT {
 		try {
 			JobExecution jobExecution = jobLauncherTestUtils.launchJob(testJobParameters);
 			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+			Thread.sleep(1000);
 
 		} catch (Exception e) {
 			e.printStackTrace();

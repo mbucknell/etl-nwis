@@ -211,9 +211,17 @@
                                     <NWIS_SCHEMA_NAME>nwis</NWIS_SCHEMA_NAME>
                                     <NWIS_SCHEMA_OWNER_USERNAME>nwis_ws_star</NWIS_SCHEMA_OWNER_USERNAME>
                                     <NWIS_SCHEMA_OWNER_PASSWORD>changeMe</NWIS_SCHEMA_OWNER_PASSWORD>
+                                    <EPA_DATABASE_ADDRESS>127.0.0.1</EPA_DATABASE_ADDRESS>
+                                    <EPA_DATABASE_NAME>wqp_db</EPA_DATABASE_NAME>
+                                    <EPA_DB_OWNER_USERNAME>epa_owner</EPA_DB_OWNER_USERNAME>
+                                    <EPA_DB_OWNER_PASSWORD>changeMe</EPA_DB_OWNER_PASSWORD>
+                                    <EPA_SCHEMA_OWNER_USERNAME>epa_owner</EPA_SCHEMA_OWNER_USERNAME>
+                                    <EPA_SCHEMA_OWNER_PASSWORD>changeMe</EPA_SCHEMA_OWNER_PASSWORD>
+                                    <WQX_SCHEMA_NAME>wqx</WQX_SCHEMA_NAME>
+                                    <STORETW_SCHEMA_NAME>storetw</STORETW_SCHEMA_NAME>
                                 </env>
                                 <wait>
-                                    <time>80000</time>
+                                    <time>120000</time>
                                 </wait>
                             </run>
                         </image>
