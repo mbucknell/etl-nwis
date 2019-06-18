@@ -1,0 +1,6 @@
+conrelid,conname,pg_get_constraintdef
+activity_nwis,activity_nwis_pk,"PRIMARY KEY (data_source_id, station_id, activity_id)"
+org_data_nwis,org_data_nwis_pk,"PRIMARY KEY (data_source_id, organization_id)"
+project_data_nwis,project_data_nwis_pk,"PRIMARY KEY (data_source_id, project_id)"
+station_nwis,station_nwis_pk,"PRIMARY KEY (data_source_id, station_id)"
+station_sum_nwis,station_sum_nwis_pk,"PRIMARY KEY (data_source_id, station_id)"

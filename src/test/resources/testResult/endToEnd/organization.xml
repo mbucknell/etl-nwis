@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<dataset>
+    <organization_nwis data_source_id="2" code_value="USGS-IN" description="USGS Indiana Water Science Center"></organization_nwis>
+    <organization_nwis data_source_id="2" code_value="USGS-MI" description="USGS Michigan Water Science Center"></organization_nwis>
+    <organization_nwis data_source_id="2" code_value="USGS-OH" description="USGS Ohio Water Science Center"></organization_nwis>
+</dataset>

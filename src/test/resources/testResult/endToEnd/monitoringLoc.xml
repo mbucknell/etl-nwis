@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<dataset>
+    <monitoring_loc_nwis
+        data_source_id="2"
+        code_value="USGS-04028100"
+        description="MONTREAL RIVER NEAR IRONWOOD, MI"
+        organization="USGS-MI"
+        search_text="USGS-04028100 MONTREAL RIVER NEAR IRONWOOD, MI"
+    >
+    </monitoring_loc_nwis>
+</dataset>

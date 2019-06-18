@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<dataset>
+    <char_type_nwis data_source_id="2" code_value="Microbiological" ></char_type_nwis>
+    <char_type_nwis data_source_id="2" code_value="Physical" ></char_type_nwis>
+    <char_type_nwis data_source_id="2" code_value="Inorganics, Minor, Metals" ></char_type_nwis>
+    <char_type_nwis data_source_id="2" code_value="Nutrient" ></char_type_nwis>
+    <char_type_nwis data_source_id="2" code_value="Organics, Other" ></char_type_nwis>
+    <char_type_nwis data_source_id="2" code_value="Inorganics, Major, Non-metals" ></char_type_nwis>
+</dataset>

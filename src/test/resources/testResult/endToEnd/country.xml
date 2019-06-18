@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+    <country_nwis
+        data_source_id="2"
+        code_value="US">
+    </country_nwis>
+</dataset>
