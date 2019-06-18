@@ -42,7 +42,6 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 
     @Test
     // Lookups and mysql data tables
-    @DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/empty.xml")
     @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
     @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
     @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
