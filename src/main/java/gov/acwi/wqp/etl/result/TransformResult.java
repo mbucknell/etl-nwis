@@ -36,8 +36,8 @@ public class TransformResult {
 	private Flow setupResultSwapTableFlow;
 
 	@Autowired
-	@Qualifier(EtlConstantUtils.BUILD_RESULT_INDEXES_FLOW)
-	private Flow buildResultIndexesFlow;
+	@Qualifier(EtlConstantUtils.AFTER_LOAD_RESULT_FLOW)
+	private Flow afterLoadResultFlow;
 
 	@Autowired
 	@Qualifier("transformResultTasklet")
@@ -56,7 +56,7 @@ public class TransformResult {
 		return new FlowBuilder<SimpleFlow>("resultFlow")
 				.start(setupResultSwapTableFlow)
 				.next(transformResultStep())
-				.next(buildResultIndexesFlow)
+				.next(afterLoadResultFlow)
 				.build();
 	}
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<dataset>
+    <sample_media_nwis data_source_id="2" code_value="Other"></sample_media_nwis>
+    <sample_media_nwis data_source_id="2" code_value="Water"></sample_media_nwis>
+</dataset>

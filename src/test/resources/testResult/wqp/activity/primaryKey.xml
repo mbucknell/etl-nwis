@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <pg_constraint
+            conrelid="activity_swap_nwis"
+            conname="activity_swap_nwis_pk"
+            pg_get_constraintdef="PRIMARY KEY (data_source_id, station_id, activity_id)"
+    />
+</dataset>

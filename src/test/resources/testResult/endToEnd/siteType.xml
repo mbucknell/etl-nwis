@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<dataset>
+    <site_type_nwis data_source_id="2" code_value="Well"></site_type_nwis>
+    <site_type_nwis data_source_id="2" code_value="Stream"></site_type_nwis>
+</dataset>

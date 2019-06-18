@@ -21,14 +21,14 @@ public class TransformProjectData {
     private Flow setupProjectDataSwapTableFlow;
 
     @Autowired
-    @Qualifier(EtlConstantUtils.BUILD_PROJECT_DATA_INDEXES_FLOW)
-    private Flow buildProjectDataIndexesFlow;
+    @Qualifier(EtlConstantUtils.AFTER_LOAD_PROJECT_DATA_FLOW)
+    private Flow afterLoadProjectDataFlow;
 
     @Bean
     public Flow projectDataFlow() throws IOException {
         return new FlowBuilder<SimpleFlow>("projectDataFlow")
                 .start(setupProjectDataSwapTableFlow)
-                .next(buildProjectDataIndexesFlow)
+                .next(afterLoadProjectDataFlow)
                 .build();
     }
 }

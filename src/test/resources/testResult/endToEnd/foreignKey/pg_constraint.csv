@@ -1,0 +1,8 @@
+conrelid,conname,pg_get_constraintdef
+activity_nwis,activity_nwis_fk_station,"FOREIGN KEY (data_source_id, station_id) REFERENCES station_nwis(data_source_id, station_id)"
+act_metric_nwis,act_metric_nwis_fk_activity,"FOREIGN KEY (data_source_id, station_id, activity_id) REFERENCES activity_nwis(data_source_id, station_id, activity_id)"
+ml_grouping_nwis,ml_grouping_nwis_fk_station_sum,"FOREIGN KEY (data_source_id, station_id) REFERENCES station_sum_nwis(data_source_id, station_id)"
+prj_ml_weighting_nwis,prj_ml_weighting_nwis_fk_station,"FOREIGN KEY (data_source_id, station_id) REFERENCES station_nwis(data_source_id, station_id)"
+prj_ml_weighting_nwis,prj_ml_weighting_nwis_fk_project_data,"FOREIGN KEY (data_source_id, project_id) REFERENCES project_data_nwis(data_source_id, project_id)"
+result_nwis,result_nwis_fk_station,"FOREIGN KEY (data_source_id, station_id) REFERENCES station_nwis(data_source_id, station_id)"
+result_sum_nwis,result_sum_nwis_fk_station_sum,"FOREIGN KEY (data_source_id, station_id) REFERENCES station_sum_nwis(data_source_id, station_id)"

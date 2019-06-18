@@ -20,14 +20,14 @@ public class TransformProjectMLWeighting {
     private Flow setupProjectMLWeightingSwapTableFlow;
 
     @Autowired
-    @Qualifier(EtlConstantUtils.BUILD_PROJECT_ML_WEIGHTING_INDEXES_FLOW)
-    private Flow buildProjectMLWeightingIndexesFlow;
+    @Qualifier(EtlConstantUtils.AFTER_LOAD_PROJECT_ML_WEIGHTING_FLOW)
+    private Flow afterLoadProjectMLWeightingFlow;
 
     @Bean
     public Flow projectMLWeightingFlow() throws IOException {
         return new FlowBuilder<SimpleFlow>("projectMLWeightingFlow")
                 .start(setupProjectMLWeightingSwapTableFlow)
-                .next(buildProjectMLWeightingIndexesFlow)
+                .next(afterLoadProjectMLWeightingFlow)
                 .build();
     }
 }

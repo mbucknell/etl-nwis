@@ -54,8 +54,8 @@ public class TransformMonitoringLocation {
 	private Flow setupMonitoringLocationSwapTableFlow;
 
 	@Autowired
-	@Qualifier(EtlConstantUtils.BUILD_MONITORING_LOCATION_INDEXES_FLOW)
-	private Flow buildMonitoringLocationIndexesFlow;
+	@Qualifier(EtlConstantUtils.AFTER_LOAD_MONITORING_LOCATION_FLOW)
+	private Flow afterLoadMonitoringLocationFlow;
 	
 	@Value("classpath:sql/nwisMonitoringLocation.sql")
 	private Resource sqlResource;
@@ -112,7 +112,7 @@ public class TransformMonitoringLocation {
 				.start(upsertNwisStationLocalFlow)
 				.next(setupMonitoringLocationSwapTableFlow)
 				.next(transformMonitoringLocationStep())
-				.next(buildMonitoringLocationIndexesFlow)
+				.next(afterLoadMonitoringLocationFlow)
 				.build();
 	}
 }

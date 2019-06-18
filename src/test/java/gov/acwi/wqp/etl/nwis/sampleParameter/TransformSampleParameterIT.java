@@ -24,11 +24,11 @@ public class TransformSampleParameterIT extends NwisBaseFlowIT {
     private Flow sampleParameterFlow;
 
     @Test
-    @DatabaseSetup(connection = "nwis", value = "classpath:/testResult/nwis/sampleParameter/empty.xml")
-    @DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/sampleParameter/sampleParameterOld.xml")
-    @DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/qwResult/qwResultForSampleParameterTest.xml")
-    @DatabaseSetup(connection = "nwis", value = "classpath:/testData/nwis/fxd/sampleParameterTest/")
-    @ExpectedDatabase(connection = "nwis", value = "classpath:/testResult/nwis/sampleParameter/sampleParameter.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/sampleParameter/empty.xml")
+    @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sampleParameter/sampleParameterOld.xml")
+    @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwResult/qwResultForSampleParameterTest.xml")
+    @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/fxd/sampleParameterTest/")
+    @ExpectedDatabase(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/sampleParameter/sampleParameter.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void sampleParameterFlowTest() {
         Job sampleParameterFlowTest = jobBuilderFactory.get("sampleParameterFlowTest")
                 .start(sampleParameterFlow)

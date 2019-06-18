@@ -18,20 +18,32 @@ import gov.acwi.wqp.etl.NwisBaseFlowIT;
 
 public class TransformBiologicalHabitatMetricIT extends NwisBaseFlowIT {
 
+    public static final String TABLE_NAME = "'bio_hab_metric_swap_nwis'";
+    public static final String EXPECTED_DATABASE_QUERY_ANALYZE = BASE_EXPECTED_DATABASE_QUERY_ANALYZE + TABLE_NAME;
+
     @Autowired
     @Qualifier("biologicalHabitatMetricFlow")
     private Flow biologicalHabitatMetricFlow;
 
     @Test
-    @ExpectedDatabase(value="classpath:/testResult/wqp/biologicalHabitatMetric/indexes/all.xml",
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/biologicalHabitatMetric/indexes/all.xml",
             assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
             table=EXPECTED_DATABASE_TABLE_CHECK_INDEX,
-            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + "'bio_hab_metric_swap_nwis'")
-    @ExpectedDatabase(connection=CONNECTION_INFORMATION_SCHEMA, value="classpath:/testResult/wqp/biologicalHabitatMetric/create.xml",
+            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + TABLE_NAME)
+    @ExpectedDatabase(
+            connection=CONNECTION_INFORMATION_SCHEMA, value="classpath:/testResult/wqp/biologicalHabitatMetric/create.xml",
             assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
             table=EXPECTED_DATABASE_TABLE_CHECK_TABLE,
-            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + "'bio_hab_metric_swap_nwis'")
-    @ExpectedDatabase(value="classpath:/testResult/wqp/biologicalHabitatMetric/biologicalHabitatMetric.xml", assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+            query=BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + TABLE_NAME)
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/biologicalHabitatMetric/biologicalHabitatMetric.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    @ExpectedDatabase(
+            value="classpath:/testResult/wqp/analyze/biologicalHabitatMetric.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+            table=EXPECTED_DATABASE_TABLE_CHECK_ANALYZE,
+            query=EXPECTED_DATABASE_QUERY_ANALYZE)
     public void biologicalHabitatMetricFlowTest() {
         Job biologicalHabitatMetricFlowTest = jobBuilderFactory.get("biologicalHabitatMetricFlowTest")
                 .start(biologicalHabitatMetricFlow)
@@ -41,6 +53,7 @@ public class TransformBiologicalHabitatMetricIT extends NwisBaseFlowIT {
         try {
             JobExecution jobExecution = jobLauncherTestUtils.launchJob(testJobParameters);
             assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+            Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getLocalizedMessage());

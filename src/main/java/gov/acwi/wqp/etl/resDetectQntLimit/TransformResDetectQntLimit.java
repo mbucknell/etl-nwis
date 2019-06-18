@@ -28,8 +28,8 @@ public class TransformResDetectQntLimit {
 	private Tasklet transformResDetectQntLimitTasklet;
 
 	@Autowired
-	@Qualifier(EtlConstantUtils.BUILD_RES_DETECT_QNT_LIMIT_INDEXES_FLOW)
-	private Flow buildResDetectQntLimitIndexesFlow;
+	@Qualifier(EtlConstantUtils.AFTER_LOAD_RES_DETECT_QNT_LIMIT_FLOW)
+	private Flow afterLoadResDetectQntLimitFlow;
 
 	@Bean
 	public Step transformResDetectQntLimitStep() {
@@ -44,7 +44,7 @@ public class TransformResDetectQntLimit {
 		return new FlowBuilder<SimpleFlow>("resDetectQntLimitFlow")
 				.start(setupResDetectQntLimitSwapTableFlow)
 				.next(transformResDetectQntLimitStep())
-				.next(buildResDetectQntLimitIndexesFlow)
+				.next(afterLoadResDetectQntLimitFlow)
 				.build();
 	}
 

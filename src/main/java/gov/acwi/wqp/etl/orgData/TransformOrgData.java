@@ -46,8 +46,8 @@ public class TransformOrgData {
 	private Flow setupOrgDataSwapTableFlow;
 
 	@Autowired
-	@Qualifier(EtlConstantUtils.BUILD_ORG_DATA_INDEXES_FLOW)
-	private Flow buildOrgDataIndexesFlow;
+	@Qualifier(EtlConstantUtils.AFTER_LOAD_ORG_DATA_FLOW)
+	private Flow afterLoadOrgDataFlow;
 
 	@Bean
 	public JdbcCursorItemReader<NwisDistrictCdsByHost> nwisOrgReader() {
@@ -88,7 +88,7 @@ public class TransformOrgData {
 		return new FlowBuilder<SimpleFlow>("orgDataFlow")
 				.start(setupOrgDataSwapTableFlow)
 				.next(transformOrgDataStep())
-				.next(buildOrgDataIndexesFlow)
+				.next(afterLoadOrgDataFlow)
 				.build();
 	}
 }

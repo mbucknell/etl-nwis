@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <pg_constraint
+            conrelid="prj_ml_weighting_swap_nwis"
+            conname="prj_ml_weighting_nwis_fk_project_data"
+            pg_get_constraintdef="FOREIGN KEY (data_source_id, project_id) REFERENCES project_data_swap_nwis(data_source_id, project_id)"
+    />
+    <pg_constraint
+            conrelid="prj_ml_weighting_swap_nwis"
+            conname="prj_ml_weighting_nwis_fk_station"
+            pg_get_constraintdef="FOREIGN KEY (data_source_id, station_id) REFERENCES station_swap_nwis(data_source_id, station_id)"
+    />
+</dataset>

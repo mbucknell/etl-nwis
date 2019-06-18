@@ -3,7 +3,9 @@ package gov.acwi.wqp.etl;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -61,23 +63,21 @@ public class BatchConfiguration {
 	private Flow projectMLWeightingFlow;
 	
 	@Autowired
-	@Qualifier("createSummariesFlow")
+	@Qualifier(EtlConstantUtils.CREATE_SUMMARIES_FLOW)
 	private Flow createSummariesFlow;
 
 	@Autowired
-	@Qualifier("createLookupCodesFlow")
+	@Qualifier(EtlConstantUtils.CREATE_LOOKUP_CODES_FLOW)
 	private Flow createLookupCodesFlow;
 
 	@Autowired
-	@Qualifier("databaseFinalizeFlow")
+	@Qualifier(EtlConstantUtils.CREATE_DATABASE_FINALIZE_FLOW)
 	private Flow databaseFinalizeFlow;
 
-
 	@Bean
-	public Job nwisEtl() {
-		return jobBuilderFactory.get("WQP_NWIS_ETL")
-				.start(mySqlNwisExtractFlow)
-				.next(sampleParameterFlow)
+	public Flow nwisToWqpFlow() {
+		return new FlowBuilder<SimpleFlow>("nwisToWqpFlow")
+				.start(sampleParameterFlow)
 				.next(orgDataFlow)
 				.next(projectDataFlow)
 				.next(monitoringLocationFlow)
@@ -90,6 +90,15 @@ public class BatchConfiguration {
 				.next(createSummariesFlow)
 				.next(createLookupCodesFlow)
 				.next(databaseFinalizeFlow)
+				.build();
+
+	}
+
+	@Bean
+	public Job nwisEtl() {
+		return jobBuilderFactory.get("WQP_NWIS_ETL")
+				.start(mySqlNwisExtractFlow)
+				.next(nwisToWqpFlow())
 				.build()
 				.build();
 	}
