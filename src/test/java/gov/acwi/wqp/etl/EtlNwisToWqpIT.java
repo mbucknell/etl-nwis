@@ -61,6 +61,7 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
     @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwSample/qwSample.xml")
     @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
     @DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
+    @DatabaseSetup(value="classpath:/testData/wqp/huc12nometa/")
 
     //Tables
     //@ExpectedDatabase(

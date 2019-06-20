@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.monitoringLocation;
+package gov.acwi.wqp.etl.nwis.nwisStationLocal;
 
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -12,27 +12,40 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class NwisStationLocalUpdateCalculatedHuc {
+public class UpdateNwisStationLocal {
 
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    @Qualifier("taskNwisStationLocalUpdateCalculatedHuc")
-    private Tasklet taskNwisStationLocalUpdateCalculatedHuc;
+    @Qualifier("upsertNwisStationLocal")
+    private Tasklet upsertNwisStationLocal;
+
+    @Autowired
+    @Qualifier("updateNwisStationLocalCalculatedHuc")
+    private Tasklet updateNwisStationLocalCalculatedHuc;
+
+    @Bean
+    public Step upsertNwisStationLocalStep() {
+        return stepBuilderFactory
+                .get("upsertNwisStationLocalStep")
+                .tasklet(upsertNwisStationLocal)
+                .build();
+    }
 
     @Bean
     public Step updateNwisStationLocalCalculatedHucStep() {
         return stepBuilderFactory
                 .get("updateNwisStationLocalCalculatedHucStep")
-                .tasklet(taskNwisStationLocalUpdateCalculatedHuc)
+                .tasklet(updateNwisStationLocalCalculatedHuc)
                 .build();
     }
 
     @Bean
-    public Flow updateNwisStationLocalCalculatedHucFlow() {
-        return new FlowBuilder<SimpleFlow>("updatedNwisStationLocalCalculatedHucFlow")
-                .start(updateNwisStationLocalCalculatedHucStep())
+    public Flow nwisStationLocalFlow() {
+        return new FlowBuilder<SimpleFlow>("nwisStationLocalFlow")
+                .start(upsertNwisStationLocalStep())
+                .next(updateNwisStationLocalCalculatedHucStep())
                 .build();
     }
 }

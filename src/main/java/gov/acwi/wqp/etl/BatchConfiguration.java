@@ -25,6 +25,10 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("sampleParameterFlow")
 	private Flow sampleParameterFlow;
+
+	@Autowired
+	@Qualifier("nwisStationLocalFlow")
+	private Flow nwisStationLocalFlow;
 	
 	@Autowired
 	@Qualifier("orgDataFlow")
@@ -78,6 +82,7 @@ public class BatchConfiguration {
 	public Flow nwisToWqpFlow() {
 		return new FlowBuilder<SimpleFlow>("nwisToWqpFlow")
 				.start(sampleParameterFlow)
+				.next(nwisStationLocalFlow)
 				.next(orgDataFlow)
 				.next(projectDataFlow)
 				.next(monitoringLocationFlow)

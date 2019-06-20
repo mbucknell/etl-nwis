@@ -20,7 +20,7 @@ spring:
     password: ${MYSQL_PASSWORD}
     
   liquibase:
-    change-log: db/changelog/db.changelog-nwis.yml
+    change-log: db/changelog/db.changelog-nwis.yaml
     liquibaseSchema: ${WQP_SCHEMA_NAME}
     parameters:
       WQP_SCHEMA_NAME: ${WQP_SCHEMA_NAME}

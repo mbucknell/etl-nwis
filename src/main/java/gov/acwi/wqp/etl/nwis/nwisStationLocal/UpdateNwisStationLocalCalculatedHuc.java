@@ -1,8 +1,9 @@
-package gov.acwi.wqp.etl.monitoringLocation;
+package gov.acwi.wqp.etl.nwis.nwisStationLocal;
 
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -15,7 +16,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.FileCopyUtils;
 
 @Configuration
-public class TaskNwisStationLocalUpdateCalculatedHuc implements Tasklet {
+@StepScope
+public class UpdateNwisStationLocalCalculatedHuc implements Tasklet {
 
     @Autowired
     @Qualifier("dataSourceNwis")
@@ -24,12 +26,10 @@ public class TaskNwisStationLocalUpdateCalculatedHuc implements Tasklet {
     @Value("classpath:sql/calculateHuc12.sql")
     private Resource sqlResource;
 
-
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
-
-        jdbcTemplate.update(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
+        jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
 
         return RepeatStatus.FINISHED;
     }
