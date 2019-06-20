@@ -1,0 +1,8 @@
+atabaseChangeLog:
+  - preConditions:
+      - dbms:
+          type: postgresql
+
+  - include:
+      file: "db.changelog-master.yaml"
+      relativeToChangelogFile: true

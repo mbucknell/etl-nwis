@@ -23,6 +23,9 @@ spring:
     password: ${MYSQL_PASSWORD}
     
   liquibase:
+    change-log: db/changelog/db.changelog-nwis.yml
+    liquibaseSchema: ${WQP_SCHEMA_NAME}
     parameters:
       WQP_SCHEMA_NAME: ${WQP_SCHEMA_NAME}
-      ETL_OWNER_USERNAME: ${ETL_OWNER_USERNAME}  
+      ETL_OWNER_USERNAME: ${ETL_OWNER_USERNAME}
+      NWIS_SCHEMA_OWNER_USERNAME: ${NWIS_SCHEMA_OWNER_USERNAME}

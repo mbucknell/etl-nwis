@@ -50,6 +50,10 @@ public class TransformMonitoringLocation {
 	private Flow upsertNwisStationLocalFlow;
 
 	@Autowired
+	@Qualifier("updateNwisStationLocalCalculatedHucFlow")
+	private Flow updateNwisStationLocalCalculatedHucFlow;
+
+	@Autowired
 	@Qualifier(EtlConstantUtils.SETUP_MONITORING_LOCATION_SWAP_TABLE_FLOW)
 	private Flow setupMonitoringLocationSwapTableFlow;
 
@@ -110,6 +114,7 @@ public class TransformMonitoringLocation {
 	public Flow monitoringLocationFlow() throws Exception {
 		return new FlowBuilder<SimpleFlow>("monitoringLocationFlow")
 				.start(upsertNwisStationLocalFlow)
+				.next(updateNwisStationLocalCalculatedHucFlow)
 				.next(setupMonitoringLocationSwapTableFlow)
 				.next(transformMonitoringLocationStep())
 				.next(afterLoadMonitoringLocationFlow)
