@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - preConditions:
+      - dbms:
+          type: postgresql
+
+  - changeSet:
+      author: mbucknell
+      id: "grant.select.${WQP_SCHEMA_NAME}.huc12nometa.${NWIS_SCHEMA_OWNER_USERNAME}"
+      changes:
+        - sql:
+            sql: grant select on ${WQP_SCHEMA_NAME}.huc12nometa to ${NWIS_SCHEMA_OWNER_USERNAME}
+        - rollback: revoke select on ${WQP_SCHEMA_NAME}.huc12nometa from ${NWIS_SCHEMA_OWNER_USERNAME}

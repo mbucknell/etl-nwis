@@ -1,4 +1,4 @@
-package gov.acwi.wqp.etl.monitoringLocation;
+package gov.acwi.wqp.etl.nwis.nwisStationLocal;
 
 import javax.sql.DataSource;
 
@@ -14,22 +14,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 
-@Component 
-public class TaskNwisStationLocalUpsert implements Tasklet {
-	
+@Component
+public class UpsertNwisStationLocal implements Tasklet {
+
 	@Autowired
 	@Qualifier("dataSourceNwis")
 	private DataSource dataSourceNwis;
 
 	@Value("classpath:sql/nwisStationLocal.sql")
 	private Resource sqlResource;
-	
+
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
+		jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
 
-		jdbcTemplate.update(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
-		
 		return RepeatStatus.FINISHED;
 	}
 

@@ -46,10 +46,6 @@ public class TransformMonitoringLocation {
 	private DataSource dataSourceNwis;
 
 	@Autowired
-	@Qualifier("upsertNwisStationLocalFlow")
-	private Flow upsertNwisStationLocalFlow;
-
-	@Autowired
 	@Qualifier(EtlConstantUtils.SETUP_MONITORING_LOCATION_SWAP_TABLE_FLOW)
 	private Flow setupMonitoringLocationSwapTableFlow;
 
@@ -109,8 +105,7 @@ public class TransformMonitoringLocation {
 	@Bean
 	public Flow monitoringLocationFlow() throws Exception {
 		return new FlowBuilder<SimpleFlow>("monitoringLocationFlow")
-				.start(upsertNwisStationLocalFlow)
-				.next(setupMonitoringLocationSwapTableFlow)
+				.start(setupMonitoringLocationSwapTableFlow)
 				.next(transformMonitoringLocationStep())
 				.next(afterLoadMonitoringLocationFlow)
 				.build();
