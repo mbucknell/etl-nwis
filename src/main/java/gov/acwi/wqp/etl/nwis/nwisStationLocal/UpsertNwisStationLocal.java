@@ -26,8 +26,8 @@ public class UpsertNwisStationLocal implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
-	    jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
+		jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
 		
 		return RepeatStatus.FINISHED;
 	}

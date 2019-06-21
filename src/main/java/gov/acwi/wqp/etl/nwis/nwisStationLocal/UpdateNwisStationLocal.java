@@ -14,38 +14,38 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UpdateNwisStationLocal {
 
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
+	@Autowired
+	private StepBuilderFactory stepBuilderFactory;
 
-    @Autowired
-    @Qualifier("upsertNwisStationLocal")
-    private Tasklet upsertNwisStationLocal;
+	@Autowired
+	@Qualifier("upsertNwisStationLocal")
+	private Tasklet upsertNwisStationLocal;
 
-    @Autowired
-    @Qualifier("updateNwisStationLocalCalculatedHuc")
-    private Tasklet updateNwisStationLocalCalculatedHuc;
+	@Autowired
+	@Qualifier("updateNwisStationLocalCalculatedHuc")
+	private Tasklet updateNwisStationLocalCalculatedHuc;
 
-    @Bean
-    public Step upsertNwisStationLocalStep() {
-        return stepBuilderFactory
-                .get("upsertNwisStationLocalStep")
-                .tasklet(upsertNwisStationLocal)
-                .build();
-    }
+	@Bean
+	public Step upsertNwisStationLocalStep() {
+		return stepBuilderFactory
+				.get("upsertNwisStationLocalStep")
+				.tasklet(upsertNwisStationLocal)
+				.build();
+	}
 
-    @Bean
-    public Step updateNwisStationLocalCalculatedHucStep() {
-        return stepBuilderFactory
-                .get("updateNwisStationLocalCalculatedHucStep")
-                .tasklet(updateNwisStationLocalCalculatedHuc)
-                .build();
-    }
+	@Bean
+	public Step updateNwisStationLocalCalculatedHucStep() {
+		return stepBuilderFactory
+				.get("updateNwisStationLocalCalculatedHucStep")
+				.tasklet(updateNwisStationLocalCalculatedHuc)
+				.build();
+	}
 
-    @Bean
-    public Flow nwisStationLocalFlow() {
-        return new FlowBuilder<SimpleFlow>("nwisStationLocalFlow")
-                .start(upsertNwisStationLocalStep())
-                .next(updateNwisStationLocalCalculatedHucStep())
-                .build();
-    }
+	@Bean
+	public Flow nwisStationLocalFlow() {
+		return new FlowBuilder<SimpleFlow>("nwisStationLocalFlow")
+				.start(upsertNwisStationLocalStep())
+				.next(updateNwisStationLocalCalculatedHucStep())
+				.build();
+	}
 }

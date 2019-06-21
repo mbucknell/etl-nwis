@@ -55,7 +55,7 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 			fail(e.getLocalizedMessage());
 		}
 	}
-	
+
 	@Test
 	@DatabaseSetup(value = "classpath:/testData/wqp/monitoringLocation/monitoringLocationOld.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
@@ -65,41 +65,41 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
-	@DatabaseSetup(value="classpath:/testData/wqp/huc12nometa/")
+	@DatabaseSetup(value = "classpath:/testData/wqp/huc12nometa/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/monitoringLocation/indexes/all.xml",
-		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-		table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
-		query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + TABLE_NAME)
-	@ExpectedDatabase(connection = "pg", 
-		value = "classpath:/testResult/wqp/monitoringLocation/create.xml", 
-		assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, 
-		table = EXPECTED_DATABASE_TABLE_CHECK_TABLE, 
-		query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + TABLE_NAME)
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX + TABLE_NAME)
+	@ExpectedDatabase(connection = "pg",
+			value = "classpath:/testResult/wqp/monitoringLocation/create.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table = EXPECTED_DATABASE_TABLE_CHECK_TABLE,
+			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + TABLE_NAME)
 	@ExpectedDatabase(
 			value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(
-			value="classpath:/testResult/wqp/analyze/monitoringLocation.xml",
-			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-			table=EXPECTED_DATABASE_TABLE_CHECK_ANALYZE,
-			query=EXPECTED_DATABASE_QUERY_ANALYZE)
+			value = "classpath:/testResult/wqp/analyze/monitoringLocation.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table = EXPECTED_DATABASE_TABLE_CHECK_ANALYZE,
+			query = EXPECTED_DATABASE_QUERY_ANALYZE)
 	@ExpectedDatabase(
-			value="classpath:/testResult/wqp/monitoringLocation/primaryKey.xml",
-			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-			table=EXPECTED_DATABASE_TABLE_CHECK_PRIMARY_KEY,
-			query=EXPECTED_DATABASE_QUERY_PRIMARY_KEY)
+			value = "classpath:/testResult/wqp/monitoringLocation/primaryKey.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table = EXPECTED_DATABASE_TABLE_CHECK_PRIMARY_KEY,
+			query = EXPECTED_DATABASE_QUERY_PRIMARY_KEY)
 	@ExpectedDatabase(
-			value="classpath:/testResult/wqp/monitoringLocation/foreignKey.xml",
-			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-			table=EXPECTED_DATABASE_TABLE_CHECK_FOREIGN_KEY,
-			query=EXPECTED_DATABASE_QUERY_FOREIGN_KEY)
+			value = "classpath:/testResult/wqp/monitoringLocation/foreignKey.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table = EXPECTED_DATABASE_TABLE_CHECK_FOREIGN_KEY,
+			query = EXPECTED_DATABASE_QUERY_FOREIGN_KEY)
 	@ExpectedDatabase(
-			value="classpath:/testResult/wqp/monitoringLocation/indexes/pk.xml",
-			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-			table=EXPECTED_DATABASE_TABLE_CHECK_INDEX,
-			query=BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX_PK + TABLE_NAME)
+			value = "classpath:/testResult/wqp/monitoringLocation/indexes/pk.xml",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
+			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_INDEX_PK + TABLE_NAME)
 	public void monitoringLocationFlowTest() {
 		Job monitoringLocationFlowTest = jobBuilderFactory.get("monitoringLocationFlowTest")
 				.start(monitoringLocationFlow)

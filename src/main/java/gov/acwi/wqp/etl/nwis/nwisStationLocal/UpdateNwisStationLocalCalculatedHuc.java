@@ -19,18 +19,18 @@ import org.springframework.util.FileCopyUtils;
 @StepScope
 public class UpdateNwisStationLocalCalculatedHuc implements Tasklet {
 
-    @Autowired
-    @Qualifier("dataSourceNwis")
-    private DataSource dataSourceNwis;
+	@Autowired
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 
-    @Value("classpath:sql/calculateHuc12.sql")
-    private Resource sqlResource;
+	@Value("classpath:sql/calculateHuc12.sql")
+	private Resource sqlResource;
 
-    @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
-        jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
+	@Override
+	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
+		jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
 
-        return RepeatStatus.FINISHED;
-    }
+		return RepeatStatus.FINISHED;
+	}
 }
