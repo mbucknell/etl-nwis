@@ -8,5 +8,5 @@ databaseChangeLog:
       relativeToChangelogFile: true
 
   - include:
-      file: "nwis/grants/changeLog.yml"
+      file: "wqp/grants/changeLog.yml"
       relativeToChangelogFile: true
