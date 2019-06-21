@@ -17,9 +17,9 @@ import org.springframework.util.FileCopyUtils;
 @Component
 public class UpsertNwisStationLocal implements Tasklet {
 
-    @Autowired
-    @Qualifier("dataSourceNwis")
-    private DataSource dataSourceNwis;
+	@Autowired
+	@Qualifier("dataSourceNwis")
+	private DataSource dataSourceNwis;
 
 	@Value("classpath:sql/nwisStationLocal.sql")
 	private Resource sqlResource;
@@ -28,7 +28,7 @@ public class UpsertNwisStationLocal implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourceNwis);
 		jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(sqlResource.getInputStream())));
-		
+
 		return RepeatStatus.FINISHED;
 	}
 
