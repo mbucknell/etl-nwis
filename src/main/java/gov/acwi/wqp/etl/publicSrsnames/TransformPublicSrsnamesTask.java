@@ -23,8 +23,9 @@ public class TransformPublicSrsnamesTask implements Tasklet {
 	private final JdbcTemplate jdbcTemplate;
 	private final String wqpSchemaName;
 
-	public TransformPublicSrsnamesTask (JdbcTemplate jdbcTemplate,
-										@Value(EtlConstantUtils.VALUE_JOB_PARM_WQP_SCHEMA) String wqpSchemaName) {
+	public TransformPublicSrsnamesTask (
+			JdbcTemplate jdbcTemplate,
+			@Value(EtlConstantUtils.VALUE_JOB_PARM_WQP_SCHEMA) String wqpSchemaName) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.wqpSchemaName = wqpSchemaName;
 	}
