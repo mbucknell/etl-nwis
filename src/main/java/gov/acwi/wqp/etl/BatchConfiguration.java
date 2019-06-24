@@ -78,6 +78,10 @@ public class BatchConfiguration {
 	@Qualifier(EtlConstantUtils.CREATE_DATABASE_FINALIZE_FLOW)
 	private Flow databaseFinalizeFlow;
 
+	@Autowired
+	@Qualifier("publicSrsnamesFlow")
+	private Flow publicSrsnamesFlow;
+
 	@Bean
 	public Flow nwisToWqpFlow() {
 		return new FlowBuilder<SimpleFlow>("nwisToWqpFlow")
@@ -95,6 +99,7 @@ public class BatchConfiguration {
 				.next(createSummariesFlow)
 				.next(createLookupCodesFlow)
 				.next(databaseFinalizeFlow)
+				.next(publicSrsnamesFlow)
 				.build();
 
 	}

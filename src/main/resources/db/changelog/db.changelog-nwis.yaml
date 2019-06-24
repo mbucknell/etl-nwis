@@ -10,3 +10,7 @@ databaseChangeLog:
   - include:
       file: "wqp/grants/changeLog.yml"
       relativeToChangelogFile: true
+
+  - include:
+      file: "wqp/functions/changeLog.yml"
+      relativeToChangelogFile: true

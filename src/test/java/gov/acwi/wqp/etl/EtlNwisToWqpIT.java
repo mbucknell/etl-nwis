@@ -57,6 +57,7 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisWqxMediumCd/nwisWqxMediumCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisWqxRptLevCd/nwisWqxRptLevCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/parm/parm.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/parmAlias/parmAlias.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/parmMeth/parmMeth.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwResult/qwResult.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwSample/qwSample.xml")
@@ -112,6 +113,7 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/result.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/resDetectQntLimit.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/projectMLWeighting.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(value = "classpath:/testResult/wqp/publicSrsnames/publicSrsnames.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 
 	//Summaries Data
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/activitySum.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
