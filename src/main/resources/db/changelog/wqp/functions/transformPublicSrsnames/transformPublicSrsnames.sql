@@ -4,10 +4,27 @@ language plpgsql
 as $$
 declare
 begin
-    execute format('truncate table public_srsnames');
+    execute 'truncate table public_srsnames';
 
-    execute format(
-        'insert into public_srsnames (
+    execute
+        '
+        with wqp_crosswalk as (
+            select
+                parm_alias.parm_cd,
+                parm_alias.parm_alias_nm nm,
+                parm_alias.parm_alias_rev_dt rev_dt
+            from nwis.parm_alias
+            where parm_alias_cd = ''WQPCROSSWALK''
+            ),
+         srsname_crosswalk as (
+            select
+                parm_alias.parm_cd,
+                parm_alias.parm_alias_nm nm,
+                parm_alias.parm_alias_rev_dt rev_dt
+            from nwis.parm_alias
+            where parm_alias_cd = ''SRSNAME''
+            )
+        insert into public_srsnames (
             data_source_id,
             parm_cd,
             description,
@@ -44,29 +61,16 @@ begin
                     else parm_alias.parm_alias_rev_dt
                 end) over () max_last_rev_dt
         from nwis.parm
-        join (select
-                    coalesce(w.parm_cd, s.parm_cd) parm_cd,
-                    coalesce(wqpcrosswalk_nm, srsname_nm) parm_alias_nm,
-                    coalesce(wqpcrosswalk_dt, srsname_dt) parm_alias_rev_dt
-              from (select
-                        parm_alias.parm_cd,
-                        parm_alias.parm_alias_nm wqpcrosswalk_nm,
-                        parm_alias.parm_alias_rev_dt wqpcrosswalk_dt
-                    from nwis.parm_alias
-                    where parm_alias_cd = ''WQPCROSSWALK''
-                    ) w
-              full join (
-                    select
-                        parm_alias.parm_cd,
-                        parm_alias.parm_alias_nm srsname_nm,
-                        parm_alias.parm_alias_rev_dt srsname_dt
-                    from nwis.parm_alias
-                    where parm_alias_cd = ''SRSNAME''
-                    ) s
-              on w.parm_cd = s.parm_cd) parm_alias
+        join (
+            select
+                coalesce(wqp_crosswalk.parm_cd, srsname_crosswalk.parm_cd) parm_cd,
+                coalesce(wqp_crosswalk.nm, srsname_crosswalk.nm) parm_alias_nm,
+                coalesce(wqp_crosswalk.rev_dt, srsname_crosswalk.rev_dt) parm_alias_rev_dt
+            from wqp_crosswalk
+            full join srsname_crosswalk on wqp_crosswalk.parm_cd = srsname_crosswalk.parm_cd
+            ) parm_alias
         on parm.parm_cd = parm_alias.parm_cd
         where parm_public_fg = ''Y''
-        order by parm_cd'
-    );
+        order by parm_cd';
 end
 $$
