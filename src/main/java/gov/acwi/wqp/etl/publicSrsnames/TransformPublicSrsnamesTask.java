@@ -1,9 +1,5 @@
 package gov.acwi.wqp.etl.publicSrsnames;
 
-import javax.sql.DataSource;
-
-import java.util.HashMap;
-
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
