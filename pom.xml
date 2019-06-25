@@ -221,7 +221,7 @@
                                     <STORETW_SCHEMA_NAME>storetw</STORETW_SCHEMA_NAME>
                                 </env>
                                 <wait>
-                                    <time>120000</time>
+                                    <time>150000</time>
                                 </wait>
                             </run>
                         </image>
