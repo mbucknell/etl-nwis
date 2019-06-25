@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - preConditions:
+      - dbms:
+          type: postgresql
+
+  - changeSet:
+      author: mbucknell
+      id: "create.function.transform_public_srsnames"
+      changes:
+        - sqlFile:
+            path: transformPublicSrsnames.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+        - rollback: drop function if exists transform_public_srsnames();

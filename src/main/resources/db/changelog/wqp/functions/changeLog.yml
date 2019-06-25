@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - preConditions:
+      - dbms:
+          type: postgresql
+  - include:
+      file: "transformPublicSrsnames/changeLog.yml"
+      relativeToChangelogFile: true
