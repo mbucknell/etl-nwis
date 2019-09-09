@@ -1,5 +1,6 @@
 "schemaname","relname","within_one_minute"
 "wqp","act_metric_nwis",true
+"wqp","activity_object_nwis",true
 "wqp","activity_nwis",true
 "wqp","activity_sum_nwis",true
 "wqp","assemblage_nwis",true
@@ -17,14 +18,17 @@
 "wqp","prj_ml_weighting_nwis",true
 "wqp","project_data_nwis",true
 "wqp","project_dim_nwis",true
+"wqp","project_object_nwis",true
 "wqp","project_nwis",true
 "wqp","qwportal_summary_nwis",true
 "wqp","r_detect_qnt_lmt_nwis",true
+"wqp","result_object_nwis",true
 "wqp","result_nwis",true
 "wqp","result_sum_nwis",true
 "wqp","sample_media_nwis",true
 "wqp","site_type_nwis",true
 "wqp","state_nwis",true
+"wqp","station_object_nwis",true
 "wqp","station_nwis",true
 "wqp","station_sum_nwis",true
 "wqp","taxa_name_nwis",true

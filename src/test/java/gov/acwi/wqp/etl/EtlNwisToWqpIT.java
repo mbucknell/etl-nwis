@@ -28,7 +28,7 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 			+ "'%nwis' and tablename not like '%swap%'";
 
 	public static final String EXPECTED_DATABASE_QUERY_ANALYZE = BASE_EXPECTED_DATABASE_QUERY_ANALYZE_BARE
-			+ "where relname like '%_nwis' and relname not like '%swap%' and relname not like '%object%'";
+			+ "where relname like '%_nwis' and relname not like '%swap%'";
 
 	public static final String EXPECTED_DATABASE_QUERY_PRIMARY_KEY = BASE_EXPECTED_DATABASE_QUERY_PRIMARY_KEY
 			+ " like '%_nwis'";
@@ -64,6 +64,7 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@DatabaseSetup(value = "classpath:/testData/wqp/huc12nometa/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/nwisStationLocal/empty.xml")
 
 	//Tables
 	@ExpectedDatabase(
