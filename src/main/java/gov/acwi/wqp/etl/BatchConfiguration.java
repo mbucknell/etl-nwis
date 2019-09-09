@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
-	
+
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
-	
+
 	@Autowired
 	@Qualifier("mySqlNwisExtractFlow")
 	private Flow mySqlNwisExtractFlow;
@@ -29,7 +29,7 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("nwisStationLocalFlow")
 	private Flow nwisStationLocalFlow;
-	
+
 	@Autowired
 	@Qualifier("orgDataFlow")
 	private Flow orgDataFlow;
@@ -37,27 +37,43 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("projectDataFlow")
 	private Flow projectDataFlow;
-	
+
+	@Autowired
+	@Qualifier("projectObjectFlow")
+	private Flow projectObjectFlow;
+
 	@Autowired
 	@Qualifier("monitoringLocationFlow")
 	private Flow monitoringLocationFlow;
 
 	@Autowired
+	@Qualifier("monitoringLocationObjectFlow")
+	private Flow monitoringLocationObjectFlow;
+
+	@Autowired
 	@Qualifier("biologicalHabitatMetricFlow")
 	private Flow biologicalHabitatMetricFlow;
-	
+
 	@Autowired
 	@Qualifier("activityFlow")
 	private Flow activityFlow;
 
 	@Autowired
+	@Qualifier("activityObjectFlow")
+	private Flow activityObjectFlow;
+
+	@Autowired
 	@Qualifier("activityMetricFlow")
 	private Flow activityMetricFlow;
-	
+
 	@Autowired
 	@Qualifier("resultFlow")
 	private Flow resultFlow;
-	
+
+	@Autowired
+	@Qualifier("resultObjectFlow")
+	private Flow resultObjectFlow;
+
 	@Autowired
 	@Qualifier("resDetectQntLimitFlow")
 	private Flow resDetectQntLimitFlow;
@@ -65,7 +81,7 @@ public class BatchConfiguration {
 	@Autowired
 	@Qualifier("projectMLWeightingFlow")
 	private Flow projectMLWeightingFlow;
-	
+
 	@Autowired
 	@Qualifier(EtlConstantUtils.CREATE_SUMMARIES_FLOW)
 	private Flow createSummariesFlow;
@@ -89,11 +105,15 @@ public class BatchConfiguration {
 				.next(nwisStationLocalFlow)
 				.next(orgDataFlow)
 				.next(projectDataFlow)
+				.next(projectObjectFlow)
 				.next(monitoringLocationFlow)
+				.next(monitoringLocationObjectFlow)
 				.next(biologicalHabitatMetricFlow)
 				.next(activityFlow)
+				.next(activityObjectFlow)
 				.next(activityMetricFlow)
 				.next(resultFlow)
+				.next(resultObjectFlow)
 				.next(resDetectQntLimitFlow)
 				.next(projectMLWeightingFlow)
 				.next(createSummariesFlow)

@@ -67,11 +67,11 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 
 	//Tables
 	@ExpectedDatabase(
-	        connection=CONNECTION_INFORMATION_SCHEMA,
-	        value="classpath:/testResult/endToEnd/installTables/",
-	        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-	        table=EXPECTED_DATABASE_TABLE_CHECK_TABLE,
-	        query=EXPECTED_DATABASE_QUERY_TABLE)
+			connection=CONNECTION_INFORMATION_SCHEMA,
+			value="classpath:/testResult/endToEnd/installTables/",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=EXPECTED_DATABASE_TABLE_CHECK_TABLE,
+			query=EXPECTED_DATABASE_QUERY_TABLE)
 
 	//Indexes
 	@ExpectedDatabase(

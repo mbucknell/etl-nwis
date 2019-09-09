@@ -90,3 +90,18 @@ The basic flow is:
 * Create a new Public SRSNAMES table. (createPublicSrsnames.sql)
 
 The translation of data is specific to this repository. The heavy lifting (indexing, RI, partition exchanges, etc.) is done using common packages in the wqp_core schema. These are defined in the schema-wqp-core repository.
+
+### Testing
+This project contains JUnit tests. Maven can be used to run them (in addition to the capabilities of your IDE).
+
+To run the unit tests of the application use:
+
+```shell
+mvn package
+```
+
+To additionally start up a Docker database and run the integration tests of the application use:
+
+```shell
+mvn verify -DTESTING_DATABASE_PORT=5437 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=wqpEtlCore
+```
