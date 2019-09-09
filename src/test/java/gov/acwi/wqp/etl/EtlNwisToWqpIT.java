@@ -28,7 +28,7 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 			+ "'%nwis' and tablename not like '%swap%'";
 
 	public static final String EXPECTED_DATABASE_QUERY_ANALYZE = BASE_EXPECTED_DATABASE_QUERY_ANALYZE_BARE
-			+ "where relname like '%_nwis' and relname not like '%swap%' and relname not like '%object%'";
+			+ "where relname like '%_nwis' and relname not like '%swap%'";
 
 	public static final String EXPECTED_DATABASE_QUERY_PRIMARY_KEY = BASE_EXPECTED_DATABASE_QUERY_PRIMARY_KEY
 			+ " like '%_nwis'";

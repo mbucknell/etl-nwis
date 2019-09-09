@@ -37,7 +37,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.1.8.RELEASE</version>
     </parent>
 
     <dependencies>
@@ -152,7 +152,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.30.0</version>
+                <version>0.31.0</version>
                 <executions>
                     <execution>
                         <id>start</id>
