@@ -223,6 +223,7 @@
                                     <EPA_SCHEMA_OWNER_USERNAME>epa_owner</EPA_SCHEMA_OWNER_USERNAME>
                                     <EPA_SCHEMA_OWNER_PASSWORD>changeMe</EPA_SCHEMA_OWNER_PASSWORD>
                                     <WQX_SCHEMA_NAME>wqx</WQX_SCHEMA_NAME>
+                                    <WQX_DUMP_SCHEMA_NAME>wqx_dump</WQX_DUMP_SCHEMA_NAME>
                                     <STORETW_SCHEMA_NAME>storetw</STORETW_SCHEMA_NAME>
                                 </env>
                                 <wait>
