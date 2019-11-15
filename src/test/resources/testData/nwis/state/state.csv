@@ -1,0 +1,5 @@
+country_cd,state_cd,state_nm,state_post_cd,state_max_lat_va,state_min_lat_va,state_max_long_va,state_min_long_va,state_max_alt_va,state_min_alt_va,state_md
+"US","15","Hawaii","HI","221726","185156","1603603","1544521","13796","00000","20160107"
+"US","26","Michigan","MI","481822","414146","0902506","0820723","01979","00550","20160107"
+"US","55","Wisconsin","WI","471835","422930","0925322","0861458","01952","00579","20160107"
+"US","60","American Samoa","AS","-100000","-180000","1750000","1650000","06300","00000","19870204"

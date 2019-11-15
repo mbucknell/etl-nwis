@@ -33,18 +33,11 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/empty.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/monitoringLocation/all/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@ExpectedDatabase(
-			value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml",
+			value = "classpath:/testResult/wqp/monitoringLocation/csv/",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void transformNwisMonitoringLocationStepTest() {
 		try {
@@ -58,16 +51,12 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 
 	@Test
 	@DatabaseSetup(value = "classpath:/testData/wqp/monitoringLocation/monitoringLocationOld.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/nwisStationLocal/nwisStationLocal.xml")
-	@DatabaseSetup(value = "classpath:/testData/wqp/huc12nometa/")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/monitoringLocation/all/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
+	@ExpectedDatabase(
+			value = "classpath:/testResult/wqp/monitoringLocation/csv/",
+			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/monitoringLocation/indexes/all.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
 			table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,
@@ -77,9 +66,6 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
 			table = EXPECTED_DATABASE_TABLE_CHECK_TABLE,
 			query = BASE_EXPECTED_DATABASE_QUERY_CHECK_TABLE + TABLE_NAME)
-	@ExpectedDatabase(
-			value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml",
-			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(
 			value = "classpath:/testResult/wqp/analyze/monitoringLocation.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,

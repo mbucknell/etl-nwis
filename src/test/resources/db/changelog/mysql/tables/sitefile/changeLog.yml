@@ -1,0 +1,16 @@
+databaseChangeLog:
+
+  - changeSet:
+      author: drsteini
+      id: "create.table.sitefile"
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - not:
+          - tableExists:
+              tableName: sitefile
+      changes:
+        - sqlFile:
+            path: sitefile.sql
+            relativeToChangelogFile: true
+        - rollback: drop table if exists sitefile;

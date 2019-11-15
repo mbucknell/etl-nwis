@@ -1,0 +1,7 @@
+country_cd,state_cd,county_cd,county_nm,county_max_lat_va,county_min_lat_va,county_max_long_va,county_min_long_va,county_max_alt_va,county_min_alt_va,county_md
+"US","26","005","Allegan County","424608","422455","0870331","0853235",null,null,"20160107"
+"US","26","007","Alpena County","451246","445120","0835326","0822431",null,null,"20160107"
+"US","26","053","Gogebic County","470231","460551","0902506","0885926",null,null,"20160107"
+"US","55","005","Barron County","453825","451224","0920925","0913222",null,null,"20160107"
+"US","55","007","Bayfield County","471239","460917","0913314","0904358",null,null,"20160107"
+"US","55","053","Jackson County","443549","440415","0911000","0901843",null,null,"20160107"

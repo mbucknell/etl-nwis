@@ -1,0 +1,16 @@
+code,name,sort_order,description,valid_flag
+"ANNAL","Anna l 1965",31,"Cocos Islands",true
+"CANAVERAL","Cape Canaveral",68,"Cape Canaveral, Florida, Bahamas",true
+"CONAKRY05","Conakry 1905",81,"Guinea",true
+"FINALDATUM","Final Datum 1958",113,"Iran - Gulf coast and Arwaz",true
+"GRENADA53","Grenada 1953",121,"Windward Islands-Grenada",true
+"GUYANAIS67","Centre Spatial",72,"Guyanais 1967, French Guiana",true
+"LQUINTANA","Loma Quintana",190,"Venezuela",true
+"MINNA","Minna",210,"Nigeria",true
+"NAD27","NA Datum of 1927",1,"North American Datum of 1927",true
+"NAD83","NA Datum of 1983",2,"North American Datum of 1983",true
+"NAHRWAN67","Nahrwan 1967",217,"Arabian Gulf",true
+"NAPARIMA55","Naparima 1955",218,"Trinidad",true
+"NAPARIMA72","Naparima 1972",219,"Trinidad and Tobago",true
+"NATGEODET","Nat Geodetic Net",220,"National Geodetic Network - Kuwait",true
+"TANANADVE","Tananadve 1925",306,"Madagascar",true

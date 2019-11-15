@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
 <dataset>
-    <state_nwis data_source_id="2" code_value="US:26"></state_nwis>
+    <state_nwis data_source_id="2" code_value="US:26" description_with_country="US, Michigan" description_with_out_country="Michigan"/>
+    <state_nwis data_source_id="2" code_value="US:55" description_with_country="US, Wisconsin" description_with_out_country="Wisconsin"/>
 </dataset>

@@ -5,10 +5,21 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+
 @Import({DBTestConfig.class, NwisDBTestConfig.class})
+@DbUnitConfiguration(
+		databaseConnection={
+				BaseFlowIT.CONNECTION_WQP,
+				BaseFlowIT.CONNECTION_NWIS,
+				BaseFlowIT.CONNECTION_INFORMATION_SCHEMA,
+				NwisBaseFlowIT.CONNECTION_MYSQLNWIS
+				},
+		dataSetLoader=FileSensingDataSetLoader.class
+)
 public abstract class NwisBaseFlowIT extends BaseFlowIT{
 
-	protected static final String CONNECTION_NWIS = "nwis";
+	protected static final String CONNECTION_MYSQLNWIS = "mysqlnwis";
 
 	@Autowired
 	private ConfigurationService configurationService;

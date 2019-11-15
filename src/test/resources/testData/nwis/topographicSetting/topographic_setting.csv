@@ -1,0 +1,19 @@
+code,name,sort_order,description,valid_flag
+"A","Alluvial fan",1,"Stream deposit of loose rock material where it issues from a narrow mountain valley upon a plain.",true
+"B","Playa",2,"Undrained desert basin in which water accumulates and is quickly evaporated.",true
+"C","Stream channel",3,"Bed in which a natural stream of water runs.",true
+"D","Local depression",4,"An area that has no external surface drainage.",true
+"E","Dunes",5,"Mounds and ridges of windblown, or eolian sand.",true
+"F","Flat surface",6,"May be part of a larger feature, such as a plateau, plain, or pediment.",true
+"G","Flood plain",7,"Smooth land surface adjacent to a river channel that is flooded when the river overflows its banks.",true
+"H","Hilltop",8,"Upper part of a hill or ridge above a well-defined break in slope.",true
+"K","Sinkhole",9,"Depression that results from the dissolving of soluble rocks and collapse into the solution cavity.",true
+"L","Lake or Swamp",10,"Inland lake, swamp, or marsh where the ground may be saturated or water stands above the land surface.",true
+"M","Mangrove swamp",11,"Tropical or subtropical marine swamp characterized by abundant mangrove trees.",true
+"O","Offshore",12,"Site along a coast or estuary that is continuously submerged.",true
+"P","Pediment",13,"Plain of combined erosion and deposition that forms at the foot of a mountain range.",true
+"S","Hillside",14,"Sloping side of hill, the area between the hilltop and valley flat.",true
+"T","Alluvial terrace",15,"Generally a flat surface, usually parallel to but elevated above a stream valley or coast line.",true
+"U","Undulating",16,"Topography is characteristic of areas which have many small depressions and low mounds.",true
+"V","Valley flat",17,"Low flat area between the valley walls and bordering a stream channel.",true
+"W","Upland draw",18,"Small natural drainageway",true

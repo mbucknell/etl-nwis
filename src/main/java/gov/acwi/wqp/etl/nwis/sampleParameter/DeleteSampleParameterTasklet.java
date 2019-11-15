@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import gov.acwi.wqp.etl.nwis.TruncateTable;
+import gov.acwi.wqp.etl.TruncateTable;
 
 @Component
 @StepScope
 public class DeleteSampleParameterTasklet extends TruncateTable {
 
-    @Autowired
-    public DeleteSampleParameterTasklet(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
+	@Autowired
+	public DeleteSampleParameterTasklet(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
 
-        super(jdbcTemplate, "sample_parameter");
-    }
+		super(jdbcTemplate, "sample_parameter");
+	}
 
 }

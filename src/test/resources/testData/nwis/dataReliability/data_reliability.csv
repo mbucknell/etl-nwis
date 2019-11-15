@@ -1,0 +1,5 @@
+code,name,sort_order,description,valid_flag
+"C","Checked",1,"Data have been checked by the reporting agency.",true
+"L","Poor location",2,"Location not accurate.",true
+"M","Minimal",3,"Minimal data.",true
+"U","Unchecked",4,"Unchecked data.",true

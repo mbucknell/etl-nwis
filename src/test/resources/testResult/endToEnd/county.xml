@@ -2,6 +2,14 @@
 <dataset>
     <county_nwis
             data_source_id="2"
-            code_value="US:26:053">
+            code_value="US:26:053"
+            description="US, Michigan, Gogebic County"
+            description_wo_country_state="Gogebic County">
+    </county_nwis>
+    <county_nwis
+            data_source_id="2"
+            code_value="US:55:007"
+            description="US, Wisconsin, Bayfield County"
+            description_wo_country_state="Bayfield County">
     </county_nwis>
 </dataset>

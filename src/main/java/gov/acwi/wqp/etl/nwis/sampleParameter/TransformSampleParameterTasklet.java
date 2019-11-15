@@ -17,19 +17,19 @@ import org.springframework.util.FileCopyUtils;
 @StepScope
 public class TransformSampleParameterTasklet implements Tasklet {
 
-    private final JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 
-    @Value("classpath:sql/sampleParameter/writeSampleParameter.sql")
-    private Resource executeResource;
+	@Value("classpath:sql/nwis/sampleParameter/writeSampleParameter.sql")
+	private Resource executeResource;
 
-    @Autowired
-    public TransformSampleParameterTasklet(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+	@Autowired
+	public TransformSampleParameterTasklet(@Qualifier("jdbcTemplateNwis")JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
-    @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(executeResource.getInputStream())));
-        return RepeatStatus.FINISHED;
-    }
+	@Override
+	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		jdbcTemplate.execute(new String(FileCopyUtils.copyToByteArray(executeResource.getInputStream())));
+		return RepeatStatus.FINISHED;
+	}
 }

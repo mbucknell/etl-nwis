@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
 <dataset>
 <aqfr country_cd="US" state_cd="26" aqfr_cd="112SDGV" aqfr_nm="Sand and Gravel" aqfr_md="19860618"></aqfr>
+<aqfr country_cd="US" state_cd="55" aqfr_cd="110SDGVP" aqfr_nm="Sand and Gravel (Holocene and/or Pleistocene)" aqfr_md="20080901"></aqfr>
 </dataset>
