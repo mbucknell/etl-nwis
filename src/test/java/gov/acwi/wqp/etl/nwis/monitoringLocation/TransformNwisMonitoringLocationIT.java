@@ -10,7 +10,6 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -22,10 +21,6 @@ public class TransformNwisMonitoringLocationIT extends NwisBaseFlowIT {
 
 	public static final String EXPECTED_DATABASE_TABLE_CHECK_TABLE = "monitoring_location";
 	public static final String EXPECTED_DATABASE_QUERY_MERGES = "select * from monitoring_location where monitoring_location_id < 5";
-
-	@Autowired
-	@Qualifier("jdbcTemplateNwis")
-	private JdbcTemplate jdbcTemplateNwis;
 
 	@Autowired
 	@Qualifier("nwisMonitoringLocationFlow")

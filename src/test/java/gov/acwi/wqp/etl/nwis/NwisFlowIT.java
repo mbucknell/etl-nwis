@@ -10,7 +10,6 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -21,10 +20,6 @@ import gov.acwi.wqp.etl.nwis.monitoringLocation.MLNewQueryHelper;
 import gov.acwi.wqp.etl.nwis.monitoringLocation.TransformNwisMonitoringLocationIT;
 
 public class NwisFlowIT extends NwisBaseFlowIT {
-
-	@Autowired
-	@Qualifier("jdbcTemplateNwis")
-	private JdbcTemplate jdbcTemplateNwis;
 
 	@Autowired
 	@Qualifier("nwisFlow")
