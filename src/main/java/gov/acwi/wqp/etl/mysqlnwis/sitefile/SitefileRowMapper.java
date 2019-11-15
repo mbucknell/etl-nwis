@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
 public class SitefileRowMapper implements RowMapper<Sitefile> {
-	
+
 	public static final String SITE_ID_COLUMN_NAME = "site_id";
 	public static final String AGENCY_CD_COLUMN_NAME = "agency_cd";
 	public static final String SITE_NO_COLUMN_NAME = "site_no"; 
@@ -45,18 +45,31 @@ public class SitefileRowMapper implements RowMapper<Sitefile> {
 	public static final String SITE_CR_COLUMN_NAME = "site_cr"; 
 	public static final String SITE_MN_COLUMN_NAME = "site_mn"; 
 	public static final String SITE_MD_COLUMN_NAME = "site_md";
-	
+	public static final String LAT_VA_COLUMN_NAME = "lat_va";
+	public static final String LONG_VA_COLUMN_NAME = "long_va";
+	public static final String COORD_DATUM_CD_COLUMN_NAME = "coord_datum_cd";
+	public static final String MAP_NM_COLUMN_NAME = "map_nm";
+	public static final String TOPO_CD_COLUMN_NAME = "topo_cd";
+	public static final String INSTRUMENTS_CD_COLUMN_NAME = "instruments_cd";
+	public static final String INVENTORY_DT_COLUMN_NAME = "inventory_dt";
+	public static final String TZ_CD_COLUMN_NAME = "tz_cd";
+	public static final String LOCAL_TIME_FG_COLUMN_NAME = "local_time_fg";
+	public static final String RELIABILITY_CD_COLUMN_NAME = "reliability_cd";
+	public static final String GW_FILE_CD_COLUMN_NAME = "gw_file_cd";
+	public static final String DEPTH_SRC_CD_COLUMN_NAME = "depth_src_cd";
+	public static final String PROJECT_NO_COLUMN_NAME = "project_no";
+
 	public Sitefile mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Sitefile sitefile = new Sitefile();
-		
+
 		sitefile.setSiteId(rs.getInt(SITE_ID_COLUMN_NAME));
 		sitefile.setAgencyCd(rs.getString(AGENCY_CD_COLUMN_NAME));
 		sitefile.setSiteNo(rs.getString(SITE_NO_COLUMN_NAME));
 		sitefile.setNwisHost(rs.getString(NWIS_HOST_COLUMN_NAME));
 		sitefile.setDbNo(rs.getString(DB_NO_COLUMN_NAME));
 		sitefile.setStationNm(rs.getString(STATION_NM_COLUMN_NAME));
-		sitefile.setDecLatVa(rs.getFloat(DEC_LAT_VA_COLUMN_NAME));
-		sitefile.setDecLongVa(rs.getFloat(DEC_LONG_VA_COLUMN_NAME));
+		sitefile.setDecLatVa(rs.getBigDecimal(DEC_LAT_VA_COLUMN_NAME));
+		sitefile.setDecLongVa(rs.getBigDecimal(DEC_LONG_VA_COLUMN_NAME));
 		sitefile.setCoordMethCd(rs.getString(COORD_METH_CD_COLUMN_NAME));
 		sitefile.setCoordAcyCd(rs.getString(COORD_ACY_CD_COLUMN_NAME));
 		sitefile.setDistrictCd(rs.getString(DISTRICT_CD_COLUMN_NAME));
@@ -87,9 +100,21 @@ public class SitefileRowMapper implements RowMapper<Sitefile> {
 		sitefile.setSiteCr(rs.getDate(SITE_CR_COLUMN_NAME));
 		sitefile.setSiteMn(rs.getString(SITE_MN_COLUMN_NAME));
 		sitefile.setSiteMd(rs.getDate(SITE_MD_COLUMN_NAME));
-		
+
+		sitefile.setLatVa(rs.getString(LAT_VA_COLUMN_NAME));
+		sitefile.setLongVa(rs.getString(LONG_VA_COLUMN_NAME));
+		sitefile.setCoordDatumCd(rs.getString(COORD_DATUM_CD_COLUMN_NAME));
+		sitefile.setMapNm(rs.getString(MAP_NM_COLUMN_NAME));
+		sitefile.setTopoCd(rs.getString(TOPO_CD_COLUMN_NAME));
+		sitefile.setInstrumentsCd(rs.getString(INSTRUMENTS_CD_COLUMN_NAME));
+		sitefile.setInventoryDt(rs.getString(INVENTORY_DT_COLUMN_NAME));
+		sitefile.setTzCd(rs.getString(TZ_CD_COLUMN_NAME));
+		sitefile.setLocalTimeFg(rs.getString(LOCAL_TIME_FG_COLUMN_NAME));
+		sitefile.setReliabilityCd(rs.getString(RELIABILITY_CD_COLUMN_NAME));
+		sitefile.setGwFileCd(rs.getString(GW_FILE_CD_COLUMN_NAME));
+		sitefile.setDepthSrcCd(rs.getString(DEPTH_SRC_CD_COLUMN_NAME));
+		sitefile.setProjectNo(rs.getString(PROJECT_NO_COLUMN_NAME));
+
 		return sitefile;
 	}
-	
-
 }

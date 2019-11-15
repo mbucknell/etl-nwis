@@ -20,4 +20,9 @@
                                state_name="Ohio"
                                state_postal_cd="OH"
                                last_upd_date="2012-08-12"></nwis_district_cds_by_host>
+    <nwis_district_cds_by_host host_name="nwiswi"
+                               district_cd="55"
+                               state_name="Wisconsin"
+                               state_postal_cd="WI"
+                               last_upd_date="2019-08-12"></nwis_district_cds_by_host>
 </dataset>

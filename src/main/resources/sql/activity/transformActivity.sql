@@ -26,7 +26,7 @@ select
     station_swap_nwis.station_id,
     station_swap_nwis.site_id,
     cast(samp.sample_start_dt as date) event_date,
-    samp.nwis_host || '.' || samp.qw_db_no || '.' || samp.record_no activity,
+    coalesce(samp.nwis_host, '') || '.' || coalesce(samp.qw_db_no, '') || '.' || coalesce(samp.record_no, '') activity,
     nwis_wqx_medium_cd.wqx_act_med_nm sample_media,
     station_swap_nwis.organization,
     station_swap_nwis.site_type,

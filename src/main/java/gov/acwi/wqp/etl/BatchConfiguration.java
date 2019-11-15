@@ -23,12 +23,8 @@ public class BatchConfiguration {
 	private Flow mySqlNwisExtractFlow;
 
 	@Autowired
-	@Qualifier("sampleParameterFlow")
-	private Flow sampleParameterFlow;
-
-	@Autowired
-	@Qualifier("nwisStationLocalFlow")
-	private Flow nwisStationLocalFlow;
+	@Qualifier("nwisFlow")
+	private Flow nwisFlow;
 
 	@Autowired
 	@Qualifier("orgDataFlow")
@@ -101,8 +97,7 @@ public class BatchConfiguration {
 	@Bean
 	public Flow nwisToWqpFlow() {
 		return new FlowBuilder<SimpleFlow>("nwisToWqpFlow")
-				.start(sampleParameterFlow)
-				.next(nwisStationLocalFlow)
+				.start(nwisFlow)
 				.next(orgDataFlow)
 				.next(projectDataFlow)
 				.next(projectObjectFlow)

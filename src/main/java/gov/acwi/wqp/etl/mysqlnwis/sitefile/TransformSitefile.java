@@ -34,7 +34,7 @@ public class TransformSitefile {
 	@Autowired
 	@Qualifier(Application.DATASOURCE_NWIS_QUALIFIER)
 	private DataSource dataSourceNwis;
-	
+
 	@Bean
 	public JdbcPagingItemReader<Sitefile> sitefileReader() {
 		MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
@@ -47,18 +47,18 @@ public class TransformSitefile {
 
 		return new JdbcPagingItemReaderBuilder<Sitefile>()
 				.dataSource(dataSourceMysqlnwis)
-				.name("mysqlQwSampleReader")
+				.name("mysqlSitefileReader")
 				.pageSize(5000)
 				.queryProvider(queryProvider)
 				.rowMapper(new SitefileRowMapper())
 				.build();
 	}
-	
+
 	@Bean
 	public PassThroughItemProcessor<Sitefile> sitefileProcessor() {
 		return new PassThroughItemProcessor<>();
 	}
-	
+
 	@Bean
 	public JdbcBatchItemWriter<Sitefile> sitefileWriter() {
 		return new JdbcBatchItemWriterBuilder<Sitefile>()
@@ -71,7 +71,10 @@ public class TransformSitefile {
 						+ "site_tp_cd, site_rmks_tx, drain_area_va, contrib_drain_area_va, "
 						+ "construction_dt, aqfr_type_cd, aqfr_cd, nat_aqfr_cd, well_depth_va, "
 						+ "hole_depth_va, site_web_cd, dec_coord_datum_cd, site_cn, "
-						+ "site_cr, site_mn, site_md) VALUES ("
+						+ "site_cr, site_mn, site_md, "
+						+ "lat_va, long_va, coord_datum_cd, map_nm, topo_cd, instruments_cd, "
+						+ "inventory_dt, tz_cd, local_time_fg, reliability_cd, "
+						+ "gw_file_cd, depth_src_cd, project_no) VALUES ("
 						+ ":siteId, :agencyCd, :siteNo, :nwisHost, :dbNo, :stationNm, "
 						+ ":decLatVa, :decLongVa, :coordMethCd, :coordAcyCd, :districtCd, "
 						+ ":countryCd, :stateCd, :countyCd, :landNetDs, :mapScaleFc, "
@@ -79,7 +82,10 @@ public class TransformSitefile {
 						+ ":siteTpCd, :siteRmksTx, :drainAreaVa, :contribDrainAreaVa, "
 						+ ":constructionDt, :aqfrTypeCd, :aqfrCd, :natAqfrCd, :wellDepthVa, "
 						+ ":holeDepthVa, :siteWebCd, :decCoordDatumCd, :siteCn, "
-						+ ":siteCr, :siteMn, :siteMd)")
+						+ ":siteCr, :siteMn, :siteMd, "
+						+ ":latVa, :longVa, :coordDatumCd, :mapNm, :topoCd, :instrumentsCd,"
+						+ ":inventoryDt, :tzCd, :localTimeFg, :reliabilityCd, "
+						+ ":gwFileCd, :depthSrcCd, :projectNo)")
 				.dataSource(dataSourceNwis)
 				.build();
 	}

@@ -25,11 +25,11 @@ public class TransformResultIT extends NwisBaseFlowIT {
 			+ EQUALS_QUERY + TABLE_NAME;
 	public static final String EXPECTED_DATABASE_QUERY_FOREIGN_KEY = BASE_EXPECTED_DATABASE_QUERY_FOREIGN_KEY
 			+ EQUALS_QUERY + TABLE_NAME;
-	
+
 	@Autowired
 	@Qualifier("resultFlow")
 	private Flow resultFlow;
-	
+
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/result/empty.xml")
 	@DatabaseSetup(
@@ -66,14 +66,14 @@ public class TransformResultIT extends NwisBaseFlowIT {
 			fail(e.getLocalizedMessage());
 		}
 	}
-	
+
 	@Test
 	@DatabaseSetup(value = "classpath:/testData/wqp/result/resultOld.xml")
 	@DatabaseSetup(
 			connection = CONNECTION_NWIS,
 			value = "classpath:/testData/nwis/qwResult/qwResult.xml")
 	@DatabaseSetup(value = "classpath:/testResult/wqp/activity/activity.xml")
-	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml")
+	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/csv/")
 	@DatabaseSetup(
 			connection = CONNECTION_NWIS,
 			value = "classpath:/testData/nwis/parm/parm.xml")

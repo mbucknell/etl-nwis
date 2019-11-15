@@ -16,33 +16,33 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SitefileTransformation {
-	
+
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
-	
+
 	@Autowired
 	@Qualifier("deleteSitefile")
 	private Tasklet deleteSitefile;
-	
+
 	@Autowired
 	@Qualifier("sitefileReader")
 	private JdbcPagingItemReader<Sitefile> sitefileReader;
-	
+
 	@Autowired
 	@Qualifier("sitefileProcessor")
 	private PassThroughItemProcessor<Sitefile> sitefileProcessor;
-	
+
 	@Autowired
 	@Qualifier("sitefileWriter")
 	private JdbcBatchItemWriter<Sitefile> sitefileWriter;
-	
+
 	@Bean
 	public Step deleteSitefileStep() {
 		return stepBuilderFactory.get("deleteSitefile")
 				.tasklet(deleteSitefile)
 				.build();
 	}
-	
+
 	@Bean
 	public Step transformSitefileStep() {
 		return stepBuilderFactory
@@ -53,7 +53,7 @@ public class SitefileTransformation {
 				.writer(sitefileWriter)
 				.build();
 	}
-	
+
 	@Bean
 	public Flow sitefileFlow() {
 		return new FlowBuilder<SimpleFlow>("sitefileFlow")

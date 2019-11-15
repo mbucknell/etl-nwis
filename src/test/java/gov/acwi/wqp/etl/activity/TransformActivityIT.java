@@ -33,14 +33,14 @@ public class TransformActivityIT extends NwisBaseFlowIT {
 	@Test
 	@DatabaseSetup(value = "classpath:/testResult/wqp/activity/empty.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwSample/qwSample.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/csv/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisWqxMediumCd/nwisWqxMediumCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/bodyPart/bodyPart.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/hydEventCd/hydEventCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/hydCondCd/hydCondCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
-	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml")
+	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/csv/")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/activity.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void transformNwisActivityStepTest() {
 		try {
@@ -55,14 +55,14 @@ public class TransformActivityIT extends NwisBaseFlowIT {
 	@Test
 	@DatabaseSetup(value = "classpath:/testData/wqp/activity/activityOld.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwSample/qwSample.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/csv/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisWqxMediumCd/nwisWqxMediumCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/bodyPart/bodyPart.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/hydEventCd/hydEventCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/hydCondCd/hydCondCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
-	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/monitoringLocation.xml")
+	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/csv/")
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/activity/indexes/all.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,
 			table = EXPECTED_DATABASE_TABLE_CHECK_INDEX,

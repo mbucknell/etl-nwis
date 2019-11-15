@@ -1,0 +1,18 @@
+code,name,sort_order,description,valid_flag
+"ASLOCAL","Am Samoa Local",15,"Local American Samoa Datum",false
+"ASVD02","Am Samoa Datum",8,"American Samoa Vertical Datum of 2002",true
+"BARGECANAL","NY Barge Canal",12,"New York State Barge Canal datum",true
+"COE1912","COE Datum 1912",11,"U.S. Corps of Engineers datum adjustment 1912",true
+"GULOCAL","Guam Local",16,"Local Guam Datum",false
+"GUVD04","Guam Datum",7,"Guam Vertical Datum of 2004",true
+"HILOCAL","Hawaii Local",14,"Local Hawaiian Datum",false
+"IGLD","Gr Lakes Datum",10,"International Great Lakes Datum",true
+"LMSL","Local Mean SL",5,"Local Mean Sea Level",true
+"MLLW","Mean Lower Low",6,"Mean Lower Low Water tidal datum",true
+"NAVD88","V Datum of 1988",2,"North American Vertical Datum of 1988",true
+"NGVD29","V Datum of 1929",1,"National Geodetic Vertical Datum of 1929",true
+"NMVD03","N Marianas Datum",9,"Northern Marianas Vertical Datum of 2003",true
+"OLDAK","Old Alaska",3,"Old Alaska (Mainland) and Aleutian Island Datum",true
+"OLDPR","Old PR & VI",13,"Old Puerto Rico and Virgin Island Datum",true
+"PRVD02","Puerto Rico",4,"Puerto Rico Vertical Datum of 2002",true
+"TIDELOCAL","Tidal Local",17,"Local Tidal Datum",false

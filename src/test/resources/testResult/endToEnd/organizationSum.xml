@@ -37,4 +37,16 @@
                            five_year_activity_count="0"
                            current_year_site_count="0"
                            current_year_activity_count="0"></organization_sum_nwis>
+    <organization_sum_nwis data_source_id="2"
+                           data_source="NWIS"
+                           organization_id="2000055"
+                           organization="USGS-WI"
+                           organization_name="USGS Wisconsin Water Science Center"
+                           organization_url="/provider/NWIS/USGS-WI"
+                           all_time_site_count="0"
+                           all_time_activity_count="0"
+                           five_year_site_count="0"
+                           five_year_activity_count="0"
+                           current_year_site_count="0"
+                           current_year_activity_count="0"></organization_sum_nwis>
 </dataset>

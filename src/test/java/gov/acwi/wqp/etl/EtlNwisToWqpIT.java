@@ -42,14 +42,20 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 
 	@Test
 	// Lookups and mysql data tables
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/agency/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeDatum/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/altitudeMethod/altitudeMethod.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aqfr/aqfr.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/bodyPart/bodyPart.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/county/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/dataReliability/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/fxd/fxd.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/huc/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/hydCondCd/hydCondCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/hydEventCd/hydEventCd.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongDatum/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/methWithCit/methWithCit.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
@@ -61,10 +67,11 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/parmMeth/parmMeth.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwResult/qwResult.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwSample/qwSample.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/sitefile.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/csv/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/state/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/topographicSetting/")
 	@DatabaseSetup(value = "classpath:/testData/wqp/huc12nometa/")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/nwisStationLocal/empty.xml")
 
 	//Tables
 	@ExpectedDatabase(

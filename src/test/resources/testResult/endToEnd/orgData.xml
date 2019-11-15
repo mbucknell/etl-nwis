@@ -3,4 +3,5 @@
     <org_data_nwis data_source_id="2" data_source="NWIS" organization_id="2000018" organization="USGS-IN" organization_name="USGS Indiana Water Science Center"></org_data_nwis>
     <org_data_nwis data_source_id="2" data_source="NWIS" organization_id="2000026" organization="USGS-MI" organization_name="USGS Michigan Water Science Center"></org_data_nwis>
     <org_data_nwis data_source_id="2" data_source="NWIS" organization_id="2000039" organization="USGS-OH" organization_name="USGS Ohio Water Science Center"></org_data_nwis>
+    <org_data_nwis data_source_id="2" data_source="NWIS" organization_id="2000055" organization="USGS-WI" organization_name="USGS Wisconsin Water Science Center"></org_data_nwis>
 </dataset>

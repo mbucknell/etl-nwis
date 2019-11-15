@@ -109,13 +109,13 @@ select
     nullif(trim(r.result_lab_cm_tx), '') result_comment,
     case
         when parm.parm_medium_tx = 'Biological Tissue'
-            then (select tu.tu_1_nm ||
-                         case when tu.tu_2_cd is not null then ' ' || tu.tu_2_cd end ||
-                         case when tu.tu_2_nm is not null then ' ' || tu.tu_2_nm end ||
-                         case when tu.tu_3_cd is not null then ' ' || tu.tu_3_cd end ||
-                         case when tu.tu_3_nm is not null then ' ' || tu.tu_3_nm end ||
-                         case when tu.tu_4_cd is not null then ' ' || tu.tu_4_cd end ||
-                         case when tu.tu_4_nm is not null then ' ' || tu.tu_4_nm end
+            then (select coalesce(tu.tu_1_nm, '') ||
+                         case when tu.tu_2_cd is not null then ' ' || tu.tu_2_cd else '' end ||
+                         case when tu.tu_2_nm is not null then ' ' || tu.tu_2_nm else '' end ||
+                         case when tu.tu_3_cd is not null then ' ' || tu.tu_3_cd else '' end ||
+                         case when tu.tu_3_nm is not null then ' ' || tu.tu_3_nm else '' end ||
+                         case when tu.tu_4_cd is not null then ' ' || tu.tu_4_cd else '' end ||
+                         case when tu.tu_4_nm is not null then ' ' || tu.tu_4_nm else '' end
                   from nwis.tu
                   where qw_sample.tu_id = cast(tu.tu_id as varchar))
         else null
@@ -137,17 +137,17 @@ select
     proto_org.proto_org_nm lab_name,
     case
         when nullif(r.anl_dt, '') is not null
-            then substring(r.anl_dt from 1 for 4) || '-' || substring(r.anl_dt from 5 for 2) || '-' || substring(r.anl_dt from 7 for 2)
+            then coalesce(substring(r.anl_dt from 1 for 4), '') || '-' || coalesce(substring(r.anl_dt from 5 for 2), '') || '-' || coalesce(substring(r.anl_dt from 7 for 2), '')
         else null
     end analysis_start_date,
-    trim(val_qual_cd1.val_qual_nm ||
-         val_qual_cd2.val_qual_nm ||
-         val_qual_cd3.val_qual_nm ||
-         val_qual_cd4.val_qual_nm ||
-         val_qual_cd5.val_qual_nm ||
+    trim(coalesce(val_qual_cd1.val_qual_nm, '') ||
+         coalesce(val_qual_cd2.val_qual_nm, '') ||
+         coalesce(val_qual_cd3.val_qual_nm, '') ||
+         coalesce(val_qual_cd4.val_qual_nm, '') ||
+         coalesce(val_qual_cd5.val_qual_nm, '') ||
          case
              when r.remark_cd = 'R' then 'Result below sample specific critical level.'
-             else null
+             else ''
          end
     ) lab_remark,
     case
@@ -209,7 +209,7 @@ select
     end detection_limit_desc,
     case
         when nullif(r.prep_dt, '') is not null
-            then substring(r.prep_dt from 1 for 4) || '-' || substring(r.prep_dt from 5 for 2) || '-' || substring(r.prep_dt from 7 for 2)
+            then coalesce(substring(r.prep_dt from 1 for 4), '') || '-' || coalesce(substring(r.prep_dt from 5 for 2), '') || '-' || coalesce(substring(r.prep_dt from 7 for 2), '')
         else null
     end analysis_prep_date_tx
 from nwis.qw_result r

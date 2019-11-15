@@ -1,7 +1,5 @@
 package gov.acwi.wqp.etl.activity;
 
-import javax.sql.DataSource;
-
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import gov.acwi.wqp.etl.Application;
 import gov.acwi.wqp.etl.EtlConstantUtils;
 
 @Configuration

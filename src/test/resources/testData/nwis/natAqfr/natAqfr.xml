@@ -17,4 +17,7 @@
     <nat_aqfr country_cd="US" state_cd="26"
         nat_aqfr_cd="S300CAMORD"
         nat_aqfr_nm="Cambrian-Ordovician aquifer system"></nat_aqfr>
+    <nat_aqfr country_cd="US" state_cd="55"
+        nat_aqfr_cd="N100GLCIAL"
+        nat_aqfr_nm="Sand and gravel aquifers (glaciated regions)"></nat_aqfr>
 </dataset>
