@@ -129,6 +129,7 @@ public class EtlNwisToWqpIT extends NwisBaseFlowIT {
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/orgGrouping.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/mlGrouping.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/organizationSum.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/qwportalSummary.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 
 	//Codes Data
 	@ExpectedDatabase(value = "classpath:/testResult/endToEnd/assemblage.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
