@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <qwportal_summary
+        data_source_id="2"
+        fips_state_code="26"
+        fips_county_code="053"
+        fips_state_and_county="26053"
+        huc8="04010302"
+        min_date="1969-10-30"
+        max_date="1973-06-20"
+        samples_past_12_months="0"
+        samples_past_60_months="0"
+        samples_all_time="39"
+        nwis_or_epa="N"
+    />
+</dataset>
