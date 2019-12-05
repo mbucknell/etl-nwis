@@ -15,15 +15,15 @@ import org.springframework.util.FileCopyUtils;
 
 @Component
 @StepScope
-public class TransformNwisMonitoringLocation implements Tasklet {
+public class PurgeNwisMonitoringLocation implements Tasklet {
 
 	private final JdbcTemplate jdbcTemplate;
 
-	@Value("classpath:sql/nwis/monitoringLocation/monitoringLocation.sql")
+	@Value("classpath:sql/nwis/monitoringLocation/purgeMonitoringLocation.sql")
 	private Resource resource;
 
 	@Autowired
-	public TransformNwisMonitoringLocation(@Qualifier("jdbcTemplateNwis") JdbcTemplate jdbcTemplate) {
+	public PurgeNwisMonitoringLocation(@Qualifier("jdbcTemplateNwis") JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
@@ -33,4 +33,5 @@ public class TransformNwisMonitoringLocation implements Tasklet {
 		jdbcTemplate.execute(sql);
 		return RepeatStatus.FINISHED;
 	}
+
 }

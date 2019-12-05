@@ -17,9 +17,21 @@ public class TransformNwisMonitoringLocationFlowDefinition {
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
+
+	@Autowired
+	@Qualifier("purgeNwisMonitoringLocation")
+	private Tasklet purgeNwisMonitoringLocation;
+
 	@Autowired
 	@Qualifier("transformNwisMonitoringLocation")
 	private Tasklet transformNwisMonitoringLocation;
+
+	@Bean
+	public Step purgeNwisMonitoringLocationStep() {
+		return stepBuilderFactory.get("purgeNwisMonitoringLocationStep")
+				.tasklet(purgeNwisMonitoringLocation)
+				.build();
+	}
 
 	@Bean
 	public Step transformNwisMonitoringLocationStep() {
@@ -31,7 +43,8 @@ public class TransformNwisMonitoringLocationFlowDefinition {
 	@Bean
 	public Flow nwisMonitoringLocationFlow() {
 		return new FlowBuilder<SimpleFlow>("nwisMonitoringLocationFlow")
-				.start(transformNwisMonitoringLocationStep())
+				.start(purgeNwisMonitoringLocationStep())
+				.next(transformNwisMonitoringLocationStep())
 				.build();
 	}
 }

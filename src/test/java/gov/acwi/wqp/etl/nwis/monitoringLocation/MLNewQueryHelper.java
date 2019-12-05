@@ -75,7 +75,8 @@ public final class MLNewQueryHelper {
 			"       calculated_huc_12," +
 			"       nwis_host," +
 			"       db_no," +
-			"       site_web_cd" +
+			"       site_web_cd," +
+			"       monitoring_location_identifier" +
 			"  from monitoring_location" +
 			" where monitoring_location_id > 4";
 
