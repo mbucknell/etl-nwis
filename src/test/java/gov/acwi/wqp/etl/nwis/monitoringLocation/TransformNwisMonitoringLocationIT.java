@@ -10,6 +10,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -25,6 +26,10 @@ public class TransformNwisMonitoringLocationIT extends NwisBaseFlowIT {
 	@Autowired
 	@Qualifier("nwisMonitoringLocationFlow")
 	private Flow nwisMonitoringLocationFlow;
+
+	@Autowired
+	@Qualifier("jdbcTemplateNwis")
+	private JdbcTemplate jdbcTemplateNwis;
 
 	@Test
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/agency/")
@@ -67,6 +72,8 @@ public class TransformNwisMonitoringLocationIT extends NwisBaseFlowIT {
 				.build();
 		jobLauncherTestUtils.setJob(nwisMonitoringLocationFlowTest);
 		try {
+			//Manually bump up identity past loaded test data. DBUnit @DatabaseSetup will not accomplish this.
+			jdbcTemplateNwis.execute("alter table nwis.monitoring_location alter monitoring_location_id restart with 100");
 			JobExecution jobExecution = jobLauncherTestUtils.launchJob(testJobParameters);
 			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
 			Thread.sleep(1000);
