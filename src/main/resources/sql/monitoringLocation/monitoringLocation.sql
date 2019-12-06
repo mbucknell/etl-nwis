@@ -9,7 +9,7 @@ insert
 select 2 data_source_id,
        'NWIS' data_source,
        monitoring_location.site_id station_id,
-       coalesce(monitoring_location.agency_cd, '') || '-' || coalesce(monitoring_location.site_identification_number, '') site_id,
+       monitoring_location.monitoring_location_identifier site_id,
        ndcbh.organization_id organization,
        site_tp.primary_site_type site_type,
        coalesce(monitoring_location.calculated_huc_12, monitoring_location.huc_cd) huc,
@@ -88,11 +88,4 @@ select 2 data_source_id,
                    where substr(a.site_tp_cd, 1, 2) = b.site_tp_cd and
                          b.site_tp_prim_fg) site_tp
          on monitoring_location.site_tp_cd = site_tp.site_tp_cd
- where monitoring_location.decimal_latitude <> 0 and
-       monitoring_location.decimal_longitude <> 0 and
-       monitoring_location.site_web_cd = 'Y' and
-       monitoring_location.db_no = '01' and
-       monitoring_location.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP') and
-       monitoring_location.nwis_host not in ('fltlhsr001', 'fltpasr001', 'flalssr003') and
-       monitoring_location.country_cd != 'CN'
     order by ndcbh.organization_id

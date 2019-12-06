@@ -72,8 +72,17 @@ with sitefile as (select sitefile.site_no site_identification_number,
                          end geom,
                          sitefile.nwis_host,
                          sitefile.db_no,
-                         sitefile.site_web_cd
-                    from nwis.sitefile)
+                         sitefile.site_web_cd,
+                         coalesce(sitefile.agency_cd, '') || '-' || coalesce(sitefile.site_no, '') monitoring_location_identifier
+                    from nwis.sitefile
+                   where sitefile.dec_lat_va <> 0 and
+                         sitefile.dec_long_va <> 0 and
+                         sitefile.site_web_cd = 'Y' and
+                         sitefile.db_no = '01' and
+                         sitefile.site_tp_cd not in ('FA-WTP', 'FA-WWTP', 'FA-TEP', 'FA-HP') and
+                         sitefile.nwis_host not in ('fltlhsr001', 'fltpasr001', 'flalssr003') and
+                         sitefile.country_cd != 'CN'
+                 )
 insert
   into nwis.monitoring_location (agency,
                                  site_identification_number,
@@ -147,7 +156,8 @@ insert
                                  calculated_huc_12,
                                  nwis_host,
                                  db_no,
-                                 site_web_cd)
+                                 site_web_cd,
+                                 monitoring_location_identifier)
 select agency.name agency,
        sitefile.site_identification_number,
        sitefile.site_name,
@@ -220,7 +230,8 @@ select agency.name agency,
        huc12nometa.huc12 calculated_huc_12,
        sitefile.nwis_host,
        sitefile.db_no,
-       sitefile.site_web_cd
+       sitefile.site_web_cd,
+       sitefile.monitoring_location_identifier
   from sitefile
        left join nwis.agency
          on sitefile.agency_cd = agency.code
@@ -339,4 +350,5 @@ on conflict on constraint monitoring_location_ak do
                calculated_huc_12 = excluded.calculated_huc_12,
                nwis_host = excluded.nwis_host,
                db_no = excluded.db_no,
-               site_web_cd = excluded.site_web_cd
+               site_web_cd = excluded.site_web_cd,
+               monitoring_location_identifier = excluded.monitoring_location_identifier;
