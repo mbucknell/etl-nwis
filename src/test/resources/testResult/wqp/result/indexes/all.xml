@@ -45,6 +45,11 @@
     />
     <pg_indexes
             tablename="result_swap_nwis"
+            indexname="result_swap_nwis_geom_2163"
+            indexdef="CREATE INDEX result_swap_nwis_geom_2163 ON wqp.result_swap_nwis USING gist (st_transform(geom, 2163)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="result_swap_nwis"
             indexname="result_swap_nwis_huc_2"
             indexdef="CREATE INDEX result_swap_nwis_huc_2 ON wqp.result_swap_nwis USING btree (&quot;substring&quot;((huc)::text, '[0-9]{2}'::text)) WITH (fillfactor='100')"
     />
