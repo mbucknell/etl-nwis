@@ -14,21 +14,26 @@ public class MySqlNwisExtract {
 	@Autowired
 	@Qualifier("qwSampleFlow")
 	private Flow qwSampleFlow;
-	
+
 	@Autowired
 	@Qualifier("qwResultFlow")
 	private Flow qwResultFlow;
-	
+
 	@Autowired
 	@Qualifier("sitefileFlow")
 	private Flow sitefileFlow;
-	
+
+	@Autowired
+	@Qualifier("statFlow")
+	private Flow statFlow;
+
 	@Bean
 	public Flow mySqlNwisExtractFlow() {
 		return new FlowBuilder<SimpleFlow>("mySqlNwisExtractFlow")
 				.start(qwSampleFlow)
 				.next(qwResultFlow)
 				.next(sitefileFlow)
+				.next(statFlow)
 				.build();
 	}
 }
