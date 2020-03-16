@@ -27,6 +27,11 @@
     />
     <pg_indexes
             tablename="act_metric_swap_nwis"
+            indexname="act_metric_swap_nwis_geom_2163"
+            indexdef="CREATE INDEX act_metric_swap_nwis_geom_2163 ON wqp.act_metric_swap_nwis USING gist (st_transform(geom, 2163)) WITH (fillfactor='100')"
+    />
+    <pg_indexes
+            tablename="act_metric_swap_nwis"
             indexname="act_metric_swap_nwis_geom"
             indexdef="CREATE INDEX act_metric_swap_nwis_geom ON wqp.act_metric_swap_nwis USING gist (geom) WITH (fillfactor='100')"
     />
