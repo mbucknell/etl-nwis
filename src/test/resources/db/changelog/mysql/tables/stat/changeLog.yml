@@ -1,0 +1,16 @@
+databaseChangeLog:
+
+  - changeSet:
+      author: drsteini
+      id: "create.table.stat"
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - not:
+          - tableExists:
+              tableName: stat
+      changes:
+        - sqlFile:
+            path: stat.sql
+            relativeToChangelogFile: true
+        - rollback: drop table if exists stat;

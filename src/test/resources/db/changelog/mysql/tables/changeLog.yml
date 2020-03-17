@@ -3,3 +3,7 @@ databaseChangeLog:
   - include:
       file: "sitefile/changeLog.yml"
       relativeToChangelogFile: true
+
+  - include:
+      file: "stat/changeLog.yml"
+      relativeToChangelogFile: true

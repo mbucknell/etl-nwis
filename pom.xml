@@ -10,7 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <wma.maven.url>https://cida.usgs.gov/artifactory/list</wma.maven.url>
-        <wqp-etl-core.version>0.1.5-SNAPSHOT</wqp-etl-core.version>
+        <wqp-etl-core.version>0.1.5</wqp-etl-core.version>
     </properties>
 
     <scm>
