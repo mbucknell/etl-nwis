@@ -41,7 +41,7 @@ public class TransformStat {
 
 		sortKeys.put("stat_cd", Order.ASCENDING);
 		queryProvider.setSelectClause("select *");
-		queryProvider.setFromClause("from stat");
+		queryProvider.setFromClause("from STAT");
 		queryProvider.setSortKeys(sortKeys);
 
 		return new JdbcPagingItemReaderBuilder<Stat>()
