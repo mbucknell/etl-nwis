@@ -17,7 +17,6 @@ public class TransformNwisDiscreteGroundWaterFlowDefinition {
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
-
 	@Autowired
 	@Qualifier("deleteDiscreteGroundWaterTasklet")
 	private Tasklet deleteDiscreteGroundWaterTasklet;
