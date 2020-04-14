@@ -34,6 +34,7 @@ spring:
 
   liquibase:
     change-log: db/changelog/db.changelog-nwis.yaml
+    liquibaseSchema: ${WQP_SCHEMA_NAME}
     parameters:
       WQP_SCHEMA_NAME: ${WQP_SCHEMA_NAME}
       ETL_OWNER_USERNAME: ${ETL_OWNER_USERNAME}

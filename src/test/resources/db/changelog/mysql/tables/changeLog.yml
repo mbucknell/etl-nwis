@@ -1,6 +1,10 @@
 databaseChangeLog:
 
   - include:
+      file: "gwLevels/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
       file: "sitefile/changeLog.yml"
       relativeToChangelogFile: true
 

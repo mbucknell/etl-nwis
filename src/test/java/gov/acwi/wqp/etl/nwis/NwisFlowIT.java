@@ -1,9 +1,9 @@
 package gov.acwi.wqp.etl.nwis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -33,7 +33,14 @@ public class NwisFlowIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/aquiferType/aquiferType.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/county/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/dataReliability/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/discreteGroundWater/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/fxd/sampleParameterTest/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/gwLevelAccuracy/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/gwLevelDateTimeAccuracy/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/gwLevelMethod/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testResult/nwis/gwLevels/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/gwLevelSitestatus/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/gwLevelSource/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/huc/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongAccuracy/latLongAccuracy.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongDatum/")
@@ -43,7 +50,7 @@ public class NwisFlowIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/qwResult/qwResultForSampleParameterTest.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sampleParameter/sampleParameterOld.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/csv/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/state/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/topographicSetting/")
@@ -68,6 +75,11 @@ public class NwisFlowIT extends NwisBaseFlowIT {
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
 			table=TransformNwisMonitoringLocationIT.EXPECTED_DATABASE_TABLE_CHECK_TABLE,
 			query=MLNewQueryHelper.EXPECTED_DATABASE_QUERY_MERGES_NEW
+			)
+	@ExpectedDatabase(
+			connection=CONNECTION_NWIS,
+			value="classpath:/testResult/nwis/discreteGroundWater/",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED
 			)
 	public void nwisTest() {
 		Job nwisFlowTest = jobBuilderFactory.get("nwisFlowTest")

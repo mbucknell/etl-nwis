@@ -2,4 +2,7 @@
 <dataset>
 <aqfr country_cd="US" state_cd="26" aqfr_cd="112SDGV" aqfr_nm="Sand and Gravel" aqfr_md="19860618"></aqfr>
 <aqfr country_cd="US" state_cd="55" aqfr_cd="110SDGVP" aqfr_nm="Sand and Gravel (Holocene and/or Pleistocene)" aqfr_md="20080901"></aqfr>
+<aqfr country_cd="US" state_cd="04" aqfr_cd="111ALVM" aqfr_nm="Holocene Alluvium" aqfr_md="20080901"></aqfr>
+<aqfr country_cd="US" state_cd="04" aqfr_cd="310COCN" aqfr_nm="Coconino Sandstone" aqfr_md="20080901"></aqfr>
+<aqfr country_cd="US" state_cd="12" aqfr_cd="112BSCNN" aqfr_nm="Biscayne Limestone Aquifer" aqfr_md="19860618"></aqfr>
 </dataset>

@@ -1,9 +1,9 @@
 package gov.acwi.wqp.etl.monitoringLocation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -37,7 +37,7 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@ExpectedDatabase(
-			value = "classpath:/testResult/wqp/monitoringLocation/csv/",
+			value = "classpath:/testResult/wqp/monitoringLocation/",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void transformNwisMonitoringLocationStepTest() {
 		try {
@@ -55,7 +55,7 @@ public class TransformMonitoringLocationIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/nwisDistrictCdsByHost/nwisDistrictCdsByHost.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@ExpectedDatabase(
-			value = "classpath:/testResult/wqp/monitoringLocation/csv/",
+			value = "classpath:/testResult/wqp/monitoringLocation/",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@ExpectedDatabase(value = "classpath:/testResult/wqp/monitoringLocation/indexes/all.xml",
 			assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED,

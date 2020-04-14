@@ -1,9 +1,9 @@
 package gov.acwi.wqp.etl.result;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -73,7 +73,7 @@ public class TransformResultIT extends NwisBaseFlowIT {
 			connection = CONNECTION_NWIS,
 			value = "classpath:/testData/nwis/qwResult/qwResult.xml")
 	@DatabaseSetup(value = "classpath:/testResult/wqp/activity/activity.xml")
-	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/csv/")
+	@DatabaseSetup(value = "classpath:/testResult/wqp/monitoringLocation/")
 	@DatabaseSetup(
 			connection = CONNECTION_NWIS,
 			value = "classpath:/testData/nwis/parm/parm.xml")
