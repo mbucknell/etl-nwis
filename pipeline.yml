@@ -1,5 +1,4 @@
 artifactoryPath: "wqp"
 dockerImageName: "etl-nwis"
-gitlabPath: "wma/docker/wqp"
 gitRepoUrl: "https://github.com/NWQMC/etl-nwis.git"
 gitRepoCredentialsId: "Jenkins-GitHub-Read-Write-Token"
