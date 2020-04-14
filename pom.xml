@@ -9,7 +9,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <wma.maven.url>https://artifactory.wma.usgs.gov/artifactory/list</wma.maven.url>
+        <wma.maven.url> https://artifactory.wma.usgs.gov/artifactory</wma.maven.url>
         <wqp-etl-core.version>0.1.5</wqp-etl-core.version>
     </properties>
 
@@ -30,7 +30,7 @@
         <repository>
             <id>WMA</id>
             <name>WMA Artifactory</name>
-            <url>${wma.maven.url}/wma-maven-centralized/</url>
+            <url>${wma.maven.url}/eros-artifactory-wma-maven-releases/</url>
         </repository>
     </repositories>
 
