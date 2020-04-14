@@ -1,9 +1,10 @@
 package gov.acwi.wqp.etl.nwis.monitoringLocation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static gov.acwi.wqp.etl.nwis.monitoringLocation.MLNewQueryHelper.MIN_NEW_MONITORING_LOCATION_ID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -21,7 +22,8 @@ import gov.acwi.wqp.etl.NwisBaseFlowIT;
 public class TransformNwisMonitoringLocationIT extends NwisBaseFlowIT {
 
 	public static final String EXPECTED_DATABASE_TABLE_CHECK_TABLE = "monitoring_location";
-	public static final String EXPECTED_DATABASE_QUERY_MERGES = "select * from monitoring_location where monitoring_location_id < 5";
+	public static final String EXPECTED_DATABASE_QUERY_MERGES = "select * from monitoring_location where monitoring_location_id < "
+			+ MIN_NEW_MONITORING_LOCATION_ID;
 
 	@Autowired
 	@Qualifier("nwisMonitoringLocationFlow")
@@ -45,7 +47,7 @@ public class TransformNwisMonitoringLocationIT extends NwisBaseFlowIT {
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/latLongMethod/latLongMethod.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/monitoringLocation/setA/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/natAqfr/natAqfr.xml")
-	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/csv/")
+	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/sitefile/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/siteTp/siteTp.xml")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/state/")
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/topographicSetting/")
@@ -73,7 +75,8 @@ public class TransformNwisMonitoringLocationIT extends NwisBaseFlowIT {
 		jobLauncherTestUtils.setJob(nwisMonitoringLocationFlowTest);
 		try {
 			//Manually bump up identity past loaded test data. DBUnit @DatabaseSetup will not accomplish this.
-			jdbcTemplateNwis.execute("alter table nwis.monitoring_location alter monitoring_location_id restart with 100");
+			jdbcTemplateNwis.execute(String.format("alter table nwis.monitoring_location alter monitoring_location_id restart with %s",
+					MIN_NEW_MONITORING_LOCATION_ID));
 			JobExecution jobExecution = jobLauncherTestUtils.launchJob(testJobParameters);
 			assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
 			Thread.sleep(1000);

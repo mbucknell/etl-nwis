@@ -2,6 +2,8 @@ package gov.acwi.wqp.etl.nwis.monitoringLocation;
 
 public final class MLNewQueryHelper {
 
+	public static final String MIN_NEW_MONITORING_LOCATION_ID = "100";
+
 	public static final String EXPECTED_DATABASE_QUERY_MERGES_NEW = 
 			"select agency," +
 			"       site_identification_number," +
@@ -78,7 +80,8 @@ public final class MLNewQueryHelper {
 			"       site_web_cd," +
 			"       monitoring_location_identifier" +
 			"  from monitoring_location" +
-			" where monitoring_location_id > 4";
+			" where monitoring_location_id >= " +
+			MIN_NEW_MONITORING_LOCATION_ID;
 
 	private MLNewQueryHelper() {}
 

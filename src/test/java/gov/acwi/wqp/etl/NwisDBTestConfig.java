@@ -54,6 +54,7 @@ public class NwisDBTestConfig {
 	public DataSource dataSourceMysqlnwis() {
 		return dataSourcePropertiesMysqlnwis().initializeDataSourceBuilder().build();
 	}
+
 	@Bean
 	@ConfigurationProperties(prefix = "spring.liquibase")
 	public LiquibaseProperties primaryLiquibaseProperties() {
