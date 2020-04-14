@@ -27,13 +27,13 @@ select monitoring_location.monitoring_location_id,
        gw_levels.lev_tz_cd timezone_code,
        gw_levels.parameter_cd parameter_code,
        case lev_dt_acy_cd
-         when 'Y' then to_char(lev_dtm at time zone lev_tz_cd, 'YYYY')
-         when 'M' then to_char(lev_dtm at time zone lev_tz_cd, 'YYYY-MM')
-         else to_char(lev_dtm at time zone lev_tz_cd, 'YYYY-MM-DD')
+         when 'Y' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'YYYY')
+         when 'M' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'YYYY-MM')
+         else to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'YYYY-MM-DD')
        end date_measured,
        case lev_dt_acy_cd
-         when 'h' then to_char(lev_dtm at time zone lev_tz_cd, 'HH24')
-         when 'm' then to_char(lev_dtm at time zone lev_tz_cd, 'HH24:MI')
+         when 'h' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'HH24')
+         when 'm' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'HH24:MI')
        end time_measured_utc,
        case
          when gw_levels.parameter_cd = '72019'

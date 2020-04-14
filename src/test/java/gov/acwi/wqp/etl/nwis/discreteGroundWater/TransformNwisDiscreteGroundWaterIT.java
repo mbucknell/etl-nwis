@@ -10,7 +10,6 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -23,10 +22,6 @@ public class TransformNwisDiscreteGroundWaterIT extends NwisBaseFlowIT {
 	@Autowired
 	@Qualifier("nwisDiscreteGroundWaterFlow")
 	private Flow nwisDiscreteGroundWaterFlow;
-
-	@Autowired
-	@Qualifier("jdbcTemplateNwis")
-	private JdbcTemplate jdbcTemplateNwis;
 
 	@Test
 	@DatabaseSetup(connection = CONNECTION_NWIS, value = "classpath:/testData/nwis/agency/")
