@@ -27,6 +27,10 @@ public class MySqlNwisExtract {
 	@Qualifier("statFlow")
 	private Flow statFlow;
 
+	@Autowired
+	@Qualifier("gwLevelsFlow")
+	private Flow gwLevelsFlow;
+
 	@Bean
 	public Flow mySqlNwisExtractFlow() {
 		return new FlowBuilder<SimpleFlow>("mySqlNwisExtractFlow")
@@ -34,6 +38,7 @@ public class MySqlNwisExtract {
 				.next(qwResultFlow)
 				.next(sitefileFlow)
 				.next(statFlow)
+				.next(gwLevelsFlow)
 				.build();
 	}
 }
