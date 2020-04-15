@@ -2,10 +2,14 @@ package gov.acwi.wqp.etl.mysqlnwis.gwlevels;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.jdbc.core.RowMapper;
 
 public class GwLevelsRowMapper implements RowMapper<GwLevels> {
+	private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 	public static final String SITE_ID_COLUMN_NAME = "site_id";
 	public static final String LEV_STR_DT = "lev_str_dt";
 	public static final String LEV_DTM = "lev_dtm";
@@ -28,7 +32,7 @@ public class GwLevelsRowMapper implements RowMapper<GwLevels> {
 
 		qwResult.setSiteId(rs.getInt(SITE_ID_COLUMN_NAME));
 		qwResult.setLevStrDt(rs.getString(LEV_STR_DT));
-		qwResult.setLevDtm(rs.getTimestamp(LEV_DTM));
+		qwResult.setLevDtm(LocalDateTime.parse(rs.getString(LEV_DTM), dateTimeFormatter));
 		qwResult.setLevDtAcyCd(rs.getString(LEV_DT_ACY_CD));
 		qwResult.setLevTzCd(rs.getString(LEV_TZ_CD));
 		qwResult.setLevTzOffset(rs.getString(LEV_TZ_OFFSET));
@@ -41,7 +45,7 @@ public class GwLevelsRowMapper implements RowMapper<GwLevels> {
 		qwResult.setLevMethCd(rs.getString(LEV_METH_CD));
 		qwResult.setLevAgencyCd(rs.getString(LEV_AGENCY_CD));
 		qwResult.setLevAgeCd(rs.getString(LEV_AGE_CD));
-		qwResult.setGwLevelsMd(rs.getTimestamp(GW_LEVELS_MD));
+		qwResult.setGwLevelsMd(LocalDateTime.parse(rs.getString(GW_LEVELS_MD), dateTimeFormatter));
 
 		return qwResult;
 	}
