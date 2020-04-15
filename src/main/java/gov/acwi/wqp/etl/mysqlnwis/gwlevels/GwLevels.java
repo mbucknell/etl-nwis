@@ -1,11 +1,11 @@
 package gov.acwi.wqp.etl.mysqlnwis.gwlevels;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class GwLevels {
 	private int siteId;
 	private String levStrDt;
-	private Timestamp levDtm;
+	private LocalDateTime levDtm;
 	private String levDtAcyCd;
 	private String levTzCd;
 	private String levTzOffset;
@@ -18,7 +18,7 @@ public class GwLevels {
 	private String levMethCd;
 	private String levAgencyCd;
 	private String levAgeCd;
-	private Timestamp gwLevelsMd;
+	private LocalDateTime gwLevelsMd;
 
 	public int getSiteId() {
 		return siteId;
@@ -32,10 +32,10 @@ public class GwLevels {
 	public void setLevStrDt(String levStrDt) {
 		this.levStrDt = levStrDt;
 	}
-	public Timestamp getLevDtm() {
+	public LocalDateTime getLevDtm() {
 		return levDtm;
 	}
-	public void setLevDtm(Timestamp levDtm) {
+	public void setLevDtm(LocalDateTime levDtm) {
 		this.levDtm = levDtm;
 	}
 	public String getLevDtAcyCd() {
@@ -110,10 +110,10 @@ public class GwLevels {
 	public void setLevAgeCd(String levAgeCd) {
 		this.levAgeCd = levAgeCd;
 	}
-	public Timestamp getGwLevelsMd() {
+	public LocalDateTime getGwLevelsMd() {
 		return gwLevelsMd;
 	}
-	public void setGwLevelsMd(Timestamp gwLevelsMd) {
+	public void setGwLevelsMd(LocalDateTime gwLevelsMd) {
 		this.gwLevelsMd = gwLevelsMd;
 	}
 }
