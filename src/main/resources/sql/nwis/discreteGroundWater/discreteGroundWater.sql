@@ -2,7 +2,7 @@ insert
   into nwis.discrete_ground_water(monitoring_location_id, agency_code, agency, site_identification_number, monitoring_location_identifier,
                                   site_type_code, site_type, geom, decimal_latitude, decimal_longitude, decimal_latitude_longitude_datum,
                                   well_depth, hole_depth, local_aquifer, local_aquifer_type, date_measured_raw,
-                                  timezone_code, parameter_code, date_measured,
+                                  timezone_code, timezone_offset, parameter_code, date_measured,
                                   time_measured_utc, level_feet_below_land_surface, level_feet_above_vertical_datum,
                                   vertical_datum_code, vertical_datum, site_status_code, site_status,
                                   measuring_agency_code, measuring_agency, date_time_accuracy_code, date_time_accuracy,
@@ -25,15 +25,16 @@ select monitoring_location.monitoring_location_id,
        monitoring_location.local_aquifer_type,
        gw_levels.lev_dtm date_measured_raw,
        gw_levels.lev_tz_cd timezone_code,
+       gw_levels.lev_tz_offset timezone_offset,
        gw_levels.parameter_cd parameter_code,
        case lev_dt_acy_cd
-         when 'Y' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'YYYY')
-         when 'M' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'YYYY-MM')
-         else to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'YYYY-MM-DD')
+         when 'Y' then to_char(nwis.get_utc_timestamp_using_offset(lev_dtm, lev_tz_offset), 'YYYY')
+         when 'M' then to_char(nwis.get_utc_timestamp_using_offset(lev_dtm, lev_tz_offset), 'YYYY-MM')
+         else to_char(nwis.get_utc_timestamp_using_offset(lev_dtm, lev_tz_offset), 'YYYY-MM-DD')
        end date_measured,
        case lev_dt_acy_cd
-         when 'h' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'HH24')
-         when 'm' then to_char(((lev_dtm at time zone lev_tz_cd) at time zone 'UTC'), 'HH24:MI')
+         when 'h' then to_char(nwis.get_utc_timestamp_using_offset(lev_dtm, lev_tz_offset), 'HH24')
+         when 'm' then to_char(nwis.get_utc_timestamp_using_offset(lev_dtm, lev_tz_offset), 'HH24:MI')
        end time_measured_utc,
        case
          when gw_levels.parameter_cd = '72019'
