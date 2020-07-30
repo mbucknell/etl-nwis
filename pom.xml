@@ -10,7 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <wma.maven.url>https://artifactory.wma.usgs.gov/artifactory</wma.maven.url>
-        <wqp-etl-core.version>0.2.0-SNAPSHOT</wqp-etl-core.version>
+        <wqp-etl-core.version>0.2.0</wqp-etl-core.version>
     </properties>
 
     <scm>
@@ -37,7 +37,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.5.RELEASE</version>
+        <version>2.3.2.RELEASE</version>
     </parent>
 
     <dependencies>

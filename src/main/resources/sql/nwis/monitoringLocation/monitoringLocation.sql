@@ -276,7 +276,7 @@ select agency.name agency,
        left join nwis.topographic_setting
          on sitefile.topo_cd = topographic_setting.code
        left join wqp.huc12nometa
-         on st_covers(huc12nometa.geometry, st_transform(sitefile.geom, 4326))
+         on st_covers(huc12nometa.geometry, sitefile.geom)
 on conflict on constraint monitoring_location_ak do
     update set agency = excluded.agency,
                site_identification_number = excluded.site_identification_number,
