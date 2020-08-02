@@ -227,7 +227,7 @@ select agency.name agency,
        sitefile.aqfr_type_cd,
        sitefile.depth_src_cd,
        sitefile.geom,
-       huc12nometa.huc12 calculated_huc_12,
+       huc12nometa_combined.huc12 calculated_huc_12,
        sitefile.nwis_host,
        sitefile.db_no,
        sitefile.site_web_cd,
@@ -275,8 +275,8 @@ select agency.name agency,
             sitefile.country_cd = state.country_cd
        left join nwis.topographic_setting
          on sitefile.topo_cd = topographic_setting.code
-       left join wqp.huc12nometa
-         on st_covers(huc12nometa.geometry, sitefile.geom)
+       left join wqp.huc12nometa_combined
+         on st_covers(huc12nometa_combined.geometry, sitefile.geom)
 on conflict on constraint monitoring_location_ak do
     update set agency = excluded.agency,
                site_identification_number = excluded.site_identification_number,

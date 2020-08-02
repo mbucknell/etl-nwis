@@ -5,8 +5,8 @@ databaseChangeLog:
 
   - changeSet:
       author: mbucknell
-      id: "grant.select.${WQP_SCHEMA_NAME}.huc12nometa.${NWIS_SCHEMA_OWNER_USERNAME}"
+      id: "grant.select.${WQP_SCHEMA_NAME}.huc12nometa_combined.${NWIS_SCHEMA_OWNER_USERNAME}"
       changes:
         - sql:
-            sql: grant select on ${WQP_SCHEMA_NAME}.huc12nometa to ${NWIS_SCHEMA_OWNER_USERNAME}
-        - rollback: revoke select on ${WQP_SCHEMA_NAME}.huc12nometa from ${NWIS_SCHEMA_OWNER_USERNAME}
+            sql: grant select on ${WQP_SCHEMA_NAME}.huc12nometa_combined to ${NWIS_SCHEMA_OWNER_USERNAME}
+        - rollback: revoke select on ${WQP_SCHEMA_NAME}.huc12nometa_combined from ${NWIS_SCHEMA_OWNER_USERNAME}
