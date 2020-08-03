@@ -108,7 +108,6 @@
 "project_dim_nwis","project_dim_nwis_project_dim_value","CREATE INDEX project_dim_nwis_project_dim_value ON wqp.project_dim_nwis USING btree (project_dim_value) WITH (fillfactor='100')"
 "project_object_nwis","project_object_nwis_organization","CREATE INDEX project_object_nwis_organization ON wqp.project_object_nwis USING btree (organization) WITH (fillfactor='100')"
 "project_object_nwis","project_object_nwis_project_identifier","CREATE INDEX project_object_nwis_project_identifier ON wqp.project_object_nwis USING btree (project_identifier) WITH (fillfactor='100')"
-"project_dim_nwis","project_dim_nwis_project_dim_value","CREATE INDEX project_dim_nwis_project_dim_value ON wqp.project_dim_nwis USING btree (project_dim_value) WITH (fillfactor='100')"
 "project_nwis","project_nwis_code_value","CREATE INDEX project_nwis_code_value ON wqp.project_nwis USING btree (code_value) WITH (fillfactor='100')"
 "r_detect_qnt_lmt_nwis","r_detect_qnt_lmt_nwis_activity","CREATE INDEX r_detect_qnt_lmt_nwis_activity ON wqp.r_detect_qnt_lmt_nwis USING btree (activity) WITH (fillfactor='100')"
 "r_detect_qnt_lmt_nwis","r_detect_qnt_lmt_nwis_analytical_method","CREATE INDEX r_detect_qnt_lmt_nwis_analytical_method ON wqp.r_detect_qnt_lmt_nwis USING btree (analytical_method) WITH (fillfactor='100')"
